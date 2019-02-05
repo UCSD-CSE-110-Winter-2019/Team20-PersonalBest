@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "613355943968",
+    "firebase_url": "https://beaming-essence-230817.firebaseio.com",
+    "project_id": "beaming-essence-230817",
+    "storage_bucket": "beaming-essence-230817.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613355943968:android:2561f4ae35575927",
+        "android_client_info": {
+          "package_name": "com.example.personalbest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613355943968-ft6082sbmqthhs5go0tn3ft87qfhq2lq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.personalbest",
+            "certificate_hash": "2fb87eee97b8500bf0b36f394df5c4f92895bdd5"
+          }
+        },
+        {
+          "client_id": "613355943968-0hnc8edbgd2hslcfpslcudd6lqiv7sav.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV31oimMeqB3RArVGk_jE2cRx3jkB3aDY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613355943968-0hnc8edbgd2hslcfpslcudd6lqiv7sav.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
