@@ -1,13 +1,13 @@
 
-On the other computer you could try to import the project, instead of opening it. 
-Actually, you don't have to commit project specific files to your git repo. Android Studio is smart enough to import a project from many different sources.
-With IntelliJ IDEA you can not only create an Android project from scratch, but also import an existing project developed using other tools. One of the most common scenarios is importing an existing Android-Gradle project. However, you can also import a Maven, Eclipse or Flash Builder project, or even build a new project from a bunch of source files.
-Just like this:
+# On the other computer you could try to import the project, instead of opening it. 
+# Actually, you don't have to commit project specific files to your git repo. Android Studio is smart enough to import a project from many different sources.
+# With IntelliJ IDEA you can not only create an Android project from scratch, but also import an existing project developed using other tools. One of the most common scenarios is importing an existing Android-Gradle project. However, you can also import a Maven, Eclipse or Flash Builder project, or even build a new project from a bunch of source files.
+# Just like this:
 
-And here's a nice and more detailed tutorial on how to import a project on Android Studio from source and other places.
-For your .gitignore file I strongly recommend you to get one using gitignore.io website.
-Also, if you already commited files that are not supposed to be there, check this question and see how you can remove them.
-Here's an example of a .gitignore file that I use on one of my projects.
+# And here's a nice and more detailed tutorial on how to import a project on Android Studio from source and other places.
+# For your .gitignore file I strongly recommend you to get one using gitignore.io website.
+# Also, if you already commited files that are not supposed to be there, check this question and see how you can remove them.
+# Here's an example of a .gitignore file that I use on one of my projects.
 # Created by https://www.gitignore.io/api/android,osx,windows,linux,intellij,java
 
 ### Android ###
