@@ -42,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
                 .getBoolean("isFirstRun", true);
 
         if (isFirstRun) {
-            //show start activity
-
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
             Toast.makeText(MainActivity.this, "Welcome!", Toast.LENGTH_LONG)
                     .show();
         }
 
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+        getSharedPreferences("prefs", MODE_PRIVATE).edit()
                 .putBoolean("isFirstRun", false).commit();
 
         mTextMessage = (TextView) findViewById(R.id.message);

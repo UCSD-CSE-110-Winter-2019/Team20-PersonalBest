@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 public class InitialActivity extends Activity {
 
+    Boolean walker = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,21 +30,38 @@ public class InitialActivity extends Activity {
             public void onClick(View v) {
                 EditText enter_feet = findViewById(R.id.height_feet);
                 EditText enter_inch = findViewById(R.id.height_inches);
-                int height_ft = Integer.parseInt(enter_feet.getText().toString());
-                int height_in = Integer.parseInt(enter_inch.getText().toString());
 
-                if (height_ft > 7 || height_in > 12 || height_ft < 0 || height_in < 0) {
-                    Toast.makeText(InitialActivity.this, "Enter valid height", Toast.LENGTH_SHORT).show();
-                }
+                int height_ft = -1;
+                int height_in = -1;
+
+                RadioGroup rg = (RadioGroup) findViewById(R.id.button_group);
+                RadioButton rb_walker = (RadioButton) findViewById(R.id.radio_walker);
+                RadioButton rb_runner = (RadioButton) findViewById(R.id.radio_runner);
+
+                // user didn't enter a height
+                if (enter_feet.getText().toString().isEmpty() || enter_inch.getText().toString().isEmpty())
+                    Toast.makeText(InitialActivity.this, "Enter your height", Toast.LENGTH_SHORT).show();
 
                 else {
-                    SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putInt("height", (12 * height_ft) + height_in);
-                    editor.apply();
+                    height_ft = Integer.parseInt(enter_feet.getText().toString());
+                    height_in = Integer.parseInt(enter_inch.getText().toString());
 
-                    startActivity(new Intent(InitialActivity.this, MainActivity.class));
+                    // user entered an invalid height
+                    if (height_ft > 7 || height_in > 12 || height_ft < 0 || height_in < 0) {
+                        Toast.makeText(InitialActivity.this, "Enter valid height", Toast.LENGTH_SHORT).show();
+                    }
+
+                    // user entered a valid height
+                    else {
+                        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                        editor.putInt("height", (12 * height_ft) + height_in);
+                        editor.apply();
+
+                        startActivity(new Intent(InitialActivity.this, MainActivity.class));
+                    }
                 }
             }
         });
@@ -58,15 +77,19 @@ public class InitialActivity extends Activity {
 
         switch(v.getId()){
             case R.id.radio_walker:
-                if(checked)
+                if(checked) {
                     rb_walker.setTextColor(Color.RED);
-                rb_runner.setTextColor(Color.GRAY);
+                    walker = true;
+                    rb_runner.setTextColor(Color.GRAY);
+                }
                 break;
 
             case R.id.radio_runner:
-                if(checked)
+                if(checked) {
                     rb_runner.setTextColor(Color.RED);
-                rb_walker.setTextColor(Color.GRAY);
+                    walker = false;
+                    rb_walker.setTextColor(Color.GRAY);
+                }
                 break;
         }
     }
