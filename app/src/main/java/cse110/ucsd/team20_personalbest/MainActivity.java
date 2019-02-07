@@ -15,7 +15,9 @@ import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
+    private TextView textViewSteps;
     private String fitnessServiceKey = "GOOGLE_FIT";
+    private FitnessService fitnessService;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -42,30 +44,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mTextMessage = findViewById(R.id.message);
+        textViewSteps = findViewById(R.id.steps);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // LAB CODE
 
-        launchStepCountActivity();
+        //launchStepCountActivity();
+
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new GoogleFitAdapter(stepCountActivity);
+            public FitnessService create(MainActivity mainActivity) {
+                return new GoogleFitAdapter(mainActivity);
             }
         });
+
+        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+
+        fitnessService.setup();
+
+        fitnessService.updateStepCount();
     }
 
-    public void launchStepCountActivity() {
-        Intent intent = new Intent(this, StepCountActivity.class);
-        intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, fitnessServiceKey);
-        startActivity(intent);
-    }
-
-    public void setFitnessServiceKey(String fitnessServiceKey) {
-        this.fitnessServiceKey = fitnessServiceKey;
+    public void setStepCount(long steps){
+        textViewSteps.setText(String.valueOf(steps));
     }
 
 }

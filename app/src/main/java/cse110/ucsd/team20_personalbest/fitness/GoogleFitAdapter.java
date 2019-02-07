@@ -13,15 +13,15 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import cse110.ucsd.team20_personalbest.StepCountActivity;
+import cse110.ucsd.team20_personalbest.MainActivity;
 
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private final String TAG = "GoogleFitAdapter";
 
-    private StepCountActivity activity;
+    private MainActivity activity;
 
-    public GoogleFitAdapter(StepCountActivity activity) {
+    public GoogleFitAdapter(MainActivity activity) {
         this.activity = activity;
     }
 
