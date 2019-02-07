@@ -17,6 +17,7 @@ public class StepCountActivity extends AppCompatActivity {
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
 
     private static final String TAG = "StepCountActivity";
+    private static final String goolash = "testing";
 
     private TextView textSteps;
     private FitnessService fitnessService;
