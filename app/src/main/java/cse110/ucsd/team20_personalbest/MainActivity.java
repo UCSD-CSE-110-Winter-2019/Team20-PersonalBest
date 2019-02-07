@@ -1,6 +1,7 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewSteps;
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
+    private boolean updateSteps = true;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
         fitnessService.updateStepCount();
 
+        new ASyncStepUpdateRunner().execute();
+
         //Height implementation here
         //if(height is not set)
         //Then go to the activity
@@ -72,4 +76,24 @@ public class MainActivity extends AppCompatActivity {
         textViewSteps.setText(String.valueOf(steps));
     }
 
+    public void cancelUpdatingSteps(){
+        updateSteps = false;
+    }
+
+
+    private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while(updateSteps) {
+                try {
+                    Thread.sleep(3000);
+                    fitnessService.updateStepCount();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
 }
