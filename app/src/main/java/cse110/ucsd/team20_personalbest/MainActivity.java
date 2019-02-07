@@ -45,13 +45,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTextMessage = findViewById(R.id.message);
-        textViewSteps = findViewById(R.id.steps);
+        textViewSteps = findViewById(R.id.textViewSteps);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        // LAB CODE
-
-        //launchStepCountActivity();
 
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
@@ -66,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         fitnessService.setup();
 
         fitnessService.updateStepCount();
+
+        //Height implementation here
+        //if(height is not set)
+        //Then go to the activity
     }
 
     public void setStepCount(long steps){

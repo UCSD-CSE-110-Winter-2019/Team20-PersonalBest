@@ -32,7 +32,7 @@
         app:menu="@menu/navigation" />
 
     <TextView
-        android:id="@+id/steps"
+        android:id="@+id/textViewSteps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -42,9 +42,30 @@
         android:layout_marginRight="32dp"
         android:layout_marginBottom="32dp"
         android:text="@string/stepsDefault"
+        android:textSize="80sp"
+        app:fontFamily="sans-serif-medium"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.287"
+        tools:text="@string/stepsDefault" />
+
+    <TextView
+        android:id="@+id/textViewGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSteps"
+        app:layout_constraintVertical_bias="0.061" />
 
 </android.support.constraint.ConstraintLayout>
