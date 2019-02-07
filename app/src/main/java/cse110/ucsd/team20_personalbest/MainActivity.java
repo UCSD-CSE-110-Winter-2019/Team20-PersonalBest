@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             while(updateSteps) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                     fitnessService.updateStepCount();
                 } catch (Exception e) {
                     e.printStackTrace();
