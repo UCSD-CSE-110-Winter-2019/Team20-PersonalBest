@@ -22,16 +22,6 @@ public class InitialActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
 
-        //Boolean walker = true;
-/*
-        RadioButton radioButton = findViewById(R.id.radio_runner);
-        radioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-*/
         Button next = findViewById(R.id.initial_next_button);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,23 +50,23 @@ public class InitialActivity extends Activity {
 
     public void onRadioButtonClicked(View v){
         RadioGroup rg = (RadioGroup) findViewById(R.id.button_group);
-        RadioButton rb_coldfusion = (RadioButton) findViewById(R.id.radio_walker);
-        RadioButton rb_flex = (RadioButton) findViewById(R.id.radio_runner);
+        RadioButton rb_walker = (RadioButton) findViewById(R.id.radio_walker);
+        RadioButton rb_runner = (RadioButton) findViewById(R.id.radio_runner);
 
         // Is the current Radio Button checked?
         boolean checked = ((RadioButton) v).isChecked();
 
         switch(v.getId()){
-            case R.id.radio_runner:
-                if(checked)
-                    rb_coldfusion.setTextColor(Color.RED);
-                rb_flex.setTextColor(Color.GRAY);
-                break;
-
             case R.id.radio_walker:
                 if(checked)
-                    rb_flex.setTextColor(Color.RED);
-                rb_coldfusion.setTextColor(Color.GRAY);
+                    rb_walker.setTextColor(Color.RED);
+                rb_runner.setTextColor(Color.GRAY);
+                break;
+
+            case R.id.radio_runner:
+                if(checked)
+                    rb_runner.setTextColor(Color.RED);
+                rb_walker.setTextColor(Color.GRAY);
                 break;
         }
     }
