@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
         Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
+        // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
             Toast.makeText(MainActivity.this, "Welcome!", Toast.LENGTH_LONG)
                     .show();
+            getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                    .putBoolean("isFirstRun", false).commit();
         }
-
-        getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                .putBoolean("isFirstRun", false).commit();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
