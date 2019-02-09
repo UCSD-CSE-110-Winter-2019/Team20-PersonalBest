@@ -14,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +35,7 @@ public class Walks extends Fragment {
     private String mParam1;
     private String mParam2;
     private LinearLayout mlayout;
+    private Walk pastwalk;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,18 +69,34 @@ public class Walks extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
+        pastwalk = new Walk(50, 100, Calendar.getInstance(), Calendar.getInstance());
     }
 
-    public void addEntry(){
+    public void addEntry(Walk newWalk){
         RelativeLayout newEntry = new RelativeLayout(getContext());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-        TextView newTxt = new TextView(getContext());
-        newTxt.setText("HERE!!!!!!");
-        newTxt.setTextSize(1000);
-        newEntry.addView(newTxt);
+        params.setMargins(40,40,40,40);
+        TextView walkTime = new TextView(getContext());
+
+        RelativeLayout.LayoutParams paramStat = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramStat.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        RelativeLayout.LayoutParams paramTime = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+        walkTime.setText(newWalk.getTime());
+        walkTime.setTextSize(20);
+        TextView walkStat = new TextView(getContext());
+        walkStat.setText(newWalk.getStat());
+        walkStat.setTextSize(20);
+        walkStat.setLayoutParams(paramStat);
+        walkTime.setLayoutParams(paramTime);
+        newEntry.addView(walkStat);
+        newEntry.addView(walkTime);
         newEntry.setLayoutParams(params);
         mlayout.addView(newEntry);
     }
@@ -85,7 +104,13 @@ public class Walks extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstancesState) {
         mlayout = (LinearLayout) getView().findViewById(R.id.llayout);
-        addEntry();
+        addEntry(pastwalk);
+        addEntry(pastwalk);
+        addEntry(pastwalk);
+        addEntry(pastwalk);
+        addEntry(pastwalk);
+        addEntry(pastwalk);
+        addEntry(pastwalk);
     }
 
     @Override
