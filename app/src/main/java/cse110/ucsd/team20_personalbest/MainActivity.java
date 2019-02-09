@@ -1,6 +1,5 @@
 package cse110.ucsd.team20_personalbest;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
@@ -10,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.data.DataBufferObserver;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
@@ -113,7 +110,6 @@ public class MainActivity extends AppCompatActivity{
     public void sendToast(String string){
         Toast.makeText(mainActivity, string, Toast.LENGTH_LONG).show();
     }
-
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
 
