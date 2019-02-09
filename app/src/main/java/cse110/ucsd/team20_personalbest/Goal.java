@@ -5,14 +5,15 @@ public class Goal {
     private boolean notMet = true;
     private int autoGoal = 500;
 
-    public Goal(int steps) {
+    public Goal(int steps, boolean notMet) {
         goal = steps;
+        this.notMet = notMet;
     }
 
-    public Goal(int steps, int nextautogoal){
+    public Goal(int steps, boolean notMet, int nextautogoal){
         goal = steps;
         autoGoal = nextautogoal;
-
+        this.notMet = notMet;
     }
 
     public boolean attemptCompleteGoal(long steps){

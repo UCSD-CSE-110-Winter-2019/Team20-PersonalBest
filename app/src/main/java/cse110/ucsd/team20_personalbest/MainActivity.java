@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity{
 
     private MainActivity mainActivity;
 
-    private int autoGoal = 500;
     private StepContainer sc;
 
     private String fitnessServiceKey = "GOOGLE_FIT";
@@ -86,7 +85,8 @@ public class MainActivity extends AppCompatActivity{
         new ASyncStepUpdateRunner().execute();
 
         //Set goal from shared preferences, or if first run set to 5000
-        goal = new Goal(17);
+        //Also update boolean if they've met the goal today
+        goal = new Goal(17, true);
         setGoalCount(goal.getGoal());
 
         GoalObserver go = new GoalObserver(goal, this);
