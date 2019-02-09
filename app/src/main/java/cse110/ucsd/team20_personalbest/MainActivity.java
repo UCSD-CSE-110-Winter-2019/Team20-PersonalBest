@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -10,21 +11,27 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.data.DataBufferObserver;
+
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private TextView mTextMessage;
     private TextView textViewSteps;
     private TextView textViewGoal;
 
+    private MainActivity mainActivity;
+
+    private int autoGoal = 500;
+    private StepContainer sc;
+
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private boolean updateSteps = true;
     private Goal goal;
-    private long currentSteps;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -51,9 +58,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mainActivity = this;
+
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
+
+        sc = new StepContainer();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -75,8 +86,11 @@ public class MainActivity extends AppCompatActivity {
         new ASyncStepUpdateRunner().execute();
 
         //Set goal from shared preferences, or if first run set to 5000
-        goal = new Goal((int)currentSteps + 10);
+        goal = new Goal(17);
         setGoalCount(goal.getGoal());
+
+        GoalObserver go = new GoalObserver(goal, this);
+        sc.addObserver(go);
 
         //Height implementation here
         //if(height is not set)
@@ -84,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setStepCount(long steps){
-        currentSteps = steps;
+        sc.setSteps((int) steps);
         textViewSteps.setText(String.valueOf(steps));
     }
 
     public void setGoalCount(int goal){
-        textViewGoal.setText((String.valueOf(goal)));
+        textViewGoal.setText((goal + ""));
     }
 
     public void cancelUpdatingSteps(){
@@ -97,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendToast(String string){
-        Toast.makeText(this, string, Toast.LENGTH_LONG).show();
+        Toast.makeText(mainActivity, string, Toast.LENGTH_LONG).show();
     }
 
 
@@ -105,17 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Looper.prepare();
             while(updateSteps) {
                 try {
                     Thread.sleep(3000);
 
                     fitnessService.updateStepCount();
 
-                    if(goal.attemptCompleteGoal(currentSteps)){
-                        sendToast("Congratulations on meeting your goal of " + goal.getGoal() + " steps!");
-                        goal.setGoal(goal.getGoal() + 10);
-                        setGoalCount((goal.getGoal()));
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
