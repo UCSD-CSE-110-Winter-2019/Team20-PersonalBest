@@ -35,6 +35,7 @@ public class Goal {
     }
 
     public void setGoalAutomatically(){
+        //TODO handle goal cap of 15k
         goal = goal + autoGoal;
     }
 
