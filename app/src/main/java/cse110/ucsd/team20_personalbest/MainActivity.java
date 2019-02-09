@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
@@ -46,9 +47,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+        // runs initial activity
+        if (isFirstRun) {
+            startActivity(new Intent(MainActivity.this, InitialActivity.class));
+            getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                    .putBoolean("isFirstRun", false).commit();
+        }
+
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
         BottomNavigationView navigation = findViewById(R.id.navigation);
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
