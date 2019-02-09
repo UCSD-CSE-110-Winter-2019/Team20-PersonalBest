@@ -13,4 +13,6 @@
     <string name="walker_text_view">Walker or Runner?</string>
     <string name="next_button_text">Next</string>
 
+    <string name="stepsDefault">Steps</string>
+
 </resources>
