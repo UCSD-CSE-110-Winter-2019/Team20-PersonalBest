@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         //Height implementation here
         //if(height is not set)
         //Then go to the activity
+
+
+
+
     }
 
     public void setStepCount(long steps){
