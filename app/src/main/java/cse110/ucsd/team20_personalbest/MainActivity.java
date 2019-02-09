@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
-            Toast.makeText(MainActivity.this, "Welcome!", Toast.LENGTH_LONG)
-                    .show();
             getSharedPreferences("prefs", MODE_PRIVATE).edit()
                     .putBoolean("isFirstRun", false).commit();
         }

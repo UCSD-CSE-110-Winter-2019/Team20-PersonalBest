@@ -24,6 +24,9 @@ public class InitialActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
 
+        RadioButton rb_walker = (RadioButton) findViewById(R.id.radio_walker);
+        rb_walker.setTextColor(Color.RED);
+
         Button next = findViewById(R.id.initial_next_button);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
