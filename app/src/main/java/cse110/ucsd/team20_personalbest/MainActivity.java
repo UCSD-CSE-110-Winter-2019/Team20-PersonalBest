@@ -43,15 +43,17 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_walks:
                     mTextMessage.setText(R.string.title_walks);
-                    fragmentClass = Walks.class;
+                    fragmentClass = WalkPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_stats:
                     mTextMessage.setText(R.string.title_stats);
+                    fragmentClass = StatPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
                     mTextMessage.setText(R.string.title_profile);
+                    fragmentClass = ProfilePg.class;
                     frame.setVisibility(View.GONE);
                     break;
             }

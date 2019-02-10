@@ -10,7 +10,6 @@ import java.time.*;
 
 public class Walk {
 
-
         private int height, steps, distMile, mph, startTime, endTime;
         private Calendar start;
         private Calendar end;
