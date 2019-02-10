@@ -39,14 +39,8 @@ public class GoalObserver implements Observer {
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
-            goal.metToday();
-
-            // update testfield
-
         }
     }
-
-    boolean setGoal = false;
 
     public void createDialog() {
 
@@ -54,7 +48,6 @@ public class GoalObserver implements Observer {
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setTitle("You met your goal!");
         builder.setMessage("Set a new goal?");
-        System.err.println("In create Dialog");
 
         // uses custom xml file
         LayoutInflater inflater = mainActivity.getLayoutInflater();
@@ -88,8 +81,9 @@ public class GoalObserver implements Observer {
                     newGoal = Integer.parseInt(customText.getText().toString());
 
                 goal.setGoal(newGoal);
+                goal.meetGoal();
                 mainActivity.setGoalCount((goal.getGoal()));
-                System.err.println("Goal value is " + goal.getGoal());
+
                 Toast.makeText(mainActivity, "New goal set to " + newGoal + "!", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }

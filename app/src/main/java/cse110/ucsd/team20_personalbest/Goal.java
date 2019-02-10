@@ -49,6 +49,9 @@ public class Goal {
     public boolean metToday(){
         return met;
     }
+    public void meetGoal() {
+        met = true;
+    }
 
     public int getGoal() {
         return goal;
