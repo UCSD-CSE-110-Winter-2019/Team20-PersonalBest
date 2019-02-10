@@ -13,8 +13,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.data.DataBufferObserver;
-
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
@@ -27,11 +25,10 @@ public class MainActivity extends AppCompatActivity{
 
     private MainActivity mainActivity;
 
-    SharedPreferences sharedpreferences;
-    private static final String PREF_FILE = "prefs";
-    private static final int INITIAL_GOAL = 5000;
 
-    private int autoGoal = 500;
+    SharedPreferences sharedpreferences;
+    private static final String PREF_FILE = "prefs";;
+
     private StepContainer sc;
 
     private String fitnessServiceKey = "GOOGLE_FIT";
@@ -89,8 +86,12 @@ public class MainActivity extends AppCompatActivity{
 
         new ASyncStepUpdateRunner().execute();
 
+
         // creates goal based on sharedpreferences
         goal = new Goal(this);
+
+        // goal = new Goal (17, false);
+
         setGoalCount(goal.getGoal());
 
         GoalObserver go = new GoalObserver(goal, this);
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity{
     public void sendToast(String string){
         Toast.makeText(mainActivity, string, Toast.LENGTH_LONG).show();
     }
-
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
 

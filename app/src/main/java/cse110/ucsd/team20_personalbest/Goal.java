@@ -10,9 +10,11 @@ public class Goal {
     private boolean met = false;
     private boolean changeIgnored = false;
 
-    private static final int GOAL_INCREMENT = 500;
+    private static final int DEFAULT_GOAL_INCREMENT = 500;
     private static final int INITIAL_GOAL = 5000;
     private static final int MAX_AUTO_GOAL = 15000;
+
+    private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
 
     // makes a goal based on the saved shared preferences
     public Goal(Context context) {
@@ -24,8 +26,15 @@ public class Goal {
     }
 
     // custom goal
-    public Goal(int steps) {
+    public Goal(int steps, boolean met) {
         goal = steps;
+        this.met = met;
+    }
+
+    public Goal(int steps, boolean met, int nextautogoal){
+        goal = steps;
+        autoGoalIncr = nextautogoal;
+        this.met = met;
     }
 
     public boolean attemptCompleteGoal(long steps){
@@ -46,11 +55,11 @@ public class Goal {
     }
 
     public boolean canSetAutomatically() {
-        return goal + GOAL_INCREMENT <= MAX_AUTO_GOAL;
+        return goal + autoGoalIncr <= MAX_AUTO_GOAL;
     }
 
     public int nextAutoGoal() {
-        return canSetAutomatically() ? goal + GOAL_INCREMENT : goal;
+        return canSetAutomatically() ? goal + autoGoalIncr : goal;
     }
 
     public void setGoal(int val) {

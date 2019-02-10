@@ -27,7 +27,7 @@ public class GoalObserver implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        System.out.println("Updating observer");
+        //System.out.println("Updating observer");
         int currentsteps = (int) o;
 
         //System.out.println("Goal of " + currentsteps + "/" + goal.getGoal() + " complete: " + goal.attemptCompleteGoal(currentsteps));
