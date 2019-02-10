@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean intending = false;
     private Activity MAIN = this;
     private IntendedSession is;
+    private ModifiedSession ms;
+    private long current;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -89,15 +91,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (intending == false) {
-                    is = new IntendedSession( getTime(), MAIN, GoogleSignIn.getLastSignedInAccount(MAIN));
+                    //is = new IntendedSession( getTime(), MAIN, GoogleSignIn.getLastSignedInAccount(MAIN));
+                    current = getTime();
                     intending = true;
                 } else {
-                    is.endSession( getTime());
+
+                    ms = new ModifiedSession(current, getTime());
 
                     //do things with is while we have it!
 
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
-                            is.returnSteps() + "steps", Toast.LENGTH_LONG).show();
+                            ms.returnSteps() + "steps", Toast.LENGTH_LONG).show();
 
                     // return and set false
                     intending = false;

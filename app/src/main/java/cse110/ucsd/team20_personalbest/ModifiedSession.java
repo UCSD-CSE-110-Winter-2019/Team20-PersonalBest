@@ -1,3 +1,4 @@
+
 package cse110.ucsd.team20_personalbest;
 
 import android.app.Activity;
@@ -22,11 +23,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cse110.ucsd.team20_personalbest.SessionInterface;
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 
 import static com.google.android.gms.fitness.data.DataType.TYPE_STEP_COUNT_DELTA;
 
-public class IntendedSession implements SessionInterface{
+public class ModifiedSession implements SessionInterface {
 
     private String fitnessServiceKey = "GOOGLE_FIT";
     public static final String TAG = "BasicSessions";
@@ -43,71 +45,23 @@ public class IntendedSession implements SessionInterface{
     private long ending;
     private long steps;
 
-    // instantiate a new session
+    public ModifiedSession(long start, long end) {
+        starting = start;
+        ending = end;
 
-    public IntendedSession(long startTime, Activity a, GoogleSignInAccount googleSignin) {
-
-        //create the data identifier for the session
-
-        this.session = new Session.Builder()
+        // Create a session with metadata about the activity.
+        Session session = new Session.Builder()
                 .setName(SESSION_NAME)
-                .setIdentifier("identifier")
                 .setDescription(SESSION_DESC)
-                .setStartTime(startTime, TimeUnit.MILLISECONDS)
+                .setStartTime(starting, TimeUnit.MILLISECONDS)
+                .setEndTime(ending, TimeUnit.MILLISECONDS)
                 .build();
 
-        this.google = googleSignin;
-        this.activity = a;
-        this.starting = startTime;
-
-        Task<Void> response = Fitness.getSessionsClient(activity, google)
-                .startSession(session);
-        return;
-    }
-
-
-    public boolean startSession(long startTime) {
-
-       return true;
-    }
-
-
-    public boolean endSession(long endTime) {
-
-        ending = endTime;
-
-        Task<List<Session>> response = Fitness.getSessionsClient(activity, google)
-                .stopSession(session.getIdentifier());
-
-        // now insert the session into the fitness history
-
+        // Build a session insert request
         SessionInsertRequest insertRequest = new SessionInsertRequest.Builder()
                 .setSession(session)
                 .build();
-
-        // insert the session into the history
-        Fitness.getSessionsClient(activity, google)
-                .insertSession(insertRequest)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // At this point, the session has been inserted and can be read.
-                        //do nothing
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        return;
-                    }
-                });
-
-        return true;
-    }
-
-    public Session getSession() {
-        return session;
-    }
+    } //end constructor
 
     public long returnSteps() {
         // given our session, return the number of steps achieved during it
@@ -132,7 +86,7 @@ public class IntendedSession implements SessionInterface{
                             List<DataSet> dataSets = sessionReadResponse.getDataSet(session);
                             for (DataSet dataSet : dataSets) {
 //                                if (dataSet.getDataType() == TYPE_STEP_COUNT_DELTA)
-                                      steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+                                steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
 //                                }
                             }
 
@@ -150,4 +104,20 @@ public class IntendedSession implements SessionInterface{
         return steps;
     }
 
-} // end class
+
+    @Override
+    public boolean startSession(long startTime) {
+        return false;
+    }
+
+    @Override
+    public boolean endSession(long endTime) {
+        return false;
+    }
+
+    @Override
+    public Session getSession() {
+        return null;
+    }
+}
+
