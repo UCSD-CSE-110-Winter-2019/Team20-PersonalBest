@@ -1,6 +1,8 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
@@ -24,6 +26,10 @@ public class MainActivity extends AppCompatActivity{
     private TextView textViewGoal;
 
     private MainActivity mainActivity;
+
+    SharedPreferences sharedpreferences;
+    private static final String PREF_FILE = "prefs";
+    private static final int INITIAL_GOAL = 5000;
 
     private int autoGoal = 500;
     private StepContainer sc;
@@ -78,23 +84,31 @@ public class MainActivity extends AppCompatActivity{
         });
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-
         fitnessService.setup();
-
         fitnessService.updateStepCount();
 
         new ASyncStepUpdateRunner().execute();
 
-        //Set goal from shared preferences, or if first run set to 5000
-        goal = new Goal(17);
+        // creates goal based on sharedpreferences
+        goal = new Goal(this);
         setGoalCount(goal.getGoal());
 
         GoalObserver go = new GoalObserver(goal, this);
-        sc.addObserver(go);
 
-        //Height implementation here
-        //if(height is not set)
-        //Then go to the activity
+        sc.addObserver(go);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // saves goal to sharedPreferences
+        sharedpreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putInt("savedGoal", goal.getGoal());
+        editor.putBoolean("metToday", goal.metToday());
+        editor.apply();
+
     }
 
     public void setStepCount(long steps){

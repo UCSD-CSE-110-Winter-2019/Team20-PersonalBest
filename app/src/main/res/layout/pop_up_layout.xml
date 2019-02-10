@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/goal_radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/goal_recommended_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recommended Goal"/>
+
+        <RadioButton
+            android:id="@+id/goal_custom_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Custom Goal: "/>
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/goal_custom_value_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_alignBottom="@+id/goal_radio"
+        android:layout_toRightOf="@+id/goal_radio"
+        android:hint="New Goal" />
+</RelativeLayout>
