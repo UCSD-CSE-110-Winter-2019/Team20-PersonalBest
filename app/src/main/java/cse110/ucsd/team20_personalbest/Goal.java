@@ -8,13 +8,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class Goal {
     private int goal;
     private boolean met = false;
-    private boolean changeIgnored = false;
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
     private static final int INITIAL_GOAL = 5000;
-    private static final int MAX_AUTO_GOAL = 15000;
+    private static final int DEFAULT_MAX_AUTO_GOAL = 15000;
 
     private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
+    private int maxAutoGoal = DEFAULT_MAX_AUTO_GOAL;
 
     // makes a goal based on the saved shared preferences
     public Goal(Context context) {
@@ -37,18 +37,23 @@ public class Goal {
         this.met = met;
     }
 
+    // saves goal values to sharedpreferences
+    public void save(Context ma) {
+        SharedPreferences sharedpreferences = ma.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putInt("savedGoal", goal);
+        //editor.putBoolean("metToday", met);
+        editor.apply();
+    }
+
     public boolean attemptCompleteGoal(long steps){
-        if(steps > goal && !met){
-            met = true;
-            return true;
-        }else if (steps < goal)
-            met = false;
-        return false;
+        return steps >= goal && !met;
     }
 
     public boolean metToday(){
         return met;
     }
+
     public void meetGoal() {
         met = true;
     }
@@ -58,7 +63,7 @@ public class Goal {
     }
 
     public boolean canSetAutomatically() {
-        return goal + autoGoalIncr <= MAX_AUTO_GOAL;
+        return goal + autoGoalIncr <= maxAutoGoal;
     }
 
     public int nextAutoGoal() {
@@ -67,15 +72,6 @@ public class Goal {
 
     public void setGoal(int val) {
         goal = val;
-    }
-
-    // once ignored, don't change goal for 1 week
-    public void ignore() {
-        changeIgnored = true;
-    }
-
-    public boolean isIgnored() {
-        return changeIgnored;
     }
 
 }

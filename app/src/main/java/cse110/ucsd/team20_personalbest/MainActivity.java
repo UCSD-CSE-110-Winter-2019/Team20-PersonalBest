@@ -89,27 +89,12 @@ public class MainActivity extends AppCompatActivity{
 
         // creates goal based on sharedpreferences
         goal = new Goal(this);
-
-        // goal = new Goal (17, false);
-
+        //goal = new Goal (2200, false);
         setGoalCount(goal.getGoal());
 
         GoalObserver go = new GoalObserver(goal, this);
 
         sc.addObserver(go);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        // saves goal to sharedPreferences
-        sharedpreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putInt("savedGoal", goal.getGoal());
-        editor.putBoolean("metToday", goal.metToday());
-        editor.apply();
-
     }
 
     public void setStepCount(long steps){

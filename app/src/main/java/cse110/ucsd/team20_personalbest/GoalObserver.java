@@ -36,6 +36,7 @@ public class GoalObserver implements Observer {
         if(goal.attemptCompleteGoal(currentsteps)){
 
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
+            goal.meetGoal();
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
@@ -83,6 +84,7 @@ public class GoalObserver implements Observer {
                 goal.setGoal(newGoal);
                 goal.meetGoal();
                 mainActivity.setGoalCount((goal.getGoal()));
+                goal.save(mainActivity);
 
                 Toast.makeText(mainActivity, "New goal set to " + newGoal + "!", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
@@ -90,7 +92,7 @@ public class GoalObserver implements Observer {
         });
         builder.setNegativeButton("Ignore", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                goal.ignore();
+                //goal.ignore();
                 Toast.makeText(mainActivity, "Kept old goal!", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
