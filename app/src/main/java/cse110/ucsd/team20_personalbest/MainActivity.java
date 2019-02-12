@@ -101,13 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mainActivity = this;
         frame = (FrameLayout) findViewById(R.id.mainScreen);
-        mTextMessage = (TextView) findViewById(R.id.message);
         textViewGoal = (TextView) findViewById(R.id.textViewGoal);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -154,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
         textViewSteps.setText(String.valueOf(steps));
     }
 
-    public void cancelUpdatingSteps(){
-        updateSteps = false;
-       
 
     public void setGoalCount(int goal){
         textViewGoal.setText((goal + ""));
@@ -186,22 +179,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-    }
-
-
-    private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            while(updateSteps) {
-                try {
-                    Thread.sleep(3000);
-                    fitnessService.updateStepCount();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
     }
 }
