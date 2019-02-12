@@ -1,6 +1,8 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.Manifest;
 import android.app.Activity;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private Activity activity;
+
+    private String walkOrRun = "Walk";
 
     private boolean updateSteps = true;
     private StepContainer sc;
@@ -77,9 +81,16 @@ public class MainActivity extends AppCompatActivity {
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
-            getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                    .putBoolean("isFirstRun", false).commit();
         }
+
+        // log height and walker/runner saved properly
+        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
+        boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
+        System.err.println("Height: " + height + ", walker: " + walker + "."); // height in inches
+
+        // for start/stop button
+        if (!walker) walkOrRun = "Run";
 
         activity = this;
         sc = new StepContainer();
@@ -103,17 +114,14 @@ public class MainActivity extends AppCompatActivity {
         fitnessService.updateStepCount();
 
         new ASyncStepUpdateRunner().execute();
-
-        //Height implementation here
-        //if(height is not set)
-        //Then go to the activity
-
-        new ASyncStepUpdateRunner().execute();
-
+        //new ASyncStepUpdateRunner().execute();
 
         //button to record stops and starts
+        final Button btnStartStop = findViewById(R.id.startStop);
 
-        Button btnStartStop = findViewById(R.id.startStop);
+        // set button text and color
+        setButton(btnStartStop, onWalk);
+
         btnStartStop.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -124,24 +132,41 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                // starts walk
                 if (onWalk == false) {
+
                     is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
                     Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
-                } else {
+                }
+
+                // stops walk
+                else {
 
                     is.endSession(getTime());
-
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     onWalk = false;
                 }
 
+                setButton(btnStartStop, onWalk);
             }
         });
 
     } // end onCreate
+
+    public void setButton(Button btn, boolean onWalk) {
+        if (onWalk) {
+            btn.setBackgroundColor(Color.RED);
+            btn.setText("Stop " + walkOrRun);
+        }
+
+        else {
+            btn.setBackgroundColor(Color.GREEN);
+            btn.setText("Start " + walkOrRun);
+        }
+    }
 
     public long getTime() {
         Calendar cal = Calendar.getInstance();
