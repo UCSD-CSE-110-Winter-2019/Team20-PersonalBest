@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -31,7 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private Activity activity;
-    private long currentSteps;
+
+    private boolean updateSteps = true;
+    private StepContainer sc;
+
 
     private boolean onWalk = false;
     private IntendedSession is;
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         activity = this;
+        sc = new StepContainer();
 
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
@@ -77,14 +82,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-
         fitnessService.setup();
-
         fitnessService.updateStepCount();
 
-        //Height implementation here
-        //if(height is not set)
-        //Then go to the activity
+
+        new ASyncStepUpdateRunner().execute();
+
 
         //button to record stops and starts
 
@@ -100,21 +103,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (onWalk == false) {
-                    is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), currentSteps );
+                    is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
                     Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
                 } else {
 
                     is.endSession(getTime());
 
-                    //ms = new ModifiedSession(current, getTime(), activity);
-
-                    //do things with is while we have it!
-
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
-                            is.returnSteps(currentSteps) + "steps", Toast.LENGTH_LONG).show();
+                            is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
-                    // return and set false
                     onWalk = false;
                 }
 
@@ -131,7 +129,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setStepCount(long steps){
+        sc.setSteps((int) steps);
         textViewSteps.setText(String.valueOf(steps));
+    }
+
+    public void cancelUpdatingSteps(){
+        updateSteps = false;
+    }
+
+    private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while(updateSteps) {
+                try {
+                    Thread.sleep(3000);
+                    fitnessService.updateStepCount();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 
 }
