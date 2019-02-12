@@ -57,11 +57,12 @@ public class InitialActivity extends Activity {
 
                     // user entered a valid height
                     else {
-                        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("prefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
 
                         editor.putInt("height", (12 * height_ft) + height_in);
                         editor.putBoolean("isWalker", walker);
+                        editor.putBoolean("isFirstRun", false);
                         editor.apply();
 
                         startActivity(new Intent(InitialActivity.this, MainActivity.class));
