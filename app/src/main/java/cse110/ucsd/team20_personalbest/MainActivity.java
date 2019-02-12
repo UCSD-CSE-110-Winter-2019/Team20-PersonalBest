@@ -1,6 +1,7 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
-            getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                    .putBoolean("isFirstRun", false).commit();
         }
 
         mTextMessage = findViewById(R.id.message);
@@ -81,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
         fitnessService.updateStepCount();
 
         new ASyncStepUpdateRunner().execute();
+
+        // log height and walker/runner saved properly
+        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
+        boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
+        System.err.println("Height: " + height + ", walker: " + walker + ".");
 
         //Height implementation here
         //if(height is not set)
