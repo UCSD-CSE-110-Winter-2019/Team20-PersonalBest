@@ -1,10 +1,13 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,12 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewSteps;
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
+    private Activity activity;
+    private long currentSteps;
 
-    private boolean intending = false;
-    private Activity MAIN = this;
+    private boolean onWalk = false;
     private IntendedSession is;
-    private ModifiedSession ms;
-    private long current;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        activity = this;
 
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
@@ -90,21 +94,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (intending == false) {
-                    //is = new IntendedSession( getTime(), MAIN, GoogleSignIn.getLastSignedInAccount(MAIN));
-                    current = getTime();
-                    intending = true;
+                if(ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION )!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0 );
+                    return;
+                }
+
+                if (onWalk == false) {
+                    is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), currentSteps );
+                    onWalk = true;
+                    Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
                 } else {
 
-                    ms = new ModifiedSession(current, getTime());
+                    is.endSession(getTime());
+
+                    //ms = new ModifiedSession(current, getTime(), activity);
 
                     //do things with is while we have it!
 
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
-                            ms.returnSteps() + "steps", Toast.LENGTH_LONG).show();
+                            is.returnSteps(currentSteps) + "steps", Toast.LENGTH_LONG).show();
 
                     // return and set false
-                    intending = false;
+                    onWalk = false;
                 }
 
             }

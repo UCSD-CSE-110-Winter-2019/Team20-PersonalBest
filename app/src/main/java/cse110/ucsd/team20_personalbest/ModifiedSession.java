@@ -6,11 +6,15 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.data.Session;
+import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.request.SessionInsertRequest;
 import com.google.android.gms.fitness.request.SessionReadRequest;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.fitness.result.SessionReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,9 +49,10 @@ public class ModifiedSession implements SessionInterface {
     private long ending;
     private long steps;
 
-    public ModifiedSession(long start, long end) {
+    public ModifiedSession(long start, long end, Activity main) {
         starting = start;
         ending = end;
+        activity = main;
 
         // Create a session with metadata about the activity.
         Session session = new Session.Builder()
@@ -82,13 +87,33 @@ public class ModifiedSession implements SessionInterface {
                         for (Session session: sessions) {
                             // Process the sessions
 
-                            // Process the data sets for this session
-                            List<DataSet> dataSets = sessionReadResponse.getDataSet(session);
-                            for (DataSet dataSet : dataSets) {
-//                                if (dataSet.getDataType() == TYPE_STEP_COUNT_DELTA)
+                            GoogleApiClient client = new GoogleApiClient.Builder(activity)
+                                    .addApi(Fitness.HISTORY_API)
+                                    .build();
+                            client.connect();
+
+                            PendingResult<DataReadResult> pendingResult = Fitness.HistoryApi.readData(
+                                    client,
+                                    new DataReadRequest.Builder()
+                                            .read(DataType.TYPE_STEP_COUNT_DELTA)
+                                            .setTimeRange(session.getStartTime(TimeUnit.MILLISECONDS), session.getEndTime(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
+                                            .build());
+
+                            DataReadResult readDataResult = pendingResult.await();
+                            DataSet dataSet = readDataResult.getDataSet(DataType.TYPE_STEP_COUNT_DELTA);
+
+                            if(dataSet.isEmpty()){
+                                System.out.println("Dataset is empty");
+                            }else{
                                 steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
-//                                }
                             }
+//                            // Process the data sets for this session
+//                            List<DataSet> dataSets = sessionReadResponse.getDataSet(session);
+//                            for (DataSet dataSet : dataSets) {
+////                                if (dataSet.getDataType() == TYPE_STEP_COUNT_DELTA)
+//                                steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+////                                }
+//                            }
 
                             //steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
                         }
