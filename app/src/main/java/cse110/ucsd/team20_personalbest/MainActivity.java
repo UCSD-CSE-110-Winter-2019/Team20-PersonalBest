@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.os.AsyncTask;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
@@ -24,11 +27,16 @@ public class MainActivity extends AppCompatActivity {
     private Fragment currentFrag = new dashboard();
     Class fragmentClass;
 
+    private StepContainer sc;
+    private TextView textViewGoal;
+    private MainActivity mainActivity;
+
     private TextView textViewSteps;
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private boolean updateSteps = true;
     private FrameLayout frame;
+    private Goal goal;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -76,8 +84,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mainActivity = this;
         frame = (FrameLayout) findViewById(R.id.mainScreen);
         mTextMessage = (TextView) findViewById(R.id.message);
+        textViewGoal = (TextView) findViewById(R.id.textViewGoal);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         FragmentTransaction ft = fm.beginTransaction();
@@ -97,12 +107,31 @@ public class MainActivity extends AppCompatActivity {
 
         new ASyncStepUpdateRunner().execute();
 
+
+        //Goal stuff
+        sc = new StepContainer();
+
+        goal = new Goal(17, true);
+        setGoalCount(goal.getGoal());
+
+        GoalObserver go = new GoalObserver(goal, this);
+        sc.addObserver(go);
         //Height implementation here
         //if(height is not set)
         //Then go to the activity
     }
+
     public void setStepCount(long steps){
+        sc.setSteps((int) steps);
         textViewSteps.setText(String.valueOf(steps));
+    }
+
+    public void setGoalCount(int goal){
+        textViewGoal.setText((goal + ""));
+    }
+
+    public void sendToast(String string){
+        Toast.makeText(mainActivity, string, Toast.LENGTH_LONG).show();
     }
 
     public void cancelUpdatingSteps(){
