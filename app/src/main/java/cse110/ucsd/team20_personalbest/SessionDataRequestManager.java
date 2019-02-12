@@ -35,10 +35,12 @@ public class SessionDataRequestManager {
 
     public int requestTotalSessionStepData(long startTime, long endTime){
 
+        if(startTime < 1001) return -1;
+
         steps = 0;
 
         SessionReadRequest readRequest = new SessionReadRequest.Builder()
-                .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
+                .setTimeInterval(startTime - 1000, endTime + 1000, TimeUnit.MILLISECONDS)
                 .read(DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .build();
 
