@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView textViewStats;
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
-    private Activity activity;
+    private MainActivity activity;
 
     private int height;
     private final int DEF_HEIGHT = 70;
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private ArrayList<Walk> pastWalks = new ArrayList<Walk>(100);
     private CustomGauge pedometer;
     private Calendar startTime;
-    private Calendar endTime;
 
     private boolean onWalk = false;
     private IntendedSession is;
@@ -181,12 +180,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             }
         });
 
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
         fitnessService.setup();
         fitnessService.updateStepCount();
 
         new ASyncStepUpdateRunner().execute();
-        //new ASyncStepUpdateRunner().execute();
 
         //button to record stops and starts
         final Button btnStartStop = findViewById(R.id.startStop);
@@ -230,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     onWalk = false;
-                    endTime = Calendar.getInstance();
-                    pastWalks.add(new Walk(height, sc.steps() - tempStep, startTime, endTime));
+                    pastWalks.add(new Walk(rtStat.getStat(), startTime));
                     rtStat = null;
 
                     String json = gson.toJson(pastWalks);
@@ -281,7 +278,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private void updateRT (Calendar now) {
         if(rtStat != null) {
             textViewStats.setTextSize(20);
-            textViewStats.setText(rtStat.updateStat(sc.steps() - tempStep, now));
+            rtStat.updateStat(sc.steps() - tempStep, now);
+            textViewStats.setText(rtStat.getStat());
         }
         else {
             textViewStats.setTextSize(50);

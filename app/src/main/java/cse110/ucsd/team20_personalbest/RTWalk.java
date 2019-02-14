@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 public class RTWalk {
 
+    private int step;
     private int height;
     private double distMile, mph;
     private Calendar start;
@@ -13,9 +14,14 @@ public class RTWalk {
         start = st;
     }
 
-    public String updateStat(int s, Calendar now) {
+    public void updateStat(int s, Calendar now) {
+        step = s;
         distMile = s * (0.413 * height) / 12.000;
         mph = distMile / ((now.getTimeInMillis() - start.getTimeInMillis()) / 1000.000);
-        return String.format("Steps:  %s\nDistance:  %.2f Miles\nSpeed: %.2f MPH",s,distMile * 0.000189393939,mph / 1.466);
+
+    }
+
+    public String getStat() {
+        return String.format("Steps:  %s\nDistance:  %.2f Miles\nSpeed: %.2f MPH",step,distMile * 0.000189393939,mph / 1.466);
     }
 }
