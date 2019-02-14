@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private Activity activity;
+    private SessionDataRequestManager sdrm;
 
     private String walkOrRun = "Walk";
 
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
 
+
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
         int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 return new GoogleFitAdapter(mainActivity);
             }
         });
+
+        sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         fitnessService.setup();
@@ -146,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
+                    System.out.println("+++Returns" + sdrm.getWeek());
                     onWalk = false;
                 }
 

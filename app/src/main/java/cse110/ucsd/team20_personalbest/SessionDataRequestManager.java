@@ -25,14 +25,28 @@ public class SessionDataRequestManager {
 
     private Activity activity;
     private GoogleSignInAccount googleSignIn;
-    private int steps;
+    private int index = 0;
+    private int size;
+    private ArrayList<Integer> week;
 
-    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn){
+
+    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn, int size, long startTime){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
+        week = new ArrayList<>(size);
+        for(int i = 0; i < size; i++) week.add(0);
+        this.size = size;
+        requestLastWeek(startTime);
     }
 
-    public ArrayList<Integer> requestLastWeek(long startTime){
+    public ArrayList<Integer> getWeek(){
+        return week;
+    }
+
+    private void requestLastWeek(long startTime){
+
+        System.out.println("+++please lord " + size);
+
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
         start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
@@ -41,27 +55,23 @@ public class SessionDataRequestManager {
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
 
-        ArrayList<Integer> data = new ArrayList<>();
 
-        for(int i = 0; i < 7; i++){
-            long startOfRequest = start.getTimeInMillis();
-            start.add(Calendar.DAY_OF_WEEK, 1);
-
-            data.add(requestTotalSessionStepData(startOfRequest, start.getTimeInMillis()));
+        for(int i = 0; i < size; i++) {
+            long startRequest = start.getTimeInMillis();
+            System.out.println("+++" + start.toString());
+            start.add(Calendar.DATE, 1);
+            requestTotalSessionStepData(startRequest, start.getTimeInMillis(), i);
         }
 
-        return data;
     }
 
-    public int requestTotalSessionStepData(long startTime, long endTime){
-
-        if(startTime < 1001) return -1;
-
-        steps = 0;
+    private void requestTotalSessionStepData(long starttime, long endtime, final int i){
+        if(starttime < 1001) return;
 
         SessionReadRequest readRequest = new SessionReadRequest.Builder()
-                .setTimeInterval(startTime - 1000, endTime + 1000, TimeUnit.MILLISECONDS)
+                .setTimeInterval(starttime - 1000, endtime + 1000, TimeUnit.MILLISECONDS)
                 .read(DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .enableServerQueries()
                 .build();
 
         Fitness.getSessionsClient(activity, googleSignIn)
@@ -70,31 +80,37 @@ public class SessionDataRequestManager {
                     @Override
                     public void onSuccess(SessionReadResponse sessionReadResponse) {
                         // Get a list of the sessions that match the criteria to check the result.
+
+                        int current = 0;
+
                         List<Session> sessions = sessionReadResponse.getSessions();
 
                         // Process the sessions
-                        for (Session session: sessions) {
-
+                        for (Session session : sessions) {
                             List<DataSet> dataSets = sessionReadResponse.getDataSet(session);
 
                             // Process the data sets for this session
                             for (DataSet dataSet : dataSets) {
-                                if(dataSet.isEmpty()) continue;
+                                if (dataSet.isEmpty()) continue;
 
-                                for(DataPoint dataPoint : dataSet.getDataPoints()){
-                                    steps += dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+                                for (DataPoint dataPoint : dataSet.getDataPoints()) {
+                                    current += dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
                                 }
                             }
                         }
+                        //System.out.println("+++Steps from one request:" + current);
+                        week.set(i, current);
                     }
+
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        System.out.println("Failed to read session data");
-                        return;
+                        System.out.println("+++Failed to read session data");
+                        week.set(i, 0);
                     }
                 });
-        return steps;
+
     }
+
 }
