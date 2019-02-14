@@ -4,6 +4,7 @@ public class Goal {
     private int goal;
     private boolean notMet = true;
     private int autoGoal = 500;
+    boolean useAutoGoal = true;
 
     public Goal(int steps, boolean notMet) {
         goal = steps;
@@ -43,6 +44,8 @@ public class Goal {
     public void setGoal(int val) {
         goal = val;
     }
+
+    public void setAutoGoal(boolean s) {useAutoGoal = s;}
 
 
 }

@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         final Button btnStartStop = findViewById(R.id.startStop);
 
         //Goal stuff
+
         goal = new Goal(5000, true);
         setGoalCount(goal.getGoal());
 
@@ -272,6 +273,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public void setGoalCount(int goal){
         textViewGoal.setText((goal + ""));
         pedometer.setEndValue(goal);
+    }
+
+    public void setAutoGoal(boolean s) {
+        goal.setAutoGoal(s);
+        System.out.println("AutoGoal: " + goal.useAutoGoal);
+
     }
 
     public void sendToast(String string){
