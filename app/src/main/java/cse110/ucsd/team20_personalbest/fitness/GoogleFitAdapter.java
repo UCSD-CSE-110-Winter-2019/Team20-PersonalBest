@@ -110,4 +110,6 @@ public class GoogleFitAdapter implements FitnessService {
     public int getRequestCode() {
         return GOOGLE_FIT_PERMISSIONS_REQUEST_CODE;
     }
+
+
 }
