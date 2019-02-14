@@ -110,6 +110,5 @@ public class GoalObserver implements Observer {
 
         final AlertDialog alert = builder.create();
         alert.show();
-
     }
 }
