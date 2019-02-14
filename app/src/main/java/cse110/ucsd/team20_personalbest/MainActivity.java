@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView mTextMessage;
     private TextView textViewGoal;
     private TextView textViewSteps;
-    private TextView textViewGoal;
 
     SharedPreferences sharedpreferences;
     private static final String PREF_FILE = "prefs";;
@@ -65,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private String walkOrRun = "Walk";
 
     private boolean updateSteps = true;
-
-    private StepContainer sc;
 
     private FragmentManager fm = getSupportFragmentManager();
     private Fragment currentFrag = new dashboard();
@@ -310,10 +307,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public void cancelUpdatingSteps(){
         updateSteps = false;
-    }
-
-    public void sendToast(String string){
-        Toast.makeText(mainActivity, string, Toast.LENGTH_LONG).show();
     }
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{

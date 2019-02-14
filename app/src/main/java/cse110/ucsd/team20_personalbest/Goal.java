@@ -13,7 +13,7 @@ public class Goal {
     private boolean met = false;
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
-    private static final int INITIAL_GOAL = 5000;
+    private static final int INITIAL_GOAL = 2000;
     private static final int DEFAULT_MAX_AUTO_GOAL = 15000;
 
     private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
