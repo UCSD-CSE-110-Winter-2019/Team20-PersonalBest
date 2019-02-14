@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,9 +10,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -19,6 +22,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,20 +33,35 @@ import android.widget.Toast;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.data.Bucket;
+import com.google.android.gms.fitness.data.DataPoint;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
-public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener{
+public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private TextView mTextMessage;
     private TextView textViewGoal;
@@ -52,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private static final String PREF_FILE = "prefs";;
 
     private StepContainer sc;
+
+    private GoogleApiClient mGoogleApiClient;
+    private int yesterdaySteps = 1000;
+    public boolean getStepsDone = false;
 
     private TextView textViewStats;
 
@@ -149,6 +172,14 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Fitness.HISTORY_API)
+                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
+                .addConnectionCallbacks(this)
+                .enableAutoManage(this, 0, this)
+                .build();
+
+
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -167,6 +198,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         // for start/stop button
         if (!walker) walkOrRun = "Run";
+
+        executeAsyncTask(new ViewWeekStepCountTask());
 
         activity = this;
         sc = new StepContainer();
@@ -199,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         fitnessService.setup();
         fitnessService.updateStepCount();
 
-        new ASyncStepUpdateRunner().execute();
+        // gets steps
+        executeAsyncTask(new ASyncStepUpdateRunner());
 
 
         // creates goal based on sharedpreferences
@@ -309,12 +343,109 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         updateSteps = false;
     }
 
+    private void saveYesterdaysData() {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        long endTime = cal.getTimeInMillis();
+        cal.add(Calendar.DATE, -1);
+        long startTime = cal.getTimeInMillis();
+
+        java.text.DateFormat dateFormat = DateFormat.getDateInstance();
+        Log.e("History", "Range Start: " + dateFormat.format(startTime));
+        Log.e("History", "Range End: " + dateFormat.format(endTime));
+
+        //Check how many steps were walked and recorded in the last 7 days
+        DataReadRequest readRequest = new DataReadRequest.Builder()
+                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .bucketByTime(1, TimeUnit.DAYS)
+                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+                .build();
+
+        DataReadResult dataReadResult = Fitness.HistoryApi.readData(mGoogleApiClient, readRequest).await(1, TimeUnit.MINUTES);
+
+        //Used for aggregated data
+        if (dataReadResult.getBuckets().size() > 0) {
+            Log.e("History", "Number of buckets: " + dataReadResult.getBuckets().size());
+            for (Bucket bucket : dataReadResult.getBuckets()) {
+                List<DataSet> dataSets = bucket.getDataSets();
+                for (DataSet dataSet : dataSets) {
+                    showDataSet(dataSet);
+                }
+            }
+        }
+        //Used for non-aggregated data
+        else if (dataReadResult.getDataSets().size() > 0) {
+            Log.e("History", "Number of returned DataSets: " + dataReadResult.getDataSets().size());
+            for (DataSet dataSet : dataReadResult.getDataSets()) {
+                showDataSet(dataSet);
+            }
+        }
+    }
+
+    private void showDataSet(DataSet dataSet) {
+        Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
+        DateFormat dateFormat = DateFormat.getDateInstance();
+        DateFormat timeFormat = DateFormat.getTimeInstance();
+
+        for (DataPoint dp : dataSet.getDataPoints()) {
+            Log.e("History", "Data point:");
+            Log.e("History", "\tType: " + dp.getDataType().getName());
+            Log.e("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+            Log.e("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+            for(Field field : dp.getDataType().getFields()) {
+                Log.e("History", "\tField: " + field.getName() +
+                        " Value: " + dp.getValue(field));
+                yesterdaySteps = dp.getValue(field).asInt();
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
+    public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+        else
+            asyncTask.execute(params);
+    }
+
+    public int getYesterdaySteps() {
+        return yesterdaySteps;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.e("HistoryAPI", "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e("HistoryAPI", "onConnectionFailed");
+    }
+
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.e("HistoryAPI", "onConnected");
+    }
+
+    private class ViewWeekStepCountTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+            saveYesterdaysData();
+            getStepsDone = true;
+            return null;
+        }
+    }
+
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
             Looper.prepare();
             while(updateSteps) {
+                //Log.e("UpdateSteps", "Steps updating...");
                 try {
                     Thread.sleep(3000);
 
