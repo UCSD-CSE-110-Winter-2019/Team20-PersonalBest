@@ -3,7 +3,6 @@ package cse110.ucsd.team20_personalbest;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.DataPoint;
@@ -13,12 +12,12 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.request.SessionReadRequest;
 import com.google.android.gms.fitness.result.SessionReadResponse;
-import com.google.android.gms.fitness.result.SessionReadResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +30,27 @@ public class SessionDataRequestManager {
     public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
+    }
+
+    public ArrayList<Integer> requestLastWeek(long startTime){
+        Calendar start = Calendar.getInstance();
+        start.setTime(new Date(startTime));
+        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.set(Calendar.HOUR, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        ArrayList<Integer> data = new ArrayList<>();
+
+        for(int i = 0; i < 7; i++){
+            long startOfRequest = start.getTimeInMillis();
+            start.add(Calendar.DAY_OF_WEEK, 1);
+
+            data.add(requestTotalSessionStepData(startOfRequest, start.getTimeInMillis()));
+        }
+
+        return data;
     }
 
     public int requestTotalSessionStepData(long startTime, long endTime){
