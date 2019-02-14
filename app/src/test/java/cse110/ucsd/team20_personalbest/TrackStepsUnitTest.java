@@ -18,101 +18,69 @@ import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import static org.junit.Assert.assertEquals;
 
 
-@RunWith(RobolectricTestRunner.class)
+//@RunWith(RobolectricTestRunner.class)
 public class TrackStepsUnitTest {
 
     private static final String TEST_SERVICE = "TEST_SERVICE";
+    private String fitnessServiceKey = "GOOGLE_FIT";
 
-
-
-    private StepCountActivity activity;
-
-    private TextView textSteps;
-
-    private Button btnUpdateSteps;
-
+    private MainActivity activity;
+    private TextView textViewSteps;
     private long nextStepCount;
 
-
-
     @Before
-
     public void setUp() throws Exception {
 
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
 
             @Override
 
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new TestFitnessService(stepCountActivity);
+            public FitnessService create(MainActivity mainActivity) {
+                return new TestFitnessService(mainActivity);
             }
 
         });
 
-        Intent intent = new Intent(RuntimeEnvironment.application, StepCountActivity.class);
-        intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
-        activity = Robolectric.buildActivity(StepCountActivity.class, intent).create().get();
+        Intent intent = new Intent(RuntimeEnvironment.application, MainActivity.class);
+        intent.putExtra(fitnessServiceKey, TEST_SERVICE);
+        //activity = Robolectric.buildActivity(MainActivity.class, intent).create().get();
 
-        textSteps = activity.findViewById(R.id.textSteps);
-        btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
+
+        textViewSteps = activity.findViewById(R.id.textViewSteps);
         nextStepCount = 1337;
 
     }
 
     @Test
-    public void testUpdateStepsButton() {
-
-        assertEquals("steps will be shown here", textSteps.getText().toString());
-        btnUpdateSteps.performClick();
-        assertEquals("1337", textSteps.getText().toString());
-
+    public void testInitialSteps() {
+        assertEquals("Steps", textViewSteps.getText().toString());
     }
-
-
 
     private class TestFitnessService implements FitnessService {
 
         private static final String TAG = "[TestFitnessService]: ";
-        private StepCountActivity stepCountActivity;
+        private MainActivity mainActivity;
 
-
-
-        public TestFitnessService(StepCountActivity stepCountActivity) {
-
-            this.stepCountActivity = stepCountActivity;
-
+        public TestFitnessService(MainActivity mainCountActivity) {
+            this.mainActivity = mainCountActivity;
         }
-
-
 
         @Override
-
         public int getRequestCode() {
-
             return 0;
-
         }
-
-
 
         @Override
 
         public void setup() {
-
             System.out.println(TAG + "setup");
-
         }
-
-
 
         @Override
 
         public void updateStepCount() {
-
             System.out.println(TAG + "updateStepCount");
-
-            stepCountActivity.setStepCount(nextStepCount);
-
+            mainActivity.setStepCount(nextStepCount);
         }
 
     }
