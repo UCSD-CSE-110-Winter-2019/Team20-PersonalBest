@@ -16,5 +16,6 @@
     <string name="next_button_text">Next</string>
 
     <string name="stepsDefault">Steps</string>
+    <string name="statDefault">Stats</string>
 
 </resources>
