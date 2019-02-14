@@ -12,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -40,6 +42,14 @@ public class GoalObserver implements Observer {
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
+        }
+
+        // current time
+        Calendar cal = Calendar.getInstance();
+
+        // if goal has not been completed today, display toast encouragement at 8pm
+        if (goal.canShowSubGoal(cal) && !goal.metToday()) {
+            goal.displaySubGoal(mainActivity, currentsteps, 0); //TODO get yesterday's steps
         }
     }
 

@@ -2,6 +2,9 @@ package cse110.ucsd.team20_personalbest;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
+
+import java.util.Calendar;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -74,4 +77,18 @@ public class Goal {
         goal = val;
     }
 
+    // whether it is time to show a subgoal
+    public boolean canShowSubGoal(Calendar calendar) {
+        int currHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currMinute = calendar.get(Calendar.MINUTE);
+        return currHour == 20 && currMinute == 0; // 8 pm
+    }
+
+    public void displaySubGoal(Context context, int steps, int yesterdaySteps) {
+        if (steps >= yesterdaySteps + 500) {
+            // round down to nearest 500 steps
+            int diff = (steps - yesterdaySteps) / 500 * 500;
+            Toast.makeText(context, "You got about " + diff + " more steps than yesterday!", Toast.LENGTH_LONG).show();
+        }
+    }
 }
