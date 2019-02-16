@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private boolean onWalk = false;
     private IntendedSession is;
 
+    private static final String TAG = "MainActivity";
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -153,8 +155,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     @Override
     public void onWalkPgSelected() {
+        Log.d(TAG, "Loading Walk Page");
         WalkPg walks = (WalkPg) getSupportFragmentManager().findFragmentById(R.id.walkFrag);
         if(walks != null) {
+            Log.d(TAG, "Sending past walks");
             walks.updateWalks(pastWalks);
         }
     }
@@ -192,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
 
         height = sharedPreferences.getInt("height",DEF_HEIGHT);
-        final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
         boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
         System.err.println("Height: " + height + ", walker: " + walker + "."); // height in inches
 
@@ -343,6 +346,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     private void updateRT (Calendar now) {
+        Log.d(TAG, "Updating Real-Time stat");
         if(rtStat != null) {
             textViewStats.setTextSize(20);
             rtStat.updateStat(sc.steps() - tempStep, now);
@@ -475,6 +479,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         @Override
         protected void onProgressUpdate(Void... voids) {
+
+            Log.d(TAG, "Updating pedometer");
+
             pedometer.setValue(sc.steps());
             updateRT(Calendar.getInstance());
         }

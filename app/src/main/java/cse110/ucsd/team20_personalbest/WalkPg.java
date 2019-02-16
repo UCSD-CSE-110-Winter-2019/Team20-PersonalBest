@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class WalkPg extends Fragment {
     private LinearLayout mlayout;
     private ArrayList<Walk> walks;
     private OnWalkPgListener mListener;
+
+    private static final String TAG = "WalkPage";
 
     public WalkPg() {
         // Required empty public constructor
@@ -82,7 +85,9 @@ public class WalkPg extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstancesState) {
         mlayout = (LinearLayout) getView().findViewById(R.id.llayout);
+        Log.d(TAG, "Loading past walks");
         for(int i = 0; i < walks.size(); i ++) {
+            Log.d(TAG, "Adding a walk");
             addEntry(walks.get(i));
         }
     }
