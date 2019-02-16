@@ -63,7 +63,6 @@ import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private TextView mTextMessage;
     private TextView textViewGoal;
     private TextView textViewSteps;
 
@@ -204,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         sc = new StepContainer();
 
         frame = (FrameLayout) findViewById(R.id.mainScreen);
-      
-        mTextMessage = findViewById(R.id.message);
+
         pedometer = (CustomGauge) findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
