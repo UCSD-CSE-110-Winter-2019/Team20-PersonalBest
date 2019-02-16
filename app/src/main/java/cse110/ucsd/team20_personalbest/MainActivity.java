@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     onWalk = false;
+                    updateRT(Calendar.getInstance());
                     pastWalks.add(new Walk(rtStat.getStat(), startTime));
                     rtStat = null;
 
