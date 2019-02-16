@@ -84,56 +84,17 @@ public class IntendedSession implements SessionInterface{
         return true;
     }
 
+    public long getStartingSteps(){
+        return startingSteps;
+    }
+
     public Session getSession() {
         return session;
     }
 
     public long returnSteps(long endingSteps) {
-
-
         steps = endingSteps - startingSteps;
         return steps;
-
-        //USE TO REQUEST SESSIONS - UNUSED IN THIS CLASS
-//        SessionReadRequest readRequest = new SessionReadRequest.Builder()
-//                .setTimeInterval(starting/2, ending + 1000, TimeUnit.MILLISECONDS)
-//                .read(DataType.AGGREGATE_STEP_COUNT_DELTA)
-//                .build();
-//
-//        Fitness.getSessionsClient(activity, google)
-//                .readSession(readRequest)
-//                .addOnSuccessListener(new OnSuccessListener<SessionReadResponse>() {
-//                    @Override
-//                    public void onSuccess(SessionReadResponse sessionReadResponse) {
-//                        // Get a list of the sessions that match the criteria to check the result.
-//                        List<Session> sessions = sessionReadResponse.getSessions();
-//
-//                        System.out.println("Sessions available: " + sessions.size());
-//
-//                        for (Session session: sessions) {
-//                            // Process the sessions
-//
-//                            // Process the data sets for this session
-//                            List<DataSet> dataSets = sessionReadResponse.getDataSet(session);
-//                            for (DataSet dataSet : dataSets) {
-//                                //System.out.println("Dataset contains: " + dataSet.getDataPoints().size() + " points");
-//                                if(dataSet.isEmpty())continue;
-//                                steps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
-//                                //System.out.println("steps: " + dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS));
-//
-//                            }
-//
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("Failed to read session data");
-//                        return;
-//                    }
-//                });
-
     }
 
 } // end class

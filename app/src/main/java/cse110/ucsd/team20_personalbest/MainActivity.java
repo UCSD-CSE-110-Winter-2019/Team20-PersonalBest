@@ -30,8 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.Toast;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView textViewSteps;
 
     SharedPreferences sharedpreferences;
-    private static final String PREF_FILE = "prefs";;
+    private static final String PREF_FILE = "prefs";
 
     private StepContainer sc;
 
@@ -80,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private MainActivity activity;
+    private SessionDataRequestManager sdrm;
+    private DailyStepCountHistory dailysteps;
 
     private int height;
     private final int DEF_HEIGHT = 70;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private RTWalk rtStat;
     private int tempStep;
 
-    private ArrayList<Walk> pastWalks = new ArrayList<Walk>(100);
+    private ArrayList<Walk> pastWalks = new ArrayList<>(100);
     private CustomGauge pedometer;
     private Calendar startTime;
 
@@ -163,13 +163,18 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+        activity = this;
+        sc = new StepContainer();
+
+        boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
+
+        instantiateHistories(getTime());
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Fitness.HISTORY_API)
@@ -202,9 +207,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         activity = this;
         sc = new StepContainer();
 
-        frame = (FrameLayout) findViewById(R.id.mainScreen);
+        frame = findViewById(R.id.mainScreen);
 
-        pedometer = (CustomGauge) findViewById(R.id.gauge);
+        pedometer = findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
 
@@ -262,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 }
 
                 // starts walk
-                if (onWalk == false) {
+                if (!onWalk) {
 
                     is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
@@ -354,6 +359,37 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public void cancelUpdatingSteps(){
         updateSteps = false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 134) {
+                fitnessService.setup();
+                fitnessService.updateStepCount();
+
+                instantiateHistories(getTime());
+            }
+        }
+    }
+
+    private void instantiateHistories(long startTime){
+        sdrm = instantiateSessionHistory(7, startTime);
+        dailysteps = instantiateDailyHistory(startTime);
+    }
+
+    private SessionDataRequestManager instantiateSessionHistory(int dayRange, long timeToStart){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
+        }
+        return null;
+    }
+
+    private DailyStepCountHistory instantiateDailyHistory(long startTime){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
+        }
+        return null;
     }
 
     private void saveYesterdaysData() {
