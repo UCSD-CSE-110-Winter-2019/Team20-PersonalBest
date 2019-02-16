@@ -63,7 +63,7 @@ public class Goal {
     public void saveGoalDay(Context ma, SharedPreferences.Editor editor) {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
-        String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK)];
+        String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK) - 1];
         Log.e("Goal", "Saving current goal to " + today);
         editor.putInt(today + " goal", goal);
     }
