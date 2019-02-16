@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import cse110.ucsd.team20_personalbest.MainActivity;
 
 public class GoogleFitAdapter implements FitnessService {
-    private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
+    private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 134;
     private final String TAG = "GoogleFitAdapter";
 
     private MainActivity activity;

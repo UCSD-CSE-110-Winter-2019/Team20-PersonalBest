@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private FitnessService fitnessService;
     private Activity activity;
     private SessionDataRequestManager sdrm;
+    private DailyStepCountHistory dailysteps;
 
     private String walkOrRun = "Walk";
 
@@ -109,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
-
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         fitnessService.setup();
         fitnessService.updateStepCount();
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
-                    System.out.println("+++Returns" + sdrm.getWeek());
+                    System.out.println("+++Returns" + dailysteps.getHistory());
                     onWalk = false;
                 }
 
@@ -185,6 +184,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void cancelUpdatingSteps(){
         updateSteps = false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 134) {
+                fitnessService.setup();
+                fitnessService.updateStepCount();
+
+                sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
+                dailysteps = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity));
+            }
+        }
     }
 
 

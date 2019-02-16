@@ -45,8 +45,6 @@ public class SessionDataRequestManager {
 
     private void requestLastWeek(long startTime){
 
-        System.out.println("+++please lord " + size);
-
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
         start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
@@ -54,7 +52,6 @@ public class SessionDataRequestManager {
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
-
 
         for(int i = 0; i < size; i++) {
             long startRequest = start.getTimeInMillis();
