@@ -30,13 +30,4 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"></lecho.lib.hellocharts.view.ComboLineColumnChartView>
 
-    <TextView
-        android:id="@+id/graph_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/chart"
-        android:text="Total steps each day: ..."
-        android:textSize="18sp" />
-
 </RelativeLayout>

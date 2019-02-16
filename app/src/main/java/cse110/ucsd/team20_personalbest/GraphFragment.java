@@ -1,8 +1,10 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,9 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
+import static android.content.Context.MODE_PRIVATE;
+import static cse110.ucsd.team20_personalbest.MainActivity.sdrm;
+
 public class GraphFragment extends Fragment {
 
     // colors for the stacked chart
@@ -38,6 +43,9 @@ public class GraphFragment extends Fragment {
 
     private ComboLineColumnChartView chart;
     private ComboLineColumnChartData data;
+    private SharedPreferences sharedPreferences;
+    private ArrayList<Integer> lastWeeksGoals;
+
 
     public GraphFragment() {}
 
@@ -50,7 +58,10 @@ public class GraphFragment extends Fragment {
         chart = (ComboLineColumnChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
 
+        lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+
         generateData();
+
 
         return rootView;
     }
@@ -58,6 +69,14 @@ public class GraphFragment extends Fragment {
 
     // Generates the graph
     private void generateData() {
+
+        ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
+        ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
+
+        for(int i = 0; i < walks.size(); i++){
+            steps.set(i, steps.get(i) - walks.get(i));
+        }
+
         int numColumns = 7;
 
         List<Column> columns = new ArrayList<Column>();
@@ -66,10 +85,10 @@ public class GraphFragment extends Fragment {
         List<SubcolumnValue> values;
 
         // gets goal line data for each day
+        Log.d("Graph Data", lastWeeksGoals.toString());
         for (int i = 0; i < numColumns; i++) {
 
-            // TODO: value of goal for each day
-            line.add(new PointValue(i, 20));
+            line.add(new PointValue(i, lastWeeksGoals.get(i)));
         }
         Line lineObj = new Line(line);
         lineObj.setColor(LINE_COLOR);
@@ -82,10 +101,10 @@ public class GraphFragment extends Fragment {
             values = new ArrayList<SubcolumnValue>();
 
             // intended walk TODO add actual intended walk data
-            values.add(new SubcolumnValue((float) Math.random() * 20f, USTEP_COLOR));
+            values.add(new SubcolumnValue(steps.get(i), USTEP_COLOR));
 
             // unintended walk TODO add actual unintended walk data
-            values.add(new SubcolumnValue((float) Math.random() * 20f, ISTEP_COLOR));
+            values.add(new SubcolumnValue(walks.get(i), ISTEP_COLOR));
 
             Column column = new Column(values);
             column.setHasLabels(true);
@@ -119,6 +138,19 @@ public class GraphFragment extends Fragment {
         chart.setComboLineColumnChartData(data);
     }
 
+    public ArrayList<Integer> getWeeksGoals(SharedPreferences sharedPreferences){
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(sharedPreferences.getInt("Sunday goal", 0));
+        data.add(sharedPreferences.getInt("Monday goal", 0));
+        data.add(sharedPreferences.getInt("Tuesday goal", 0));
+        data.add(sharedPreferences.getInt("Wednesday goal", 0));
+        data.add(sharedPreferences.getInt("Thursday goal", 0));
+        data.add(sharedPreferences.getInt("Friday goal", 0));
+        data.add(sharedPreferences.getInt("Saturday goal", 0));
+        Log.d("Goal data", data.toString());
+        return data;
+    }
+
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
 
         @Override
@@ -137,5 +169,6 @@ public class GraphFragment extends Fragment {
             // does nothing
         }
     }
+
 
 }

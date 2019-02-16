@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private FitnessService fitnessService;
     private MainActivity activity;
-    private SessionDataRequestManager sdrm;
-    private DailyStepCountHistory dailysteps;
+    public static SessionDataRequestManager sdrm;
+    public static DailyStepCountHistory dailysteps;
 
     private String walkOrRun = "Walk";
 
@@ -450,6 +450,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             }
         }
     }
+
+
 
     private void showDataSet(DataSet dataSet) {
         DateFormat dateFormat = DateFormat.getDateInstance();
