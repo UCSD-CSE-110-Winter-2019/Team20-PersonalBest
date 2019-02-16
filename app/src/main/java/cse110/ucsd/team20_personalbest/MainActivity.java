@@ -116,25 +116,21 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 ft.remove(currentFrag);
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
                     fragmentClass = dashboard.class;
                     fragID = R.id.dashFrag;
                     frame.setVisibility(View.VISIBLE);
                     break;
                 case R.id.navigation_walks:
-                    mTextMessage.setText(R.string.title_walks);
                     fragmentClass = WalkPg.class;
                     fragID = R.id.walkFrag;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_stats:
-                    mTextMessage.setText(R.string.title_stats);
                     fragID = R.id.statFrag;
                     fragmentClass = StatPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
                     fragmentClass = ProfilePg.class;
                     fragID = R.id.profileFrag;
                     frame.setVisibility(View.GONE);
