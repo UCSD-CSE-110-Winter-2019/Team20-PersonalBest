@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         setGoalCount(goal.getGoal());
 
         // saves goal for today's graph
-        //goal.save(this);
+        goal.save(this);
 
         GoalObserver go = new GoalObserver(goal, this);
 

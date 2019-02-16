@@ -56,6 +56,8 @@ public class Goal {
         // saves today's goal for later graphing
         if (!met)
             saveGoalDay(ma, editor);
+        else
+            Log.e("Goal", "Goal already met today, won't update today's goal for graph.");
     }
 
     public void saveGoalDay(Context ma, SharedPreferences.Editor editor) {
