@@ -9,14 +9,74 @@
 
     <FrameLayout
         android:id="@+id/mainScreen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="387dp"
+        android:layout_height="612dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <pl.pawelkleczkowski.customgauge.CustomGauge
+            android:id="@+id/gauge"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            app:gaugeEndValue="5000"
+            app:gaugePointEndColor="@color/DarkBlue"
+            app:gaugePointStartColor="@color/LightSkyBlue"
+            app:gaugeStartAngle="135"
+            app:gaugeStartValue="0"
+            app:gaugeStrokeCap="ROUND"
+            app:gaugeStrokeColor="@color/Gray"
+            app:gaugeStrokeWidth="10dp"
+            app:gaugeSweepAngle="270" />
+
+        <TextView
+            android:id="@+id/textViewGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="310dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSteps"
+            app:layout_constraintVertical_bias="0.061" />
+
+        <TextView
+            android:id="@+id/textViewStats"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="400dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="@string/statDefault"
+            android:textSize="25dp"
+            app:fontFamily="sans-serif-medium"
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewGoal"
+            app:layout_constraintVertical_bias="0.287"
+            />
 
         <TextView
             android:id="@+id/textViewSteps"
@@ -24,10 +84,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="190dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginBottom="32dp"
+            android:layout_gravity="center_horizontal"
             android:text="@string/stepsDefault"
             android:textSize="80sp"
             app:fontFamily="sans-serif-medium"
@@ -38,29 +99,45 @@
             app:layout_constraintVertical_bias="0.287"
             tools:text="@string/stepsDefault" />
 
-        <TextView
-            android:id="@+id/textViewGoal"
+        <Button
+            android:id="@+id/startStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginBottom="32dp"
-            android:textSize="40dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginLeft="161dp"
+            android:layout_marginTop="500dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginRight="162dp"
+            android:layout_marginBottom="50dp"
+            android:text="Start/Stop"
             app:layout_constraintBottom_toTopOf="@+id/navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSteps"
-            app:layout_constraintVertical_bias="0.061" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewStats" />
     </FrameLayout>
 
 
     <FrameLayout
         android:id="@+id/walkFrag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/statFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/profileFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/dashFrag"
@@ -68,18 +145,6 @@
         android:layout_height="match_parent">
 
     </FrameLayout>
-
-
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/title_dashboard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
     <android.support.design.widget.BottomNavigationView
@@ -93,8 +158,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation">
-
     </android.support.design.widget.BottomNavigationView>
 
 
+  
 </android.support.constraint.ConstraintLayout>

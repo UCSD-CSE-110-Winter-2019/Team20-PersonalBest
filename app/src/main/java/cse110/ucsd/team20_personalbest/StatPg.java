@@ -1,56 +1,26 @@
 package cse110.ucsd.team20_personalbest;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-//import cse110.ucsd.team20_personalbest.fitness.FitnessService;
-//import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
-//import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link dashboard.OnFragmentInteractionListener} interface
+ * {@link StatPg.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link dashboard#newInstance} factory method to
+ * Use the {@link StatPg#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class dashboard extends Fragment {
-
-   /* private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            while(updateSteps) {
-                try {
-                    Thread.sleep(3000);
-                    fitnessService.updateStepCount();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-    }*/
-
+public class StatPg extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private TextView mTextMessage;
-    private static TextView textViewSteps;
-    private String fitnessServiceKey = "GOOGLE_FIT";
-    //private FitnessService fitnessService;
-    private boolean updateSteps = true;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -58,7 +28,7 @@ public class dashboard extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public dashboard() {
+    public StatPg() {
         // Required empty public constructor
     }
 
@@ -68,21 +38,16 @@ public class dashboard extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment dashboard.
+     * @return A new instance of fragment StatPg.
      */
     // TODO: Rename and change types and number of parameters
-    public static dashboard newInstance(String param1, String param2) {
-        dashboard fragment = new dashboard();
+    public static StatPg newInstance(String param1, String param2) {
+        StatPg fragment = new StatPg();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -92,45 +57,13 @@ public class dashboard extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-/*
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new GoogleFitAdapter(mainActivity);
-            }
-        });
-
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, main);
-
-        fitnessService.setup();
-
-        fitnessService.updateStepCount();
-
-        new ASyncStepUpdateRunner().execute();
-        */
-        //Height implementation here
-        //if(height is not set)
-        //Then go to the activity
-
-    }
-
-    public static void setStepCount(long steps){
-        textViewSteps.setText(String.valueOf(steps));
-    }
-
-    public void cancelUpdatingSteps(){
-        updateSteps = false;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        return inflater.inflate(R.layout.fragment_stat_pg, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

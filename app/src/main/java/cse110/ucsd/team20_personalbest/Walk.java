@@ -41,12 +41,13 @@ public class Walk {
 
         public String getTime() {
             return String.format("%s /%s / %d\n%s:%s %s",
+
+                    start.get(start.MONTH) + 1 <10 ?
+                            String.format("%02d", start.get(start.MONTH) + 1) :
+                            start.get(start.MONTH) + 1,
                     start.get(start.DATE)<10 ?
                             String.format("%02d", start.get(start.DATE)) :
                             start.get(start.DATE),
-                    start.get(start.MONTH)<10 ?
-                            String.format("%02d", start.get(start.MONTH)) :
-                            start.get(start.MONTH),
                     start.get(start.YEAR),
                     start.get(start.HOUR)<10 ?
                             String.format("%02d", start.get(start.HOUR)) :
