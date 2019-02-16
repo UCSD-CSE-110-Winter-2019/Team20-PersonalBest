@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -21,10 +22,12 @@ public class GoalObserver implements Observer {
 
     private Goal goal;
     private MainActivity mainActivity;
+    private boolean subGoalDisplayed;
 
     public GoalObserver(Goal gl, MainActivity ma){
         goal = gl;
         mainActivity = ma;
+        subGoalDisplayed = false;
     }
 
     @Override
@@ -46,10 +49,20 @@ public class GoalObserver implements Observer {
 
         // current time
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 20);
+        cal.set(Calendar.MINUTE, 00);
+
+        int yesterdaySteps = mainActivity.getYesterdaySteps();
 
         // if goal has not been completed today, display toast encouragement at 8pm
-        if (goal.canShowSubGoal(cal) && !goal.metToday()) {
-            goal.displaySubGoal(mainActivity, currentsteps, 0); //TODO get yesterday's steps
+        if (goal.canShowSubGoal(cal) && !goal.metToday() && !subGoalDisplayed) {
+            if (mainActivity.getStepsDone) {
+                goal.displaySubGoal(mainActivity, currentsteps, yesterdaySteps);
+                mainActivity.getStepsDone = false;
+                subGoalDisplayed = true;
+            } else {
+                Log.e("SubGoal","Yesterday's steps not done calculating.");
+            }
         }
     }
 

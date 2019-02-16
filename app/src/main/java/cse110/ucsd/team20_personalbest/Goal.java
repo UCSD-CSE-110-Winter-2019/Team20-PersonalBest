@@ -2,6 +2,7 @@ package cse110.ucsd.team20_personalbest;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -13,7 +14,7 @@ public class Goal {
     private boolean met = false;
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
-    private static final int INITIAL_GOAL = 2000;
+    private static final int INITIAL_GOAL = 5000;
     private static final int DEFAULT_MAX_AUTO_GOAL = 15000;
 
     private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
@@ -89,6 +90,9 @@ public class Goal {
             // round down to nearest 500 steps
             int diff = (steps - yesterdaySteps) / 500 * 500;
             Toast.makeText(context, "You got about " + diff + " more steps than yesterday!", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Log.e("SubGoal", "Subgoal not met today");
         }
     }
 }
