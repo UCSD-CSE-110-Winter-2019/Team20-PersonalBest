@@ -108,7 +108,7 @@ public class ProfilePg extends Fragment {
         changeInches.setText(Integer.toString(inches));
 
         //Setting up the texts of the height with the user's current goal steps;
-        final int goalSteps = preferences.getInt("goalSteps", 5000);
+        final int goalSteps = preferences.getInt("savedGoal", 5000);
         changeSteps = (EditText) getView().findViewById(R.id.changeSteps);
         changeSteps.setText(Integer.toString(goalSteps));
 
@@ -132,7 +132,7 @@ public class ProfilePg extends Fragment {
 
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("autoGoal", goalBox.isChecked());
-                editor.putInt("goalSteps", Integer.parseInt(changeSteps.getText().toString()));
+                editor.putInt("savedGoal", Integer.parseInt(changeSteps.getText().toString()));
                 editor.putInt("feet",Integer.parseInt(changeFeet.getText().toString()) );
                 editor.putInt("inches", Integer.parseInt(changeInches.getText().toString()));
                 editor.putInt("height", ((12 * Integer.parseInt(changeFeet.getText().toString())) + Integer.parseInt(changeInches.getText().toString())));
@@ -142,12 +142,11 @@ public class ProfilePg extends Fragment {
                         Toast.LENGTH_SHORT);
 
                 MainActivity main = (MainActivity) getActivity();
+                main.updateGoal(Integer.parseInt(changeSteps.getText().toString()));
                 main.setGoalCount(Integer.parseInt(changeSteps.getText().toString()));
                 main.setAutoGoal(preferences.getBoolean("autoGoal", true));
 
                 toast.show();
-
-
 
             }
         });

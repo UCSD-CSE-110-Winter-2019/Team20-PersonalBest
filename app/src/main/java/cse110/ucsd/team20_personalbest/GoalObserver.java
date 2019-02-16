@@ -41,7 +41,7 @@ public class GoalObserver implements Observer {
         if(goal.attemptCompleteGoal(currentsteps)){
 
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
-            goal.meetGoal();
+            goal.meetGoal(true);
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
@@ -105,7 +105,7 @@ public class GoalObserver implements Observer {
                     newGoal = Integer.parseInt(customText.getText().toString());
 
                 goal.setGoal(newGoal);
-                goal.meetGoal();
+                goal.meetGoal(true);
                 mainActivity.setGoalCount((goal.getGoal()));
                 goal.save(mainActivity);
 

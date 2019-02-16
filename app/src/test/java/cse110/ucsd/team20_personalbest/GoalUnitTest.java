@@ -32,7 +32,7 @@ public class GoalUnitTest {
         assertTrue(canComplete);
 
         // goal has already been met today
-        goal.meetGoal();
+        goal.meetGoal(true);
         steps = 200;
         canComplete = goal.attemptCompleteGoal(steps);
         assertFalse(canComplete);

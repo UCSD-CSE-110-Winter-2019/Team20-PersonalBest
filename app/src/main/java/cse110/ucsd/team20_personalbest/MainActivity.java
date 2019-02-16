@@ -241,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         //goal = new Goal (2200, false);
         setGoalCount(goal.getGoal());
 
+        // saves goal for today's graph
+        goal.save(this);
+
         GoalObserver go = new GoalObserver(goal, this);
 
         sc.addObserver(go);
@@ -321,6 +324,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public void setGoalCount(int goal){
         textViewGoal.setText((goal + ""));
         pedometer.setEndValue(goal);
+    }
+
+    public void updateGoal(int newGoal) {
+        goal.setGoal(newGoal);
+        goal.save(this);
     }
 
     public void setAutoGoal(boolean s) {
