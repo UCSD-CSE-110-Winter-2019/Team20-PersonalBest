@@ -2,6 +2,7 @@ package cse110.ucsd.team20_personalbest;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
@@ -28,6 +29,7 @@ public class SessionDataRequestManager {
     private int index = 0;
     private int size;
     private ArrayList<Integer> week;
+    private final String TAG = "SessionRequests";
 
 
     public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn, int size, long startTime){
@@ -55,7 +57,7 @@ public class SessionDataRequestManager {
 
         for(int i = 0; i < size; i++) {
             long startRequest = start.getTimeInMillis();
-            System.out.println("+++Sessions: Dates:" + start.toString());
+            Log.d(TAG, "Dates:" + start.toString());
             start.add(Calendar.DATE, 1);
             requestTotalSessionStepData(startRequest, start.getTimeInMillis(), i);
         }
@@ -95,7 +97,7 @@ public class SessionDataRequestManager {
                                 }
                             }
                         }
-                        System.out.println("+++Sessions: Steps from one request:" + current);
+                        Log.d(TAG, "Steps from one request:" + current);
                         week.set(i, current);
                     }
 
@@ -103,7 +105,7 @@ public class SessionDataRequestManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        System.out.println("+++Sessions: Failed to read session data");
+                        Log.e(TAG,"Failed to read session data");
                         week.set(i, 0);
                     }
                 });

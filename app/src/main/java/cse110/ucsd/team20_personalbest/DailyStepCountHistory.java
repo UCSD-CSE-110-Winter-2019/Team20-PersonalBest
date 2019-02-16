@@ -1,6 +1,8 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
@@ -11,6 +13,7 @@ import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -25,6 +28,7 @@ public class DailyStepCountHistory {
     private ArrayList<Integer> data;
     private Activity activity;
     private GoogleSignInAccount googleSignIn;
+    private final String TAG = "StepHistory";
 
 
     public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn, long startTime){
@@ -49,6 +53,8 @@ public class DailyStepCountHistory {
         long startOfWeek = start.getTimeInMillis();
         start.add(Calendar.DATE, 8);
         long endOfWeek = start.getTimeInMillis();
+
+        Log.d(TAG, "Requesting history from " + startOfWeek + " to " + endOfWeek);
 
         DataReadRequest readRequest =
                 new DataReadRequest.Builder()
@@ -75,10 +81,15 @@ public class DailyStepCountHistory {
                             Calendar time = Calendar.getInstance();
                             time.setTimeInMillis(durationInMillis);
 
-                            //System.out.println("+++History: " + time.toString());
+                            Log.d(TAG, "Steps: " + steps  + " from " + time.toString());
                         }
                     }
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Failed to read step history");
             }
         });
     }
