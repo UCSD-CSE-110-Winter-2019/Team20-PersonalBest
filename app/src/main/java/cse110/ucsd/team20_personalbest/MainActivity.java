@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
 
-        instantiateHistories();
+        instantiateHistories(getTime());
 
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -195,16 +195,28 @@ public class MainActivity extends AppCompatActivity {
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
-                instantiateHistories();
+                instantiateHistories(getTime());
             }
         }
     }
 
-    private void instantiateHistories(){
-        if(GoogleSignIn.getLastSignedInAccount(activity) != null){
-            sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
-            dailysteps = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), getTime());
+    private void instantiateHistories(long startTime){
+        sdrm = instantiateSessionHistory(7, startTime);
+        dailysteps = instantiateDailyHistory(startTime);
+    }
+
+    private SessionDataRequestManager instantiateSessionHistory(int dayRange, long timeToStart){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
         }
+        return null;
+    }
+
+    private DailyStepCountHistory instantiateDailyHistory(long startTime){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
+        }
+        return null;
     }
 
 
