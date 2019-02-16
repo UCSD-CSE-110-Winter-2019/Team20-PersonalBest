@@ -29,8 +29,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import android.os.AsyncTask;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -62,13 +65,20 @@ import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private TextView mTextMessage;
+
+    private FragmentManager fm = getSupportFragmentManager();
+    private Fragment currentFrag = new dashboard();
+    Class fragmentClass;
+
+    private StepContainer sc;
     private TextView textViewGoal;
+    private MainActivity mainActivity;
+  
     private TextView textViewSteps;
 
     SharedPreferences sharedpreferences;
     private static final String PREF_FILE = "prefs";
-
-    private StepContainer sc;
 
     private GoogleApiClient mGoogleApiClient;
     private int yesterdaySteps = 1000;
@@ -85,9 +95,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private boolean updateSteps = true;
 
-    private FragmentManager fm = getSupportFragmentManager();
-    private Fragment currentFrag = new dashboard();
-    Class fragmentClass;
     private FrameLayout frame;
     private Goal goal;
     private int fragID;
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     break;
                 case R.id.navigation_stats:
                     fragID = R.id.statFrag;
-                    fragmentClass = StatPg.class;
+                    fragmentClass = GraphFragment.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
@@ -140,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             catch(Exception e) {
                 e.printStackTrace();
             }
+
 
             ft.replace(fragID, currentFrag).commit();
             return true;
@@ -216,8 +224,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
 
+        mainActivity = this;
+        frame = (FrameLayout) findViewById(R.id.mainScreen);
+        textViewGoal = (TextView) findViewById(R.id.textViewGoal);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        FragmentTransaction ft = fm.beginTransaction();
 
         String fitnessServiceKey = "GOOGLE_FIT";
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
