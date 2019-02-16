@@ -11,6 +11,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Goal {
     private int goal;
+    private int autoGoal = 500;
+    boolean useAutoGoal = true;
     private boolean met = false;
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
@@ -77,6 +79,8 @@ public class Goal {
     public void setGoal(int val) {
         goal = val;
     }
+
+    public void setAutoGoal(boolean s) {useAutoGoal = s;}
 
     // whether it is time to show a subgoal
     public boolean canShowSubGoal(Calendar calendar) {

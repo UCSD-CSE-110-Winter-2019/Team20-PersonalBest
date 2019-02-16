@@ -20,5 +20,11 @@
 
     <string name="stepsDefault">Steps</string>
     <string name="statDefault">Stats</string>
+    <string name="changeHeight">Height:</string>
+    <string name="changeGoal">Goal:</string>
+    <string name="stepSign">steps</string>
+    <string name="autoGoalText">Auto goals: </string>
+    <string name="feet">feet</string>
+    <string name="inches">inches</string>
 
 </resources>

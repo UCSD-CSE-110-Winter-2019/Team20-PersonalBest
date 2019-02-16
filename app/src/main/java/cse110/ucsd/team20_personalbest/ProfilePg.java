@@ -1,11 +1,34 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -25,6 +48,17 @@ public class ProfilePg extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EditText changeFeet;
+    private EditText changeInches;
+    private EditText changeSteps;
+    private TextView changeHeightSign;
+    private TextView changeGoal;
+    private TextView stepsSign;
+    private CheckBox goalBox;
+    private TextView autoGoalText;
+    private Button applyChanges;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,10 +94,79 @@ public class ProfilePg extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstancesState) {
+        //Setting up the texts of the height with the user's initial setup height
+        changeHeightSign = (TextView) getView().findViewById(R.id.changeHeight);
+        changeFeet = (EditText) getView().findViewById(R.id.changeFeet);
+        changeInches = (EditText) getView().findViewById(R.id.changeInches);
+
+        final SharedPreferences preferences = this.getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        int feet = preferences.getInt("feet", 0);
+        int inches = preferences.getInt("inches", 0);
+
+        changeFeet.setText(Integer.toString(feet));
+        changeInches.setText(Integer.toString(inches));
+
+        //Setting up the texts of the height with the user's current goal steps;
+        final int goalSteps = preferences.getInt("goalSteps", 5000);
+        changeSteps = (EditText) getView().findViewById(R.id.changeSteps);
+        changeSteps.setText(Integer.toString(goalSteps));
+
+        //Setting up checkbox if it should be checked or not.
+        Boolean autoGoal = preferences.getBoolean("autoGoal", true);
+        goalBox = (CheckBox) getView().findViewById(R.id.goalRadio);
+
+        if(autoGoal) {
+            goalBox.setChecked(true);
+        }
+        else {
+
+            goalBox.setChecked(false);
+        }
+
+        //Updating all the changes with a single button.
+        applyChanges = (Button) getView().findViewById(R.id.applyChanges);
+        applyChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("autoGoal", goalBox.isChecked());
+                editor.putInt("goalSteps", Integer.parseInt(changeSteps.getText().toString()));
+                editor.putInt("feet",Integer.parseInt(changeFeet.getText().toString()) );
+                editor.putInt("inches", Integer.parseInt(changeInches.getText().toString()));
+                editor.putInt("height", ((12 * Integer.parseInt(changeFeet.getText().toString())) + Integer.parseInt(changeInches.getText().toString())));
+                editor.apply();
+                Toast toast = Toast.makeText(getActivity() ,
+                        "Updates Applied",
+                        Toast.LENGTH_SHORT);
+
+                MainActivity main = (MainActivity) getActivity();
+                main.setGoalCount(Integer.parseInt(changeSteps.getText().toString()));
+                main.setAutoGoal(preferences.getBoolean("autoGoal", true));
+
+                toast.show();
+
+
+
+            }
+        });
+
+
+
+
+
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_proile_pg, container, false);
+
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

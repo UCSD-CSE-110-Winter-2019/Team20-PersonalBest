@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         // gets steps
         executeAsyncTask(new ASyncStepUpdateRunner());
 
-
+        //Goal stuff
         // creates goal based on sharedpreferences
         goal = new Goal(this);
         //goal = new Goal (2200, false);
@@ -321,6 +321,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public void setGoalCount(int goal){
         textViewGoal.setText((goal + ""));
         pedometer.setEndValue(goal);
+    }
+
+    public void setAutoGoal(boolean s) {
+        goal.setAutoGoal(s);
+        System.out.println("AutoGoal: " + goal.useAutoGoal);
+
     }
 
     public void sendToast(String string){

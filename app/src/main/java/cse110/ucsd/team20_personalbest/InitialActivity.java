@@ -59,6 +59,10 @@ public class InitialActivity extends Activity {
                     else {
                         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("prefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("feet", height_ft);
+                        editor.putInt("inches", height_in);
+                        editor.putInt("goalSteps", 5000);
+                        editor.putBoolean("autoGoal", true);
 
                         editor.putInt("height", (12 * height_ft) + height_in);
                         editor.putBoolean("isWalker", walker);
