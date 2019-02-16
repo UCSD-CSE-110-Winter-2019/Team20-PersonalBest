@@ -41,9 +41,11 @@ public class GoogleFitAdapter implements FitnessService {
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
+            Log.d(TAG, "Google does not have permissions, requesting...");
         } else {
             updateStepCount();
             startRecording();
+            Log.d(TAG, "Google already has permissions, booting up step recording...");
         }
     }
 
@@ -58,13 +60,13 @@ public class GoogleFitAdapter implements FitnessService {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.i(TAG, "Successfully subscribed!");
+                        Log.i(TAG, "Successfully subscribed to google fit!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i(TAG, "There was a problem subscribing.");
+                        Log.i(TAG, "There was a problem subscribing to google fit.");
                     }
                 });
     }
