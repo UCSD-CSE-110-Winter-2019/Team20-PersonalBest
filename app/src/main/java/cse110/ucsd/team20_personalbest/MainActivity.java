@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     SharedPreferences sharedpreferences;
     private static final String PREF_FILE = "prefs";
 
-    private StepContainer sc;
-
     private GoogleApiClient mGoogleApiClient;
     private int yesterdaySteps = 1000;
     public boolean getStepsDone = false;
@@ -97,9 +95,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private boolean updateSteps = true;
 
-    private FragmentManager fm = getSupportFragmentManager();
-    private Fragment currentFrag = new dashboard();
-    Class fragmentClass;
     private FrameLayout frame;
     private Goal goal;
     private int fragID;
@@ -136,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     break;
                 case R.id.navigation_stats:
                     fragID = R.id.statFrag;
-                    fragmentClass = StatPg.class;
+                    fragmentClass = GraphFragment.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
@@ -232,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         mainActivity = this;
         frame = (FrameLayout) findViewById(R.id.mainScreen);
         textViewGoal = (TextView) findViewById(R.id.textViewGoal);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         FragmentTransaction ft = fm.beginTransaction();
 
