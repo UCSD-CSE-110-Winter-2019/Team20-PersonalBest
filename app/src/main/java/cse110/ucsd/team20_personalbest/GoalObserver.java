@@ -2,19 +2,15 @@ package cse110.ucsd.team20_personalbest;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -24,7 +20,7 @@ public class GoalObserver implements Observer {
     private MainActivity mainActivity;
     private boolean subGoalDisplayed;
 
-    public GoalObserver(Goal gl, MainActivity ma){
+    GoalObserver(Goal gl, MainActivity ma){
         goal = gl;
         mainActivity = ma;
         subGoalDisplayed = false;
@@ -37,11 +33,27 @@ public class GoalObserver implements Observer {
 
         //System.out.println("Goal of " + currentsteps + "/" + goal.getGoal() + " complete: " + goal.attemptCompleteGoal(currentsteps));
 
-        // if goal has been achieved and a goal hasn't already been met today
-        if(goal.attemptCompleteGoal(currentsteps)){
+        // if goal has been achieved and a goal hasn't already been met today or was met yesterday and not displayed
+        if(goal.popupForYesterday){
+            mainActivity.sendToast("Congratulations! Yesterday, you met your goal of " + goal.getGoal() + " steps!");
+
+            // popup was for yesterday, display false
+            goal.displayedPopup = false;
+            goal.meetGoal(false);
+            goal.popupForYesterday = false;
+
+            // popup where user can choose automatic goal or set a manual goal
+            createDialog();
+        }
+
+        else if(goal.attemptCompleteGoal(currentsteps) && !goal.metToday()){
 
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
+
+            // set displayed popup and met goal to true if the popup was for today's goal
+            goal.displayedPopup = true;
             goal.meetGoal(true);
+            goal.popupForYesterday = false;
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
@@ -49,6 +61,8 @@ public class GoalObserver implements Observer {
 
         // current time
         Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
         cal.set(Calendar.HOUR_OF_DAY, 20);
         cal.set(Calendar.MINUTE, 00);
 
@@ -61,12 +75,12 @@ public class GoalObserver implements Observer {
                 mainActivity.getStepsDone = false;
                 subGoalDisplayed = true;
             } else {
-                Log.e("SubGoal","Yesterday's steps not done calculating.");
+                Log.i("SubGoal","Yesterday's steps not done calculating.");
             }
         }
     }
 
-    public void createDialog() {
+    private void createDialog() {
 
         // creates the pop up
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -77,12 +91,15 @@ public class GoalObserver implements Observer {
         LayoutInflater inflater = mainActivity.getLayoutInflater();
         View dialogLayout = inflater.inflate(R.layout.pop_up_layout, null);
         builder.setView(dialogLayout);
+        builder.setCancelable(false);
 
         // gets references to buttons
         final RadioButton autoRadio = (RadioButton) dialogLayout.findViewById(R.id.goal_recommended_value);
         autoRadio.setText("Recommended Goal: " + goal.nextAutoGoal());
-        final RadioButton customRadio = (RadioButton) dialogLayout.findViewById(R.id.goal_custom_value);
-        final EditText customText = (EditText) dialogLayout.findViewById(R.id.goal_custom_value_edit_text);
+        final RadioButton customRadio = dialogLayout.findViewById(R.id.goal_custom_value);
+        final EditText customText = dialogLayout.findViewById(R.id.goal_custom_value_edit_text);
+
+        customText.setHint("" + goal.getGoal());
 
         // checks whether we can recommend a new automatic goal
         if (goal.canSetAutomatically()) {
@@ -91,23 +108,25 @@ public class GoalObserver implements Observer {
         else {
             autoRadio.setEnabled(false);
             customRadio.setChecked(true);
-            customText.setHint("15000");
         }
 
         builder.setPositiveButton("Set goal", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                int newGoal;
+                int newGoal = goal.getGoal();
 
                 // user chose automatic goal
                 if (autoRadio.isChecked())
                     newGoal = goal.nextAutoGoal();
-                else
-                    newGoal = Integer.parseInt(customText.getText().toString());
+                else {
+                    String goalText = customText.getText().toString();
+                    if (!goalText.isEmpty())
+                        newGoal = Integer.parseInt(goalText);
+                }
 
                 goal.setGoal(newGoal);
                 goal.meetGoal(true);
                 mainActivity.setGoalCount((goal.getGoal()));
-                goal.save(mainActivity);
+                goal.save(mainActivity, Calendar.getInstance());
 
                 Toast.makeText(mainActivity, "New goal set to " + newGoal + "!", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
@@ -117,6 +136,9 @@ public class GoalObserver implements Observer {
             public void onClick(DialogInterface dialog, int id) {
                 //goal.ignore();
                 Toast.makeText(mainActivity, "Kept old goal!", Toast.LENGTH_LONG).show();
+
+                goal.meetGoal(true);
+                goal.save(mainActivity, Calendar.getInstance());
                 dialog.dismiss();
             }
         });
