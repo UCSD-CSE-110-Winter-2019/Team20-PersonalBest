@@ -55,7 +55,7 @@ public class SessionDataRequestManager {
 
         for(int i = 0; i < size; i++) {
             long startRequest = start.getTimeInMillis();
-            System.out.println("+++" + start.toString());
+            System.out.println("+++Sessions: Dates:" + start.toString());
             start.add(Calendar.DATE, 1);
             requestTotalSessionStepData(startRequest, start.getTimeInMillis(), i);
         }
@@ -95,7 +95,7 @@ public class SessionDataRequestManager {
                                 }
                             }
                         }
-                        //System.out.println("+++Steps from one request:" + current);
+                        System.out.println("+++Sessions: Steps from one request:" + current);
                         week.set(i, current);
                     }
 
@@ -103,7 +103,7 @@ public class SessionDataRequestManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        System.out.println("+++Failed to read session data");
+                        System.out.println("+++Sessions: Failed to read session data");
                         week.set(i, 0);
                     }
                 });

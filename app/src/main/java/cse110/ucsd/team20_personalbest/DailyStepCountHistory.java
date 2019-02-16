@@ -27,9 +27,11 @@ public class DailyStepCountHistory {
     private GoogleSignInAccount googleSignIn;
 
 
-    public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn){
+    public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn, long startTime){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
+        data = new ArrayList<>();
+        format(startTime);
     }
 
     public ArrayList<Integer> getHistory(){
@@ -39,13 +41,13 @@ public class DailyStepCountHistory {
     private void format(long startTime){
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)));
         start.set(Calendar.HOUR, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
         long startOfWeek = start.getTimeInMillis();
-        start.add(Calendar.DATE, 7);
+        start.add(Calendar.DATE, 8);
         long endOfWeek = start.getTimeInMillis();
 
         DataReadRequest readRequest =
@@ -67,7 +69,13 @@ public class DailyStepCountHistory {
                         List<DataPoint> dataPoints = dataSet.getDataPoints();
                         for (DataPoint dataPoint : dataPoints) {
                             data.add(dataPoint.getValue(Field.FIELD_STEPS).asInt());
-                            System.out.println("+++ Daily step count: " + dataPoint.getValue(Field.FIELD_STEPS).asString());
+                            int steps = dataPoint.getValue(Field.FIELD_STEPS).asInt();
+                            long durationInMillis = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
+
+                            Calendar time = Calendar.getInstance();
+                            time.setTimeInMillis(durationInMillis);
+
+                            //System.out.println("+++History: " + time.toString());
                         }
                     }
                 }

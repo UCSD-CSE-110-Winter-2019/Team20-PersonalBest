@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        activity = this;
+        sc = new StepContainer();
+
         Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
 
+        instantiateHistories();
 
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -93,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
         // for start/stop button
         if (!walker) walkOrRun = "Run";
 
-        activity = this;
-        sc = new StepContainer();
 
         mTextMessage = findViewById(R.id.message);
         textViewSteps = findViewById(R.id.textViewSteps);
@@ -193,9 +195,15 @@ public class MainActivity extends AppCompatActivity {
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
-                sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
-                dailysteps = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity));
+                instantiateHistories();
             }
+        }
+    }
+
+    private void instantiateHistories(){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null){
+            sdrm = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), 7, getTime());
+            dailysteps = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), getTime());
         }
     }
 
