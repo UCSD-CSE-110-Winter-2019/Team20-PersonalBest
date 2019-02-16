@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView textViewSteps;
 
     SharedPreferences sharedpreferences;
-    private static final String PREF_FILE = "prefs";;
+    private static final String PREF_FILE = "prefs";
 
     private StepContainer sc;
 
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private MainActivity activity;
-    private Activity activity;
     private SessionDataRequestManager sdrm;
     private DailyStepCountHistory dailysteps;
 
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private RTWalk rtStat;
     private int tempStep;
 
-    private ArrayList<Walk> pastWalks = new ArrayList<Walk>(100);
+    private ArrayList<Walk> pastWalks = new ArrayList<>(100);
     private CustomGauge pedometer;
     private Calendar startTime;
 
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         activity = this;
         sc = new StepContainer();
 
-        Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+        boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
         // runs initial activity
@@ -208,9 +207,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         activity = this;
         sc = new StepContainer();
 
-        frame = (FrameLayout) findViewById(R.id.mainScreen);
+        frame = findViewById(R.id.mainScreen);
 
-        pedometer = (CustomGauge) findViewById(R.id.gauge);
+        pedometer = findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
 
@@ -268,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 }
 
                 // starts walk
-                if (onWalk == false) {
+                if (!onWalk) {
 
                     is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
