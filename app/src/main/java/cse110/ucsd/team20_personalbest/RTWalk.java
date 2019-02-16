@@ -12,6 +12,8 @@ public class RTWalk {
     public RTWalk(int h, Calendar st) {
         height = h;
         start = st;
+        step = 0;
+        distMile = mph = 0.00;
     }
 
     public void updateStat(int s, Calendar now) {
@@ -22,6 +24,6 @@ public class RTWalk {
     }
 
     public String getStat() {
-        return String.format("Steps:  %s\nDistance:  %.2f Miles\nSpeed: %.2f MPH",step,distMile * 0.000189393939,mph / 1.466);
+        return String.format("Steps:  %s\nDistance:  %.2f Miles\nSpeed: %.2f MPH",step  ,distMile * 0.000189393939,mph / 1.466);
     }
 }

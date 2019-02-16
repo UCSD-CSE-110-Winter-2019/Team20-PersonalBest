@@ -31,8 +31,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.Toast;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -64,9 +62,11 @@ import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private TextView mTextMessage;
     private TextView textViewGoal;
     private TextView textViewSteps;
+
+    SharedPreferences sharedpreferences;
+    private static final String PREF_FILE = "prefs";
 
     private StepContainer sc;
 
@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private FitnessService fitnessService;
     private MainActivity activity;
+    private SessionDataRequestManager sdrm;
+    private DailyStepCountHistory dailysteps;
 
     private String walkOrRun = "Walk";
 
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private boolean onWalk = false;
     private IntendedSession is;
 
+    private static final String TAG = "MainActivity";
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -109,25 +113,21 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 ft.remove(currentFrag);
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
                     fragmentClass = dashboard.class;
                     fragID = R.id.dashFrag;
                     frame.setVisibility(View.VISIBLE);
                     break;
                 case R.id.navigation_walks:
-                    mTextMessage.setText(R.string.title_walks);
                     fragmentClass = WalkPg.class;
                     fragID = R.id.walkFrag;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_stats:
-                    mTextMessage.setText(R.string.title_stats);
                     fragID = R.id.statFrag;
                     fragmentClass = StatPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
                     fragmentClass = ProfilePg.class;
                     fragID = R.id.profileFrag;
                     frame.setVisibility(View.GONE);
@@ -148,8 +148,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     @Override
     public void onWalkPgSelected() {
+        Log.d(TAG, "Loading Walk Page");
         WalkPg walks = (WalkPg) getSupportFragmentManager().findFragmentById(R.id.walkFrag);
         if(walks != null) {
+            Log.d(TAG, "Sending past walks");
             walks.updateWalks(pastWalks);
         }
     }
@@ -159,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        activity = this;
+        sc = new StepContainer();
+
         boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
@@ -166,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
+
+        instantiateHistories(getTime());
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Fitness.HISTORY_API)
@@ -200,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         frame = findViewById(R.id.mainScreen);
       
-        mTextMessage = findViewById(R.id.message);
         pedometer = findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
@@ -279,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     onWalk = false;
+                    updateRT(Calendar.getInstance());
                     pastWalks.add(new Walk(rtStat.getStat(), startTime));
                     rtStat = null;
 
@@ -342,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     private void updateRT (Calendar now) {
+        Log.d(TAG, "Updating Real-Time stat");
         if(rtStat != null) {
             textViewStats.setTextSize(20);
             rtStat.updateStat(sc.steps() - tempStep, now);
@@ -355,6 +363,37 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public void cancelUpdatingSteps(){
         updateSteps = false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 134) {
+                fitnessService.setup();
+                fitnessService.updateStepCount();
+
+                instantiateHistories(getTime());
+            }
+        }
+    }
+
+    private void instantiateHistories(long startTime){
+        sdrm = instantiateSessionHistory(7, startTime);
+        dailysteps = instantiateDailyHistory(startTime);
+    }
+
+    private SessionDataRequestManager instantiateSessionHistory(int dayRange, long timeToStart){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
+        }
+        return null;
+    }
+
+    private DailyStepCountHistory instantiateDailyHistory(long startTime){
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
+        }
+        return null;
     }
 
     private void saveYesterdaysData() {
@@ -472,6 +511,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         @Override
         protected void onProgressUpdate(Void... voids) {
+
+            Log.d(TAG, "Updating pedometer");
+
             pedometer.setValue(sc.steps());
             updateRT(Calendar.getInstance());
         }
