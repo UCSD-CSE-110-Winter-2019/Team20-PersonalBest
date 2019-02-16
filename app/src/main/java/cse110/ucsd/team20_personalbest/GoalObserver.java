@@ -18,6 +18,7 @@ public class GoalObserver implements Observer {
 
     private Goal goal;
     private MainActivity mainActivity;
+
     private boolean subGoalDisplayed;
 
     GoalObserver(Goal gl, MainActivity ma){

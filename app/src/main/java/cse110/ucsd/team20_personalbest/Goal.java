@@ -12,6 +12,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Goal {
     private int goal;
+
     boolean useAutoGoal = true;
     private boolean met;
     boolean displayedPopup = false;

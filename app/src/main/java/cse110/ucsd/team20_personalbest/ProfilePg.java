@@ -58,8 +58,7 @@ public class ProfilePg extends Fragment {
     private CheckBox goalBox;
     private TextView autoGoalText;
     private Button applyChanges;
-
-
+  
     private OnFragmentInteractionListener mListener;
 
     public ProfilePg() {
@@ -163,8 +162,6 @@ public class ProfilePg extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_proile_pg, container, false);
-
-
 
     }
 
