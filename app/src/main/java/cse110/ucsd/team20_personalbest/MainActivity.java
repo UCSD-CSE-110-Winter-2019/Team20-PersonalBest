@@ -63,7 +63,6 @@ import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private TextView mTextMessage;
     private TextView textViewGoal;
     private TextView textViewSteps;
 
@@ -104,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private boolean onWalk = false;
     private IntendedSession is;
 
+    private static final String TAG = "MainActivity";
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -114,25 +115,21 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 ft.remove(currentFrag);
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
                     fragmentClass = dashboard.class;
                     fragID = R.id.dashFrag;
                     frame.setVisibility(View.VISIBLE);
                     break;
                 case R.id.navigation_walks:
-                    mTextMessage.setText(R.string.title_walks);
                     fragmentClass = WalkPg.class;
                     fragID = R.id.walkFrag;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_stats:
-                    mTextMessage.setText(R.string.title_stats);
                     fragID = R.id.statFrag;
                     fragmentClass = StatPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
                     fragmentClass = ProfilePg.class;
                     fragID = R.id.profileFrag;
                     frame.setVisibility(View.GONE);
@@ -153,8 +150,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     @Override
     public void onWalkPgSelected() {
+        Log.d(TAG, "Loading Walk Page");
         WalkPg walks = (WalkPg) getSupportFragmentManager().findFragmentById(R.id.walkFrag);
         if(walks != null) {
+            Log.d(TAG, "Sending past walks");
             walks.updateWalks(pastWalks);
         }
     }
@@ -192,7 +191,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
 
         height = sharedPreferences.getInt("height",DEF_HEIGHT);
-        final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
         boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
         System.err.println("Height: " + height + ", walker: " + walker + "."); // height in inches
 
@@ -205,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         sc = new StepContainer();
 
         frame = (FrameLayout) findViewById(R.id.mainScreen);
-      
-        mTextMessage = findViewById(R.id.message);
+
         pedometer = (CustomGauge) findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
@@ -343,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     private void updateRT (Calendar now) {
+        Log.d(TAG, "Updating Real-Time stat");
         if(rtStat != null) {
             textViewStats.setTextSize(20);
             rtStat.updateStat(sc.steps() - tempStep, now);
@@ -475,6 +473,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         @Override
         protected void onProgressUpdate(Void... voids) {
+
+            Log.d(TAG, "Updating pedometer");
+
             pedometer.setValue(sc.steps());
             updateRT(Calendar.getInstance());
         }
