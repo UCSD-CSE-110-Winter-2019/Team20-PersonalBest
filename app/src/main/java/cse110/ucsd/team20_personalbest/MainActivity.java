@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -67,9 +68,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView textViewGoal;
     private TextView textViewSteps;
 
-    SharedPreferences sharedpreferences;
-    private static final String PREF_FILE = "prefs";;
-
     private StepContainer sc;
 
     private GoogleApiClient mGoogleApiClient;
@@ -78,12 +76,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private TextView textViewStats;
 
-    private String fitnessServiceKey = "GOOGLE_FIT";
     private FitnessService fitnessService;
     private MainActivity activity;
 
-    private int height;
-    private final int DEF_HEIGHT = 70;
     private String walkOrRun = "Walk";
 
     private boolean updateSteps = true;
@@ -97,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private RTWalk rtStat;
     private int tempStep;
 
-    private ArrayList<Walk> pastWalks = new ArrayList<Walk>(100);
+    private ArrayList<Walk> pastWalks = new ArrayList<>(100);
     private CustomGauge pedometer;
     private Calendar startTime;
 
@@ -164,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+        boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
         // runs initial activity
@@ -191,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             pastWalks = gson.fromJson(json, type);
         }
 
-        height = sharedPreferences.getInt("height",DEF_HEIGHT);
-        final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", -1);
+        final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", 70);
         boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
         System.err.println("Height: " + height + ", walker: " + walker + "."); // height in inches
 
@@ -204,10 +198,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         activity = this;
         sc = new StepContainer();
 
-        frame = (FrameLayout) findViewById(R.id.mainScreen);
+        frame = findViewById(R.id.mainScreen);
       
         mTextMessage = findViewById(R.id.message);
-        pedometer = (CustomGauge) findViewById(R.id.gauge);
+        pedometer = findViewById(R.id.gauge);
         textViewSteps = findViewById(R.id.textViewSteps);
         textViewGoal = findViewById(R.id.textViewGoal);
 
@@ -219,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
+        String fitnessServiceKey = "GOOGLE_FIT";
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(MainActivity mainActivity) {
@@ -235,14 +230,15 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         // gets steps
         executeAsyncTask(new ASyncStepUpdateRunner());
 
-        //Goal stuff
         // creates goal based on sharedpreferences
-        goal = new Goal(this);
+        Calendar cal = Calendar.getInstance();
+        goal = new Goal(this, cal);
+
         //goal = new Goal (2200, false);
         setGoalCount(goal.getGoal());
 
         // saves goal for today's graph
-        goal.save(this);
+        goal.save(this, cal);
 
         GoalObserver go = new GoalObserver(goal, this);
 
@@ -265,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 }
 
                 // starts walk
-                if (onWalk == false) {
+                if (!onWalk) {
 
                     is = new IntendedSession( getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
@@ -297,15 +293,18 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     } // end onCreate
 
+
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
-            btn.setText("Stop " + walkOrRun);
+            String text = "Stop " + walkOrRun;
+            btn.setText(text);
         }
 
         else {
             btn.setBackgroundColor(Color.GREEN);
-            btn.setText("Start " + walkOrRun);
+            String text = "Start " + walkOrRun;
+            btn.setText(text);
         }
     }
 
@@ -328,7 +327,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public void updateGoal(int newGoal) {
         goal.setGoal(newGoal);
-        goal.save(this);
+        Calendar cal = Calendar.getInstance();
+        goal.save(this, cal);
     }
 
     public void setAutoGoal(boolean s) {
@@ -370,8 +370,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         long startTime = cal.getTimeInMillis();
 
         java.text.DateFormat dateFormat = DateFormat.getDateInstance();
-        Log.e("History", "Range Start: " + dateFormat.format(startTime));
-        Log.e("History", "Range End: " + dateFormat.format(endTime));
+        Log.i("History", "Range Start: " + dateFormat.format(startTime));
+        Log.i("History", "Range End: " + dateFormat.format(endTime));
 
         //Check how many steps were walked and recorded in the last 7 days
         DataReadRequest readRequest = new DataReadRequest.Builder()
@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         //Used for aggregated data
         if (dataReadResult.getBuckets().size() > 0) {
-            Log.e("History", "Number of buckets: " + dataReadResult.getBuckets().size());
+            Log.i("History", "Number of buckets: " + dataReadResult.getBuckets().size());
             for (Bucket bucket : dataReadResult.getBuckets()) {
                 List<DataSet> dataSets = bucket.getDataSets();
                 for (DataSet dataSet : dataSets) {
@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
         //Used for non-aggregated data
         else if (dataReadResult.getDataSets().size() > 0) {
-            Log.e("History", "Number of returned DataSets: " + dataReadResult.getDataSets().size());
+            Log.i("History", "Number of returned DataSets: " + dataReadResult.getDataSets().size());
             for (DataSet dataSet : dataReadResult.getDataSets()) {
                 showDataSet(dataSet);
             }
@@ -402,15 +402,14 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     private void showDataSet(DataSet dataSet) {
-        Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
         DateFormat dateFormat = DateFormat.getDateInstance();
         DateFormat timeFormat = DateFormat.getTimeInstance();
 
         for (DataPoint dp : dataSet.getDataPoints()) {
-            Log.e("History", "Data point:");
-            Log.e("History", "\tType: " + dp.getDataType().getName());
-            Log.e("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-            Log.e("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+            Log.i("History", "Data point:");
+            Log.i("History", "\tType: " + dp.getDataType().getName());
+            Log.i("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+            Log.i("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
             for(Field field : dp.getDataType().getFields()) {
                 Log.e("History", "\tField: " + field.getName() +
                         " Value: " + dp.getValue(field));
@@ -442,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public void onConnected(@Nullable Bundle bundle) {
-        Log.e("HistoryAPI", "onConnected");
+        Log.i("HistoryAPI", "onConnected");
     }
 
     private class ViewWeekStepCountTask extends AsyncTask<Void, Void, Void> {
@@ -453,13 +452,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     }
 
-    private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void>{
+    private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
             Looper.prepare();
-            while(updateSteps) {
-                //Log.e("UpdateSteps", "Steps updating...");
+            while (updateSteps) {
                 try {
                     Thread.sleep(3000);
 

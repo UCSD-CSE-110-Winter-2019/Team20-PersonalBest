@@ -109,7 +109,7 @@ public class ProfilePg extends Fragment {
 
         //Setting up the texts of the height with the user's current goal steps;
         final int goalSteps = preferences.getInt("savedGoal", 5000);
-        changeSteps = (EditText) getView().findViewById(R.id.changeSteps);
+        changeSteps = getView().findViewById(R.id.changeSteps);
         changeSteps.setText(Integer.toString(goalSteps));
 
         //Setting up checkbox if it should be checked or not.
