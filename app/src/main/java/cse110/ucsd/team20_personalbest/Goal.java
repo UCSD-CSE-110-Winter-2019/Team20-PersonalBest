@@ -6,14 +6,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class Goal {
     private int goal;
-    private int autoGoal = 500;
     boolean useAutoGoal = true;
     private boolean met = false;
+
+    private String[] daysOfWeek = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
     private static final int INITIAL_GOAL = 5000;
@@ -48,8 +50,20 @@ public class Goal {
         SharedPreferences sharedpreferences = ma.getSharedPreferences("prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt("savedGoal", goal);
-        //editor.putBoolean("metToday", met);
+        editor.putBoolean("metToday", met);
         editor.apply();
+
+        // saves today's goal for later graphing
+        if (!met)
+            saveGoalDay(ma, editor);
+    }
+
+    public void saveGoalDay(Context ma, SharedPreferences.Editor editor) {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK)];
+        Log.e("Goal", "Saving current goal to " + today);
+        editor.putInt(today + " goal", goal);
     }
 
     public boolean attemptCompleteGoal(long steps){
@@ -60,8 +74,8 @@ public class Goal {
         return met;
     }
 
-    public void meetGoal() {
-        met = true;
+    public void meetGoal(boolean met) {
+        this.met = met;
     }
 
     public int getGoal() {
@@ -69,7 +83,7 @@ public class Goal {
     }
 
     public boolean canSetAutomatically() {
-        return goal + autoGoalIncr <= maxAutoGoal;
+        return goal + autoGoalIncr <= maxAutoGoal && useAutoGoal;
     }
 
     public int nextAutoGoal() {
