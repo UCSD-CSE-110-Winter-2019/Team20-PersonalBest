@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if (stepsArray.size() == 0) return false;
 
         int yesterday = cal.get(Calendar.DAY_OF_WEEK) - 2;
-        if (yesterday == 0) yesterday = 7; // rolls over
+        if (yesterday == -1) yesterday = 6; // rolls over
         yesterdaySteps = stepsArray.get(yesterday);
 
         Log.d("SubGoal", "Yesterday's steps: " + yesterdaySteps);

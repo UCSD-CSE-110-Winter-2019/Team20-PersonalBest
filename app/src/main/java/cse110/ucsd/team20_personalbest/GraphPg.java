@@ -26,7 +26,6 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
 import static android.content.Context.MODE_PRIVATE;
-import static cse110.ucsd.team20_personalbest.MainActivity.sdrm;
 
 public class GraphPg extends Fragment {
 
@@ -95,15 +94,28 @@ public class GraphPg extends Fragment {
         List<Line> lines = new ArrayList<Line>();
         List<SubcolumnValue> values;
 
-        // gets goal line data for each day
+        Goal g = new Goal(this.getActivity());
+        int currentDay = g.getCurrentDay();
+        Log.d("Graph Goal", "Displaying saved goals until today, " + g.getCurrentDay() + " = " + DAYS_OF_WEEK_LONG[g.getCurrentDay()]);
+
+        // sets current day's goal as goal for future days
+        Integer goalValue = 0;
+        Integer defaultGoal = g.getGoal();
+
+        // gets goal data for each day
         Log.d("Graph Data", lastWeeksGoals.toString());
         for (int i = 0; i < numColumns; i++) {
-
-            line.add(new PointValue(i, lastWeeksGoals.get(i)));
+            goalValue = i <= currentDay ? lastWeeksGoals.get(i) : defaultGoal;
+            line.add(new PointValue(i, goalValue));
         }
         Line lineObj = new Line(line);
         lineObj.setColor(LINE_COLOR);
         lines.add(lineObj);
+
+        // for proper framing of graph from y = 0
+        ArrayList<PointValue> zeroLine = new ArrayList<>();
+        zeroLine.add(new PointValue(0, 0));
+        lines.add(new Line(zeroLine));
 
 
         // gets column data for each day
@@ -168,7 +180,8 @@ public class GraphPg extends Fragment {
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(), "Goal is " + Math.round(value.getY()) + " steps", Toast.LENGTH_SHORT).show();
+            if (value.getY() != 0)
+                Toast.makeText(getActivity(), "Goal is " + Math.round(value.getY()) + " steps", Toast.LENGTH_SHORT).show();
         }
 
         @Override
