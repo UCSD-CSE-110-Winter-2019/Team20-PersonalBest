@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public StepContainer sc;
     private TextView textViewGoal;
     private MainActivity mainActivity;
+
+    private Calendar cal;
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
 
-    private Calendar cal;
-  
     private TextView textViewSteps;
 
     private static final String PREF_FILE = "prefs";
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         changeTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Long.parseLong(timeText.getText().toString())==0) {
+                if(timeText.getText().toString().isEmpty() || Long.parseLong(timeText.getText().toString()) == 0) {
                     timeDiff = 0;
                 }
                 else
@@ -273,9 +273,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 // starts walk
                 if (!onWalk) {
                     updateCal();
+
                     is = new IntendedSession( getTime(cal), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
-                    Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Started " + walkOrRun, Toast.LENGTH_LONG).show();
                     startTime = cal;
                     rtStat = new RTWalk(height, startTime);
                     tempStep = sc.steps();
@@ -287,6 +288,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     is.endSession(getTime(cal));
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
+
+                    goal.addIntendedSteps(is.returnSteps(sc.steps()));
+                    goal.save(mainActivity, cal);
 
                     onWalk = false;
                     updateCal();
@@ -422,8 +426,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
         return null;
     }
-
-    // runs multiple Async Tasks
+  
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lecho.lib.hellocharts.listener.ComboLineColumnChartOnValueSelectListener;
@@ -46,6 +47,7 @@ public class GraphPg extends Fragment {
     private ComboLineColumnChartData data;
     private SharedPreferences sharedPreferences;
     private ArrayList<Integer> lastWeeksGoals;
+    private ArrayList<Long> intendedSteps;
 
 
     public GraphPg() {}
@@ -60,6 +62,7 @@ public class GraphPg extends Fragment {
         chart.setOnValueTouchListener(new ValueTouchListener());
 
         lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+        intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
 
         generateData();
 
@@ -71,21 +74,25 @@ public class GraphPg extends Fragment {
     // Generates the graph
     private void generateData() {
 
-        ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
+        //ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
         ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
+        ArrayList<Integer> uSteps = new ArrayList<>();
 
         for(int i = 0; i < 7; i++){
-            if(walks.size() == i) walks.add(0);
+            //if(walks.size() == i) walks.add(0);
             if(steps.size() == i) steps.add(0);
         }
 
-        if (!gotUnintendedSteps) {
-            for (int i = 0; i < steps.size(); i++) {
-                steps.set(i, steps.get(i) - walks.get(i));
-            }
-            gotUnintendedSteps = true;
-            Log.d("Graph Unintended Steps", "Calculated unintended steps a single time.");
+        for (int i = 0; i < steps.size(); i++) {
+            //uSteps.add(i, steps.get(i) - walks.get(i));
+            uSteps.add(i, steps.get(i) - (Integer) intendedSteps.get(i).intValue());
         }
+        Log.d("Graph Unintended Steps", "Calculated unintended steps a single time.");
+
+        Log.e("Graph Unintended Steps", Arrays.toString(uSteps.toArray()));
+        //Log.e("Graph Intended Steps", Arrays.toString(walks.toArray()));
+        Log.e("Graph Intended Steps", Arrays.toString(intendedSteps.toArray()));
+        Log.e("Graph Total Steps", Arrays.toString(steps.toArray()));
 
         int numColumns = 7;
 
@@ -122,8 +129,9 @@ public class GraphPg extends Fragment {
         for (int i = 0; i < numColumns; ++i) {
 
             values = new ArrayList<SubcolumnValue>();
-            values.add(new SubcolumnValue(steps.get(i), USTEP_COLOR));
-            values.add(new SubcolumnValue(walks.get(i), ISTEP_COLOR));
+            values.add(new SubcolumnValue(uSteps.get(i), USTEP_COLOR));
+            //values.add(new SubcolumnValue(walks.get(i), ISTEP_COLOR));
+            values.add(new SubcolumnValue(intendedSteps.get(i), ISTEP_COLOR));
 
             Column column = new Column(values);
             column.setHasLabels(true);
@@ -170,6 +178,19 @@ public class GraphPg extends Fragment {
         return data;
     }
 
+    public ArrayList<Long> getWeeksSteps(SharedPreferences sharedPreferences){
+        ArrayList<Long> data = new ArrayList<>();
+        data.add(sharedPreferences.getLong("Sunday walks", 0));
+        data.add(sharedPreferences.getLong("Monday walks", 0));
+        data.add(sharedPreferences.getLong("Tuesday walks", 0));
+        data.add(sharedPreferences.getLong("Wednesday walks", 0));
+        data.add(sharedPreferences.getLong("Thursday walks", 0));
+        data.add(sharedPreferences.getLong("Friday walks", 0));
+        data.add(sharedPreferences.getLong("Saturday walks", 0));
+        Log.d("Intended steps data", data.toString());
+        return data;
+    }
+  
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
 
         @Override

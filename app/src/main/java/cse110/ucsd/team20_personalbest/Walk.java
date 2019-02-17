@@ -20,17 +20,17 @@ public class Walk {
 
     public String getTime() {
         return String.format("%s /%s / %d\n%s:%s %s",
-                start.get(start.MONTH) + 1 <10 ?
+                start.get(start.MONTH) + 1 < 10 ?
                         String.format("%02d", start.get(start.MONTH) + 1) :
                         start.get(start.MONTH) + 1,
-                start.get(start.DATE)<10 ?
+                start.get(start.DATE) < 10 ?
                         String.format("%02d", start.get(start.DATE)) :
                         start.get(start.DATE),
                 start.get(start.YEAR),
-                start.get(start.HOUR)<10 ?
+                start.get(start.HOUR) < 10 ?
                         String.format("%02d", start.get(start.HOUR)) :
                         start.get(start.HOUR),
-                start.get(start.MINUTE)<10 ?
+                start.get(start.MINUTE) < 10 ?
                         String.format("%02d", start.get(start.MINUTE)) :
                         start.get(start.MINUTE)
                 , start.get(start.AM_PM) == start.AM ? "AM" : "PM");

@@ -19,6 +19,7 @@ public class Goal {
     boolean displayedSubGoal = false;
     boolean popupForYesterday = false;
     private int currentDay;
+    public long currentIntendedSteps;
 
     private String[] daysOfWeek = {"Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 
@@ -43,10 +44,12 @@ public class Goal {
                 .getBoolean("displayedPopup", false);
         displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("displayedSubGoal", false);
+        currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getLong("currentIntendedSteps", 0);
 
         Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
-                + "\n\tDisplayed sub goal: " + displayedSubGoal);
+                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
         // yesterday but the popup was not shown
@@ -67,10 +70,12 @@ public class Goal {
                 .getBoolean("displayedPopup", false);
         displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("displayedSubGoal", false);
+        currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getLong("currentIntendedSteps", 0);
 
         Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
-                + "\n\tDisplayed sub goal: " + displayedSubGoal);
+                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps);
     }
 
     public void resetMetAndDisplayYesterdaysPopup(Calendar cal) {
@@ -82,6 +87,7 @@ public class Goal {
                 popupForYesterday = true;
                 Log.i("Goal", "Met the goal yesterday but didn't show popup, yesterday's popup to be displayed");
             }
+            currentIntendedSteps = 0;
             met = false;
             displayedPopup = false;
             displayedSubGoal = false;
@@ -111,6 +117,14 @@ public class Goal {
         currentDay = -1;
     }
 
+    public void addIntendedSteps(long steps) {
+        currentIntendedSteps += steps;
+    }
+
+    public long getCurrentIntendedSteps() {
+        return currentIntendedSteps;
+    }
+
     public boolean autoGoal() {
         return useAutoGoal;
     }
@@ -124,11 +138,15 @@ public class Goal {
         editor.putInt("currentDay", currentDay);
         editor.putBoolean("displayedPopup", displayedPopup);
         editor.putBoolean("displayedSubGoal", displayedSubGoal);
+        editor.putLong("currentIntendedSteps", currentIntendedSteps);
         editor.apply();
         Log.i("Goal", "Saving goal to sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + " = " + daysOfWeek[currentDay]
-                + "\n\tDisplayed popup: " + displayedPopup + "\n\tDisplayed subgoal: " + displayedSubGoal);
+                + "\n\tDisplayed popup: " + displayedPopup + "\n\tDisplayed subgoal: " + displayedSubGoal
+                + "\n\tCurrent intended steps: " + currentIntendedSteps);
 
+
+        saveIntendedStepsDay(ma, editor, cal);
 
         // saves today's goal for later graphing
         if (!met)
@@ -141,6 +159,13 @@ public class Goal {
         String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK) - 1];
         Log.i("Goal", "Saving current goal of " + goal + " to " + today + " for graph.");
         editor.putInt(today + " goal", goal);
+        editor.apply();
+    }
+
+    public void saveIntendedStepsDay(Context ma, SharedPreferences.Editor editor, Calendar cal) {
+        String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK) - 1];
+        Log.i("Goal", "Saving intended steps of " + currentIntendedSteps + " to " + today + " for graph.");
+        editor.putLong(today + " walks", currentIntendedSteps);
         editor.apply();
     }
 
