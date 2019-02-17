@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 public class InitialActivity extends Activity {
 
     Boolean walker = true;
+    String TAG = "Initial";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +44,10 @@ public class InitialActivity extends Activity {
                 RadioButton rb_runner = (RadioButton) findViewById(R.id.radio_runner);
 
                 // user didn't enter a height
-                if (enter_feet.getText().toString().isEmpty() || enter_inch.getText().toString().isEmpty())
+                if (enter_feet.getText().toString().isEmpty() || enter_inch.getText().toString().isEmpty()) {
                     Toast.makeText(InitialActivity.this, "Enter your height", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"User didn't fill in one of the height fields" );
+                }
 
                 else {
 
@@ -51,8 +55,9 @@ public class InitialActivity extends Activity {
                     height_in = Integer.parseInt(enter_inch.getText().toString());
 
                     // user entered an invalid height
-                    if (height_ft > 7 || height_in > 12 || height_ft < 0 || height_in < 0) {
+                    if (height_ft > 7 || height_in > 11 || height_ft < 0 || height_in < 0) {
                         Toast.makeText(InitialActivity.this, "Enter valid height", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "User inputted an invalid height");
                     }
 
                     // user entered a valid height
@@ -69,6 +74,8 @@ public class InitialActivity extends Activity {
                         editor.putBoolean("isFirstRun", false);
                         editor.apply();
 
+                        Log.d(TAG, "User inputted a valid height\nHeight values saved\nMoving to main activity.");
+
                         startActivity(new Intent(InitialActivity.this, MainActivity.class));
                     }
                 }
@@ -83,6 +90,7 @@ public class InitialActivity extends Activity {
 
         // Is the current Radio Button checked?
         boolean checked = ((RadioButton) v).isChecked();
+        Log.d(TAG, "User clicked a radio button.");
 
         switch(v.getId()){
             case R.id.radio_walker:
@@ -90,6 +98,7 @@ public class InitialActivity extends Activity {
                     rb_walker.setTextColor(Color.RED);
                     walker = true;
                     rb_runner.setTextColor(Color.GRAY);
+
                 }
                 break;
 

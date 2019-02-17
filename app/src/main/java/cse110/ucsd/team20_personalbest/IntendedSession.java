@@ -52,7 +52,7 @@ public class IntendedSession implements SessionInterface{
                 .setActivity(FitnessActivities.WALKING)
                 .build();
 
-        Log.i(TAG, "New session built");
+        Log.i(TAG, "New session built with id: " + session.getIdentifier());
 
         this.google = googleSignin;
         this.activity = a;
@@ -74,12 +74,9 @@ public class IntendedSession implements SessionInterface{
     public boolean endSession(long endTime) {
 
         ending = endTime;
-
         Task<List<Session>> response = Fitness.getSessionsClient(activity, google)
                 .stopSession(session.getIdentifier());
-
         Log.i(TAG, "Session (" + session.getIdentifier() + ") ended at: " + endTime);
-
         return true;
     }
 

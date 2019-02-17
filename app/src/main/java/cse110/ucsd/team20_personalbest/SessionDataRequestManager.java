@@ -49,8 +49,8 @@ public class SessionDataRequestManager {
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
-        start.set(Calendar.HOUR, 0);
+        start.add(Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
@@ -92,8 +92,11 @@ public class SessionDataRequestManager {
                             for (DataSet dataSet : dataSets) {
                                 if (dataSet.isEmpty()) continue;
 
+                                Log.e(TAG, "New dataset");
+
                                 for (DataPoint dataPoint : dataSet.getDataPoints()) {
                                     current += dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+                                    Log.e(TAG, "" + dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
                                 }
                             }
                         }
