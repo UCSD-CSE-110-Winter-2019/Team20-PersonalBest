@@ -16,6 +16,7 @@ public class Goal {
     boolean useAutoGoal = true;
     private boolean met;
     boolean displayedPopup = false;
+    boolean displayedSubGoal = false;
     boolean popupForYesterday = false;
     private int currentDay;
 
@@ -40,17 +41,36 @@ public class Goal {
                 .getInt("currentDay", -1);
         displayedPopup = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("displayedPopup", false);
+        displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("displayedSubGoal", false);
 
-
-        Log.i("Goal", "Loading goal from sharedPreferences...");
-        Log.i("Goal", "\tGoal: " + goal);
-        Log.i("Goal", "\tMet: " + met);
-        Log.i("Goal", "\tCurrent day: " + currentDay);
-        Log.i("Goal", "\tDisplayed popup: " + displayedPopup);
+        Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
+                + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
+                + "\n\tDisplayed sub goal: " + displayedSubGoal);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
         // yesterday but the popup was not shown
         resetMetAndDisplayYesterdaysPopup(cal);
+    }
+
+    public Goal(Context context) {
+        SharedPreferences sharedpreferences = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        goal = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getInt("savedGoal", INITIAL_GOAL);
+        met = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("metToday", false);
+        useAutoGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("autoGoal", true);
+        currentDay = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getInt("currentDay", -1);
+        displayedPopup = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("displayedPopup", false);
+        displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("displayedSubGoal", false);
+
+        Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
+                + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
+                + "\n\tDisplayed sub goal: " + displayedSubGoal);
     }
 
     public void resetMetAndDisplayYesterdaysPopup(Calendar cal) {
@@ -64,6 +84,7 @@ public class Goal {
             }
             met = false;
             displayedPopup = false;
+            displayedSubGoal = false;
             currentDay = today;
             Log.i("Goal", "First time the app has been opened today, saving current day");
         }
@@ -102,12 +123,11 @@ public class Goal {
         editor.putBoolean("metToday", met);
         editor.putInt("currentDay", currentDay);
         editor.putBoolean("displayedPopup", displayedPopup);
+        editor.putBoolean("displayedSubGoal", displayedSubGoal);
         editor.apply();
-        Log.i("Goal", "Saving goal to sharedPreferences...");
-        Log.i("Goal", "\tGoal: " + goal);
-        Log.i("Goal", "\tMet: " + met);
-        Log.i("Goal", "\tCurrent day: " + currentDay + " = " + daysOfWeek[currentDay]);
-        Log.i("Goal", "\tDisplayed popup: " + displayedPopup);
+        Log.i("Goal", "Saving goal to sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
+                + "\n\tCurrent day: " + currentDay + " = " + daysOfWeek[currentDay]
+                + "\n\tDisplayed popup: " + displayedPopup + "\n\tDisplayed subgoal: " + displayedSubGoal);
 
 
         // saves today's goal for later graphing
@@ -119,9 +139,13 @@ public class Goal {
 
     public void saveGoalDay(Context ma, SharedPreferences.Editor editor, Calendar cal) {
         String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK) - 1];
-        Log.i("Goal", "Saving current goal of " + goal + " to " + today);
+        Log.i("Goal", "Saving current goal of " + goal + " to " + today + " for graph.");
         editor.putInt(today + " goal", goal);
         editor.apply();
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
     }
 
     public boolean attemptCompleteGoal(long steps){
@@ -159,7 +183,7 @@ public class Goal {
     public boolean canShowSubGoal(Calendar calendar) {
         int currHour = calendar.get(Calendar.HOUR_OF_DAY);
         int currMinute = calendar.get(Calendar.MINUTE);
-        return currHour == 20 && currMinute == 0; // 8 pm
+        return currHour >= 20 && !displayedSubGoal; // 8-8:20
     }
 
     public void displaySubGoal(Context context, int steps, int yesterdaySteps) {
@@ -167,6 +191,7 @@ public class Goal {
             // round down to nearest 500 steps
             int diff = (steps - yesterdaySteps) / 500 * 500;
             Toast.makeText(context, "You got about " + diff + " more steps than yesterday!", Toast.LENGTH_LONG).show();
+            Log.i("SubGoal", "Subgoal met.");
         }
         else {
             Log.i("SubGoal", "Subgoal not met today");

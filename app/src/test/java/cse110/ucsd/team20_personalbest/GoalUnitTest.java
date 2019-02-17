@@ -78,6 +78,19 @@ public class GoalUnitTest {
         c.set(Calendar.HOUR_OF_DAY, 20);
         c.set(Calendar.MINUTE, 1);
         canShow = goal.canShowSubGoal(c);
+        assertTrue(canShow);
+
+        // shows subgoal after 8pm if hasn't already been displayed
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 15);
+        canShow = goal.canShowSubGoal(c);
+        assertTrue(canShow);
+
+        // doesn't show subgoal if has already been displayed
+        goal.displayedSubGoal = true;
+        c.set(Calendar.HOUR_OF_DAY, 20);
+        c.set(Calendar.MINUTE, 0);
+        canShow = goal.canShowSubGoal(c);
         assertFalse(canShow);
     }
 }

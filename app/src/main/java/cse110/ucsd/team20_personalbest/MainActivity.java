@@ -1,8 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,12 +8,10 @@ import android.os.AsyncTask;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -27,65 +23,41 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import android.os.AsyncTask;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.data.Bucket;
-import com.google.android.gms.fitness.data.DataPoint;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.request.DataReadRequest;
-import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
-public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private TextView mTextMessage;
+public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
 
     private FragmentManager fm = getSupportFragmentManager();
     private Fragment currentFrag = new dashboard();
     Class fragmentClass;
 
-    public StepContainer sc;
+    private StepContainer sc;
     private TextView textViewGoal;
     private MainActivity mainActivity;
-    private Button changeStep;
-    private EditText timeText;
-    private Button changeTime;
-    private long timeDiff = 0;
+
+    private Calendar cal;
   
     private TextView textViewSteps;
 
-    SharedPreferences sharedpreferences;
     private static final String PREF_FILE = "prefs";
 
-    private GoogleApiClient mGoogleApiClient;
     private int yesterdaySteps = 1000;
     public boolean getStepsDone = false;
 
@@ -109,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private ArrayList<Walk> pastWalks = new ArrayList<>(100);
     private CustomGauge pedometer;
     private Calendar startTime;
-    private Calendar nowTime;
 
     private boolean onWalk = false;
     private IntendedSession is;
@@ -137,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     break;
                 case R.id.navigation_stats:
                     fragID = R.id.statFrag;
-                    fragmentClass = GraphFragment.class;
+                    fragmentClass = GraphPg.class;
                     frame.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_profile:
@@ -186,16 +157,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
         }
 
-        nowTime = Calendar.getInstance();
-        nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
-        instantiateHistories(getTime(nowTime));
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.HISTORY_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-                .addConnectionCallbacks(this)
-                .enableAutoManage(this, 0, this)
-                .build();
+        // calendar for current day
+        updateCal();
+        instantiateHistories(getTime(cal));
 
 
         // log height and walker/runner saved properly
@@ -211,44 +175,24 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", 70);
         boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
-        System.err.println("Height: " + height + ", walker: " + walker + "."); // height in inches
+        Log.i(TAG,"Height: " + height + ", walker: " + walker + "."); // height in inches
 
         // for start/stop button
         if (!walker) walkOrRun = "Run";
 
-        executeAsyncTask(new ViewWeekStepCountTask());
-
         activity = this;
         sc = new StepContainer();
 
-        frame = findViewById(R.id.mainScreen);
+        frame = (FrameLayout) findViewById(R.id.mainScreen);
       
-        pedometer = findViewById(R.id.gauge);
-        textViewSteps = findViewById(R.id.textViewSteps);
-        textViewGoal = findViewById(R.id.textViewGoal);
-        changeStep = findViewById(R.id.changeStep);
-        changeTime = findViewById(R.id.changeTime);
-        timeText = findViewById(R.id.changeTimeText);
-        changeStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setStepCount(sc.steps() + 500);
-            }
-        });
-        changeTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(Long.parseLong(timeText.getText().toString()) == 0) {
-                    timeDiff = 0;
-                }
-                else
-                    timeDiff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(timeText.getText().toString());
-            }
-        });
-        sc = new StepContainer();
-        textViewStats = findViewById(R.id.textViewStats);
+        pedometer = (CustomGauge) findViewById(R.id.gauge);
+        textViewSteps = (TextView) findViewById(R.id.textViewSteps);
+        textViewGoal = (TextView) findViewById(R.id.textViewGoal);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        sc = new StepContainer();
+        textViewStats = (TextView) findViewById(R.id.textViewStats);
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
         mainActivity = this;
         frame = (FrameLayout) findViewById(R.id.mainScreen);
@@ -274,8 +218,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         executeAsyncTask(new ASyncStepUpdateRunner());
 
         // creates goal based on shared preferences
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(cal.getTimeInMillis() - timeDiff);
         goal = new Goal(this, cal);
 
         //goal = new Goal (2200, false);
@@ -298,8 +240,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
             @Override
             public void onClick(View v) {
-                nowTime = Calendar.getInstance();
-                nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
+
                 if(ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION )!= PackageManager.PERMISSION_GRANTED){
                     ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0 );
                     return;
@@ -307,27 +248,24 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                 // starts walk
                 if (!onWalk) {
-
-                    is = new IntendedSession( getTime(nowTime), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
+                    updateCal();
+                    is = new IntendedSession( getTime(cal), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
                     Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
                     startTime = Calendar.getInstance();
-                    startTime.setTimeInMillis(startTime.getTimeInMillis() - timeDiff);
                     rtStat = new RTWalk(height, startTime);
                     tempStep = sc.steps();
                 }
 
                 // stops walk
                 else {
-
-                    is.endSession(getTime(nowTime));
+                    updateCal();
+                    is.endSession(getTime(cal));
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     onWalk = false;
-                    nowTime = Calendar.getInstance();
-                    nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
-                    updateRT(nowTime);
+                    updateRT(Calendar.getInstance());
                     pastWalks.add(new Walk(rtStat.getStat(), startTime));
                     rtStat = null;
 
@@ -342,6 +280,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     } // end onCreate
 
+
+    public void updateCal() {
+        cal = Calendar.getInstance();
+        Date now = new Date();
+        Log.d("Time", "Updating calender to the current time: " + cal.getTimeInMillis());
+        cal.setTime(now);
+    }
 
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
@@ -358,8 +303,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public long getTime(Calendar cal) {
-        Date now = new Date();
-        cal.setTime(now);
+        Log.d("Time", "Getting time from calendar: " + cal.getTimeInMillis());
         return cal.getTimeInMillis();
     }
 
@@ -381,8 +325,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public void setAutoGoal(boolean s) {
         goal.setAutoGoal(s);
-        System.out.println("AutoGoal: " + goal.useAutoGoal);
-
     }
 
     public void sendToast(String string){
@@ -412,11 +354,28 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             if (requestCode == 134) {
                 fitnessService.setup();
                 fitnessService.updateStepCount();
-                nowTime = Calendar.getInstance();
-                nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
-                instantiateHistories(getTime(nowTime));
+
+                updateCal();
+                instantiateHistories(getTime(cal));
             }
         }
+    }
+
+    public boolean setYesterdaySteps(Calendar cal) {
+        ArrayList<Integer> stepsArray = dailysteps.getHistory();
+        if (stepsArray.size() == 0) return false;
+
+        int yesterday = cal.get(Calendar.DAY_OF_WEEK) - 2;
+        if (yesterday == -1) yesterday = 6; // rolls over
+        yesterdaySteps = stepsArray.get(yesterday);
+
+        Log.d("SubGoal", "Yesterday's steps: " + yesterdaySteps);
+        return true;
+    }
+
+
+    public int getYesterdaySteps() {
+        return yesterdaySteps;
     }
 
     private void instantiateHistories(long startTime){
@@ -438,70 +397,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return null;
     }
 
-    private void saveYesterdaysData() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(cal.getTimeInMillis() - timeDiff);
-        Date now = new Date();
-        cal.setTime(now);
-
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        long endTime = cal.getTimeInMillis();
-        cal.add(Calendar.DATE, -1);
-        long startTime = cal.getTimeInMillis();
-
-        java.text.DateFormat dateFormat = DateFormat.getDateInstance();
-        Log.i("History", "Range Start: " + dateFormat.format(startTime));
-        Log.i("History", "Range End: " + dateFormat.format(endTime));
-
-        //Check how many steps were walked and recorded in the last 7 days
-        DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-                .bucketByTime(1, TimeUnit.DAYS)
-                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-                .build();
-
-        DataReadResult dataReadResult = Fitness.HistoryApi.readData(mGoogleApiClient, readRequest).await(1, TimeUnit.MINUTES);
-
-        //Used for aggregated data
-        if (dataReadResult.getBuckets().size() > 0) {
-            Log.i("History", "Number of buckets: " + dataReadResult.getBuckets().size());
-            for (Bucket bucket : dataReadResult.getBuckets()) {
-                List<DataSet> dataSets = bucket.getDataSets();
-                for (DataSet dataSet : dataSets) {
-                    showDataSet(dataSet);
-                }
-            }
-        }
-        //Used for non-aggregated data
-        else if (dataReadResult.getDataSets().size() > 0) {
-            Log.i("History", "Number of returned DataSets: " + dataReadResult.getDataSets().size());
-            for (DataSet dataSet : dataReadResult.getDataSets()) {
-                showDataSet(dataSet);
-            }
-        }
-    }
-
-
-
-    private void showDataSet(DataSet dataSet) {
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        DateFormat timeFormat = DateFormat.getTimeInstance();
-
-        for (DataPoint dp : dataSet.getDataPoints()) {
-            Log.i("History", "Data point:");
-            Log.i("History", "\tType: " + dp.getDataType().getName());
-            Log.i("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-            Log.i("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-            for(Field field : dp.getDataType().getFields()) {
-                Log.e("History", "\tField: " + field.getName() +
-                        " Value: " + dp.getValue(field));
-                yesterdaySteps = dp.getValue(field).asInt();
-            }
-        }
-    }
-
+    // runs multiple Async Tasks
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -510,31 +406,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             asyncTask.execute(params);
     }
 
-    public int getYesterdaySteps() {
-        return yesterdaySteps;
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.e("HistoryAPI", "onConnectionSuspended");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e("HistoryAPI", "onConnectionFailed");
-    }
-
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i("HistoryAPI", "onConnected");
-    }
-
-    private class ViewWeekStepCountTask extends AsyncTask<Void, Void, Void> {
-        protected Void doInBackground(Void... params) {
-            saveYesterdaysData();
-            getStepsDone = true;
-            return null;
-        }
-    }
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void> {
 
@@ -560,9 +431,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
             pedometer.setValue(sc.steps() * 100 / goal.getGoal());
 
-            nowTime = Calendar.getInstance();
-            nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
-            updateRT(nowTime);
+            updateRT(Calendar.getInstance());
         }
     }
 }

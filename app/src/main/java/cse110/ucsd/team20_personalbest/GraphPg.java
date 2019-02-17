@@ -26,9 +26,10 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
 import static android.content.Context.MODE_PRIVATE;
-import static cse110.ucsd.team20_personalbest.MainActivity.sdrm;
 
-public class GraphFragment extends Fragment {
+public class GraphPg extends Fragment {
+
+    static boolean gotUnintendedSteps;
 
     // colors for the stacked chart
     public static final int USTEP_COLOR = Color.parseColor("#33B5E5"); // blue
@@ -47,7 +48,7 @@ public class GraphFragment extends Fragment {
     private ArrayList<Integer> lastWeeksGoals;
 
 
-    public GraphFragment() {}
+    public GraphPg() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +79,12 @@ public class GraphFragment extends Fragment {
             if(steps.size() == i) steps.add(0);
         }
 
-        for(int i = 0; i < steps.size(); i++){
-            steps.set(i, steps.get(i) - walks.get(i));
+        if (!gotUnintendedSteps) {
+            for (int i = 0; i < steps.size(); i++) {
+                steps.set(i, steps.get(i) - walks.get(i));
+            }
+            gotUnintendedSteps = true;
+            Log.d("Graph Unintended Steps", "Calculated unintended steps a single time.");
         }
 
         int numColumns = 7;
@@ -89,26 +94,35 @@ public class GraphFragment extends Fragment {
         List<Line> lines = new ArrayList<Line>();
         List<SubcolumnValue> values;
 
-        // gets goal line data for each day
+        Goal g = new Goal(this.getActivity());
+        int currentDay = g.getCurrentDay();
+        Log.d("Graph Goal", "Displaying saved goals until today, " + g.getCurrentDay() + " = " + DAYS_OF_WEEK_LONG[g.getCurrentDay()]);
+
+        // sets current day's goal as goal for future days
+        Integer goalValue = 0;
+        Integer defaultGoal = g.getGoal();
+
+        // gets goal data for each day
         Log.d("Graph Data", lastWeeksGoals.toString());
         for (int i = 0; i < numColumns; i++) {
-
-            line.add(new PointValue(i, lastWeeksGoals.get(i)));
+            goalValue = i <= currentDay ? lastWeeksGoals.get(i) : defaultGoal;
+            line.add(new PointValue(i, goalValue));
         }
         Line lineObj = new Line(line);
         lineObj.setColor(LINE_COLOR);
         lines.add(lineObj);
+
+        // for proper framing of graph from y = 0
+        ArrayList<PointValue> zeroLine = new ArrayList<>();
+        zeroLine.add(new PointValue(0, 0));
+        lines.add(new Line(zeroLine));
 
 
         // gets column data for each day
         for (int i = 0; i < numColumns; ++i) {
 
             values = new ArrayList<SubcolumnValue>();
-
-            // intended walk TODO add actual intended walk data
             values.add(new SubcolumnValue(steps.get(i), USTEP_COLOR));
-
-            // unintended walk TODO add actual unintended walk data
             values.add(new SubcolumnValue(walks.get(i), ISTEP_COLOR));
 
             Column column = new Column(values);
@@ -166,7 +180,8 @@ public class GraphFragment extends Fragment {
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(), "Goal is " + Math.round(value.getY()) + " steps", Toast.LENGTH_SHORT).show();
+            if (value.getY() != 0)
+                Toast.makeText(getActivity(), "Goal is " + Math.round(value.getY()) + " steps", Toast.LENGTH_SHORT).show();
         }
 
         @Override

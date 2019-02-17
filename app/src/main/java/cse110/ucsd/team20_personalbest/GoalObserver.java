@@ -18,21 +18,16 @@ public class GoalObserver implements Observer {
 
     private Goal goal;
     private MainActivity mainActivity;
-
-    private boolean subGoalDisplayed;
+    private boolean doneCalculatingYesterdaySteps;
 
     GoalObserver(Goal gl, MainActivity ma){
         goal = gl;
         mainActivity = ma;
-        subGoalDisplayed = false;
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        //System.out.println("Updating observer");
         int currentsteps = (int) o;
-
-        //System.out.println("Goal of " + currentsteps + "/" + goal.getGoal() + " complete: " + goal.attemptCompleteGoal(currentsteps));
 
         // if goal has been achieved and a goal hasn't already been met today or was met yesterday and not displayed
         if(goal.popupForYesterday){
@@ -43,6 +38,8 @@ public class GoalObserver implements Observer {
             goal.displayedPopup = false;
             goal.meetGoal(false);
             goal.popupForYesterday = false;
+
+            Log.i("Goal", "Popup for yesterday's goal.");
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
@@ -57,6 +54,8 @@ public class GoalObserver implements Observer {
             goal.meetGoal(true);
             goal.popupForYesterday = false;
 
+            Log.i("Goal", "Popup for today's goal.");
+
             // popup where user can choose automatic goal or set a manual goal
             createDialog();
         }
@@ -65,17 +64,19 @@ public class GoalObserver implements Observer {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
         cal.setTime(now);
-        cal.set(Calendar.HOUR_OF_DAY, 20);
-        cal.set(Calendar.MINUTE, 00);
 
+        // gets yesterday's steps
+        if (!doneCalculatingYesterdaySteps)
+            doneCalculatingYesterdaySteps = mainActivity.setYesterdaySteps(cal);
         int yesterdaySteps = mainActivity.getYesterdaySteps();
 
         // if goal has not been completed today, display toast encouragement at 8pm
-        if (goal.canShowSubGoal(cal) && !goal.metToday() && !subGoalDisplayed) {
-            if (mainActivity.getStepsDone) {
+        if (goal.canShowSubGoal(cal) && !goal.metToday()) {
+            if (doneCalculatingYesterdaySteps) {
                 goal.displaySubGoal(mainActivity, currentsteps, yesterdaySteps);
-                mainActivity.getStepsDone = false;
-                subGoalDisplayed = true;
+                goal.displayedSubGoal = true;
+                goal.save(mainActivity, cal);
+                Log.i("SubGoal","Displayed sub goal toast");
             } else {
                 Log.i("SubGoal","Yesterday's steps not done calculating.");
             }
@@ -85,7 +86,6 @@ public class GoalObserver implements Observer {
     private void createDialog() {
 
         String TAG = "Goal Popup";
-
         Log.i(TAG, "Popup being created");
 
         // creates the pop up
