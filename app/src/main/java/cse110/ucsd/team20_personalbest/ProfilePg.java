@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +41,10 @@ import static android.content.Context.MODE_PRIVATE;
  * create an instance of this fragment.
  */
 public class ProfilePg extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -123,14 +122,15 @@ public class ProfilePg extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String feetStr = changeSteps.getText().toString();
-                String inchesStr = changeFeet.getText().toString();
+                String feetStr = changeFeet.getText().toString();
+                String inchesStr = changeInches.getText().toString();
                 String goalStr = changeSteps.getText().toString();
 
                 if (feetStr.isEmpty() || inchesStr.isEmpty() || goalStr.isEmpty()) {
                     Toast toast = Toast.makeText(getActivity() ,
                             "Enter height and goal.",
                             Toast.LENGTH_SHORT);
+                    Log.d("Profile", "One or more fields empty\n\tFeet: " + feetStr + "\n\tInches: " + inchesStr + "\n\tGoal: " + goalStr);
                     toast.show();
                 } else {
                     int feet = Integer.parseInt(feetStr);
@@ -141,6 +141,7 @@ public class ProfilePg extends Fragment {
                         Toast toast = Toast.makeText(getActivity() ,
                                 "Enter valid height and goal.",
                                 Toast.LENGTH_SHORT);
+                        Log.d("Profile", "One or more fields out of range\n\tFeet: " + feetStr + "\n\tInches: " + inchesStr + "\n\tGoal: " + goalStr);
                         toast.show();
                     }
 
@@ -155,6 +156,8 @@ public class ProfilePg extends Fragment {
                         Toast toast = Toast.makeText(getActivity() ,
                                 "Updates Applied",
                                 Toast.LENGTH_SHORT);
+
+                        Log.d("Profile", "All updated fields valid.");
 
                         MainActivity main = (MainActivity) getActivity();
                         main.updateGoal(goal);
@@ -183,7 +186,6 @@ public class ProfilePg extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -218,7 +220,6 @@ public class ProfilePg extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

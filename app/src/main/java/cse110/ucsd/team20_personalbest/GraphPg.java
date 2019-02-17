@@ -28,7 +28,9 @@ import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 import static android.content.Context.MODE_PRIVATE;
 import static cse110.ucsd.team20_personalbest.MainActivity.sdrm;
 
-public class GraphFragment extends Fragment {
+public class GraphPg extends Fragment {
+
+    static boolean gotUnintendedSteps;
 
     // colors for the stacked chart
     public static final int USTEP_COLOR = Color.parseColor("#33B5E5"); // blue
@@ -47,7 +49,7 @@ public class GraphFragment extends Fragment {
     private ArrayList<Integer> lastWeeksGoals;
 
 
-    public GraphFragment() {}
+    public GraphPg() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +80,12 @@ public class GraphFragment extends Fragment {
             if(steps.size() == i) steps.add(0);
         }
 
-        for(int i = 0; i < steps.size(); i++){
-            steps.set(i, steps.get(i) - walks.get(i));
+        if (!gotUnintendedSteps) {
+            for (int i = 0; i < steps.size(); i++) {
+                steps.set(i, steps.get(i) - walks.get(i));
+            }
+            gotUnintendedSteps = true;
+            Log.d("Graph Unintended Steps", "Calculated unintended steps a single time.");
         }
 
         int numColumns = 7;
@@ -104,11 +110,7 @@ public class GraphFragment extends Fragment {
         for (int i = 0; i < numColumns; ++i) {
 
             values = new ArrayList<SubcolumnValue>();
-
-            // intended walk TODO add actual intended walk data
             values.add(new SubcolumnValue(steps.get(i), USTEP_COLOR));
-
-            // unintended walk TODO add actual unintended walk data
             values.add(new SubcolumnValue(walks.get(i), ISTEP_COLOR));
 
             Column column = new Column(values);
