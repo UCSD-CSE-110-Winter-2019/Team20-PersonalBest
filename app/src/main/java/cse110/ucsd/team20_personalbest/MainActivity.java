@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private EditText timeText;
     private Button changeTime;
 
-    private Calendar cal;
-  
     private TextView textViewSteps;
 
     private static final String PREF_FILE = "prefs";
@@ -292,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     goal.addIntendedSteps(is.returnSteps(sc.steps()));
-                    goal.save(mainActivity, nowTime);
+                    goal.save(mainActivity, cal);
 
                     onWalk = false;
                     updateCal();
