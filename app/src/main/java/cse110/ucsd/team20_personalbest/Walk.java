@@ -19,7 +19,7 @@ public class Walk {
     }
 
     public String getTime() {
-        final String format = String.format("%s /%s / %d\n%s:%s %s",
+        return String.format("%s /%s / %d\n%s:%s %s",
                 start.get(start.MONTH) + 1 < 10 ?
                         String.format("%02d", start.get(start.MONTH) + 1) :
                         start.get(start.MONTH) + 1,
@@ -33,8 +33,7 @@ public class Walk {
                 start.get(start.MINUTE) < 10 ?
                         String.format("%02d", start.get(start.MINUTE)) :
                         start.get(start.MINUTE)
-                , start.get(start.AM_PM) == Calendar.AM ? "AM" : "PM");
-        return format;
+                , start.get(start.AM_PM) == start.AM ? "AM" : "PM");
     }
 
 }

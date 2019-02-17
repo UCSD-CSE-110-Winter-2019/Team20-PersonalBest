@@ -50,5 +50,11 @@ public class WalkTest {
         newRTWalk.updateStat(2000, OneHoutLater);
         newWalk = new Walk(newRTWalk.getStat(), now);
         assertEquals("Steps:  2000\nDistance:  0.91 Miles\nSpeed: 0.91 MPH", newWalk.getStat());
+
+        MockCalendar mc = new MockCalendar(11,8,2019,10,13,0);
+        newWalk = new Walk(newRTWalk.getStat(),mc.getInstance());
+        Calendar mc1 = mc;
+        System.out.println(mc1.get(mc.MONTH));
+        assertEquals("08 /11 / 2019\n10:13 AM", newWalk.getTime());
     }
 }
