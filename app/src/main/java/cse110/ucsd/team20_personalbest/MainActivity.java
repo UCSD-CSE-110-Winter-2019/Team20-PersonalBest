@@ -41,6 +41,7 @@ import java.util.Date;
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
+import cse110.ucsd.team20_personalbest.fitness.MockFitness;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
@@ -227,16 +228,24 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         FragmentTransaction ft = fm.beginTransaction();
 
-        String fitnessServiceKey = "GOOGLE_FIT";
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+
+        String key = getIntent().getStringExtra("service_key");
+        if(key == null) key = "GOOGLE_FIT";
+        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(MainActivity mainActivity) {
                 return new GoogleFitAdapter(mainActivity);
             }
         });
+        FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity MainActivity) {
+                return new MockFitness(mainActivity);
+            }
+        });
 
 
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
+        fitnessService = FitnessServiceFactory.create(key, activity);
         fitnessService.setup();
 
         // gets steps
@@ -317,6 +326,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         cal.setTimeInMillis(cal.getTimeInMillis() - timeDiff);
         Log.d("Time", "Updating calender to the current time: " + cal.getTimeInMillis());
         //cal.setTime(now);
+    }
+
+    public FitnessService getFitnessService(){
+        return fitnessService;
     }
 
     public void setButton(Button btn, boolean onWalk) {
