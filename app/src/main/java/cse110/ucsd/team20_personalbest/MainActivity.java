@@ -30,13 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.data.DataPoint;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataSource;
-import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,7 +37,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
@@ -168,11 +160,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
+            Log.d(TAG, "Starting initial login page activity");
         }
 
         // calendar for current day
         updateCal();
         instantiateHistories(getTime(cal));
+
 
 
         // log height and walker/runner saved properly
@@ -208,31 +202,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             @Override
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
-                Calendar cal = MockCalendar.getInstance();
-                long endTime = cal.getTimeInMillis();
-                cal.add(Calendar.HOUR_OF_DAY, -1);
-                long startTime = cal.getTimeInMillis();
-
-                // Create a data source
-                DataSource dataSource =
-                        new DataSource.Builder()
-                                .setAppPackageName(activity)
-                                .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-                                .setStreamName(TAG + " - step count")
-                                .setType(DataSource.TYPE_RAW)
-                                .build();
-
-                // Create a data set
-                int stepCountDelta = 500;
-                DataSet dataSet = DataSet.create(dataSource);
-                // For each data point, specify a start time, end time, and the data value -- in this case,
-                // the number of new steps.
-                DataPoint dataPoint =
-                        dataSet.createDataPoint().setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS);
-                dataPoint.getValue(Field.FIELD_STEPS).setInt(stepCountDelta);
-                dataSet.add(dataPoint);
-                Task<Void> response = Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)).insertData(dataSet);
-
+                Log.d(TAG, "Extra steps added; not added to google history");
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -267,9 +237,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
-
         fitnessService.setup();
-        fitnessService.updateStepCount();
 
         // gets steps
         executeAsyncTask(new ASyncStepUpdateRunner());
@@ -425,6 +393,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public boolean setYesterdaySteps(Calendar cal) {
+        if(dailysteps == null){
+            return false;
+        }
         ArrayList<Integer> stepsArray = dailysteps.getHistory();
         if (stepsArray.size() == 0) return false;
 

@@ -15,6 +15,8 @@ import com.google.android.gms.fitness.request.SessionReadRequest;
 import com.google.android.gms.fitness.result.SessionReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,7 +75,7 @@ public class SessionDataRequestManager {
                 .enableServerQueries()
                 .build();
 
-        Fitness.getSessionsClient(activity, googleSignIn)
+        Task<SessionReadResponse> task = Fitness.getSessionsClient(activity, googleSignIn)
                 .readSession(readRequest)
                 .addOnSuccessListener(new OnSuccessListener<SessionReadResponse>() {
                     @Override
@@ -113,6 +115,11 @@ public class SessionDataRequestManager {
                     }
                 });
 
+        try{
+            Tasks.await(task, 500, TimeUnit.MILLISECONDS);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
