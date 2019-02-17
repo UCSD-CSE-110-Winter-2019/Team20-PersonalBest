@@ -73,7 +73,12 @@ public class GraphFragment extends Fragment {
         ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
         ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
 
-        for(int i = 0; i < walks.size(); i++){
+        for(int i = 0; i < 7; i++){
+            if(walks.size() == i) walks.add(0);
+            if(steps.size() == i) steps.add(0);
+        }
+
+        for(int i = 0; i < steps.size(); i++){
             steps.set(i, steps.get(i) - walks.get(i));
         }
 
