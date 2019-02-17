@@ -51,7 +51,7 @@ public class InitialActivity extends Activity {
                     height_in = Integer.parseInt(enter_inch.getText().toString());
 
                     // user entered an invalid height
-                    if (height_ft > 7 || height_in > 12 || height_ft < 0 || height_in < 0) {
+                    if (height_ft > 7 || height_in > 11 || height_ft < 0 || height_in < 0) {
                         Toast.makeText(InitialActivity.this, "Enter valid height", Toast.LENGTH_SHORT).show();
                     }
 

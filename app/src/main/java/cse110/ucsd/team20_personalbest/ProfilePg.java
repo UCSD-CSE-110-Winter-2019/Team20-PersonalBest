@@ -115,13 +115,7 @@ public class ProfilePg extends Fragment {
         Boolean autoGoal = preferences.getBoolean("autoGoal", true);
         goalBox = (CheckBox) getView().findViewById(R.id.goalRadio);
 
-        if(autoGoal) {
-            goalBox.setChecked(true);
-        }
-        else {
-
-            goalBox.setChecked(false);
-        }
+        goalBox.setChecked(autoGoal);
 
         //Updating all the changes with a single button.
         applyChanges = (Button) getView().findViewById(R.id.applyChanges);
@@ -129,23 +123,47 @@ public class ProfilePg extends Fragment {
             @Override
             public void onClick(View v) {
 
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("autoGoal", goalBox.isChecked());
-                editor.putInt("savedGoal", Integer.parseInt(changeSteps.getText().toString()));
-                editor.putInt("feet",Integer.parseInt(changeFeet.getText().toString()) );
-                editor.putInt("inches", Integer.parseInt(changeInches.getText().toString()));
-                editor.putInt("height", ((12 * Integer.parseInt(changeFeet.getText().toString())) + Integer.parseInt(changeInches.getText().toString())));
-                editor.apply();
-                Toast toast = Toast.makeText(getActivity() ,
-                        "Updates Applied",
-                        Toast.LENGTH_SHORT);
+                String feetStr = changeSteps.getText().toString();
+                String inchesStr = changeFeet.getText().toString();
+                String goalStr = changeSteps.getText().toString();
 
-                MainActivity main = (MainActivity) getActivity();
-                main.updateGoal(Integer.parseInt(changeSteps.getText().toString()));
-                main.setGoalCount(Integer.parseInt(changeSteps.getText().toString()));
-                main.setAutoGoal(preferences.getBoolean("autoGoal", true));
+                if (feetStr.isEmpty() || inchesStr.isEmpty() || goalStr.isEmpty()) {
+                    Toast toast = Toast.makeText(getActivity() ,
+                            "Enter height and goal.",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    int feet = Integer.parseInt(feetStr);
+                    int inches = Integer.parseInt(inchesStr);
+                    int goal = Integer.parseInt(goalStr);
 
-                toast.show();
+                    if (feet > 7 || inches > 11 || feet < 0 || inches < 0 || goal < 0 || goal > 50000) {
+                        Toast toast = Toast.makeText(getActivity() ,
+                                "Enter valid height and goal.",
+                                Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+
+                    else {
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("autoGoal", goalBox.isChecked());
+                        editor.putInt("savedGoal", goal);
+                        editor.putInt("feet", feet);
+                        editor.putInt("inches", inches);
+                        editor.putInt("height", (12 * feet) + inches);
+                        editor.apply();
+                        Toast toast = Toast.makeText(getActivity() ,
+                                "Updates Applied",
+                                Toast.LENGTH_SHORT);
+
+                        MainActivity main = (MainActivity) getActivity();
+                        main.updateGoal(goal);
+                        main.setGoalCount(Integer.parseInt(changeSteps.getText().toString()));
+                        main.setAutoGoal(preferences.getBoolean("autoGoal", true));
+
+                        toast.show();
+                    }
+                }
 
             }
         });
