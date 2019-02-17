@@ -36,6 +36,7 @@ public class GoalObserver implements Observer {
 
         // if goal has been achieved and a goal hasn't already been met today or was met yesterday and not displayed
         if(goal.popupForYesterday){
+
             mainActivity.sendToast("Congratulations! Yesterday, you met your goal of " + goal.getGoal() + " steps!");
 
             // popup was for yesterday, display false
@@ -83,6 +84,10 @@ public class GoalObserver implements Observer {
 
     private void createDialog() {
 
+        String TAG = "Goal Popup";
+
+        Log.i(TAG, "Popup being created");
+
         // creates the pop up
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setTitle("You met your goal!");
@@ -105,15 +110,19 @@ public class GoalObserver implements Observer {
         // checks whether we can recommend a new automatic goal
         if (goal.canSetAutomatically()) {
             autoRadio.setChecked(true);
+            Log.i(TAG, "Goal can be set automatically");
         }
         else {
             autoRadio.setEnabled(false);
             customRadio.setChecked(true);
+            Log.i(TAG, "Goal cannot be set automatically");
         }
 
         builder.setPositiveButton("Set goal", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                String TAG = "Goal Popup/Set goal";
                 int newGoal = goal.getGoal();
+                Log.i(TAG, "Goal is being set");
 
                 // user chose automatic goal
                 if (autoRadio.isChecked())
@@ -129,6 +138,8 @@ public class GoalObserver implements Observer {
                 mainActivity.setGoalCount((goal.getGoal()));
                 goal.save(mainActivity, Calendar.getInstance());
 
+                Log.i(TAG, "Goal cannot be met today any more \nnew goal has been created \ntime of goal has been saved  \nui updated");
+
                 Toast.makeText(mainActivity, "New goal set to " + newGoal + "!", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
@@ -136,10 +147,11 @@ public class GoalObserver implements Observer {
         builder.setNegativeButton("Ignore", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //goal.ignore();
-                Toast.makeText(mainActivity, "Kept old goal!", Toast.LENGTH_LONG).show();
+                Toast.makeText(mainActivity, "Kept old goal.", Toast.LENGTH_LONG).show();
 
                 goal.meetGoal(true);
                 goal.save(mainActivity, Calendar.getInstance());
+                Log.i("Goal Popup/Ignore", "Goal cannot be met today any more \ngoal has been saved");
                 dialog.dismiss();
             }
         });

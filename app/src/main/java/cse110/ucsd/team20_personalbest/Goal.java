@@ -19,7 +19,7 @@ public class Goal {
     boolean popupForYesterday = false;
     private int currentDay;
 
-    private String[] daysOfWeek = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+    private String[] daysOfWeek = {"Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
     private static final int INITIAL_GOAL = 5000;
@@ -121,6 +121,7 @@ public class Goal {
         String today = daysOfWeek[cal.get(Calendar.DAY_OF_WEEK) - 1];
         Log.i("Goal", "Saving current goal of " + goal + " to " + today);
         editor.putInt(today + " goal", goal);
+        editor.apply();
     }
 
     public boolean attemptCompleteGoal(long steps){
