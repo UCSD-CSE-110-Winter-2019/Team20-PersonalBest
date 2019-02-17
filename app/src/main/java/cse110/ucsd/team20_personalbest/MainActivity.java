@@ -261,8 +261,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 else {
                     updateCal();
                     is.endSession(getTime(cal));
+                    long steps = is.returnSteps(sc.steps());
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
+
+                    goal.addIntendedSteps(is.returnSteps(sc.steps()));
+                    goal.save(mainActivity, cal);
 
                     onWalk = false;
                     updateRT(Calendar.getInstance());

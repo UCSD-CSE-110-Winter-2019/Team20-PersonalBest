@@ -29,7 +29,8 @@ import java.util.Calendar;
 public class WalkPg extends Fragment {
 
     private LinearLayout mlayout;
-    private ArrayList<Walk> walks;
+    private static ArrayList<Walk> walks;
+    private ArrayList<Walk> walks_saved;
     private OnWalkPgListener mListener;
 
     private static final String TAG = "WalkPage";
@@ -87,10 +88,11 @@ public class WalkPg extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstancesState) {
         mlayout = (LinearLayout) getView().findViewById(R.id.llayout);
         Log.d(TAG, "Loading past walks");
-        for(int i = 0; i < walks.size(); i ++) {
+        for (int i = 0; i < walks.size(); i++) {
             Log.d(TAG, "Adding a walk");
             addEntry(walks.get(i));
         }
+
     }
 
     @Override
@@ -108,7 +110,8 @@ public class WalkPg extends Fragment {
     }
 
     public void updateWalks(ArrayList<Walk> newWalks) {
-        walks = newWalks;
+        if (newWalks != null)
+            walks = newWalks;
     }
 
     @Override
