@@ -45,13 +45,13 @@ public class DailyStepCountHistory {
     private void format(long startTime){
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)));
-        start.set(Calendar.HOUR, 0);
+        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
         long startOfWeek = start.getTimeInMillis();
-        start.add(Calendar.DATE, 8);
+        start.add(Calendar.DAY_OF_WEEK, 7);
         long endOfWeek = start.getTimeInMillis();
 
         Log.d(TAG, "Requesting history from " + startOfWeek + " to " + endOfWeek);
@@ -73,9 +73,9 @@ public class DailyStepCountHistory {
                     List<DataSet> dataSets = bucket.getDataSets();
                     for(DataSet dataSet : dataSets) {
                         List<DataPoint> dataPoints = dataSet.getDataPoints();
+                        int steps = 0;
                         for (DataPoint dataPoint : dataPoints) {
-                            data.add(dataPoint.getValue(Field.FIELD_STEPS).asInt());
-                            int steps = dataPoint.getValue(Field.FIELD_STEPS).asInt();
+                            steps = dataPoint.getValue(Field.FIELD_STEPS).asInt();
                             long durationInMillis = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
 
                             Calendar time = Calendar.getInstance();
@@ -83,6 +83,7 @@ public class DailyStepCountHistory {
 
                             Log.d(TAG, "Steps: " + steps  + " from " + time.toString());
                         }
+                        data.add(steps);
                     }
                 }
             }

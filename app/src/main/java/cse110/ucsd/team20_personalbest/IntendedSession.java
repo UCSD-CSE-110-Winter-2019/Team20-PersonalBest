@@ -2,6 +2,7 @@ package cse110.ucsd.team20_personalbest;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,13 +31,6 @@ import static com.google.android.gms.fitness.data.DataType.TYPE_STEP_COUNT_DELTA
 
 public class IntendedSession implements SessionInterface{
 
-    private String fitnessServiceKey = "GOOGLE_FIT";
-    public static final String TAG = "BasicSessions";
-    public static final String SESSION_NAME = "Intended Walk";
-    public static final String SESSION_DESC = "Intended Walk description";
-    private static final String DATE_FORMAT = "yyyy.MM.dd HH:mm:ss";
-    private FitnessService fitnessService;
-
     private Session session;
     private GoogleSignInAccount google;
     private Activity activity;
@@ -45,6 +39,7 @@ public class IntendedSession implements SessionInterface{
     private long ending;
     private long steps;
     private long startingSteps;
+    private String TAG = "Intended Session";
 
     // instantiate a new session
 
@@ -57,6 +52,8 @@ public class IntendedSession implements SessionInterface{
                 .setActivity(FitnessActivities.WALKING)
                 .build();
 
+        Log.i(TAG, "New session built");
+
         this.google = googleSignin;
         this.activity = a;
         this.starting = startTime;
@@ -64,15 +61,15 @@ public class IntendedSession implements SessionInterface{
 
         Task<Void> response = Fitness.getSessionsClient(activity, google)
                 .startSession(session);
+
+        Log.i(TAG, "Session (" + session.getIdentifier() + ") started at: " + startTime);
+
         return;
     }
 
-
-    public boolean startSession(long startTime) {
-
-       return true;
+    public boolean startSession(long startTime){
+        return true;
     }
-
 
     public boolean endSession(long endTime) {
 
@@ -80,6 +77,8 @@ public class IntendedSession implements SessionInterface{
 
         Task<List<Session>> response = Fitness.getSessionsClient(activity, google)
                 .stopSession(session.getIdentifier());
+
+        Log.i(TAG, "Session (" + session.getIdentifier() + ") ended at: " + endTime);
 
         return true;
     }
