@@ -94,7 +94,6 @@ public class GraphPg extends Fragment {
         Log.e("Graph Intended Steps", Arrays.toString(intendedSteps.toArray()));
         Log.e("Graph Total Steps", Arrays.toString(steps.toArray()));
 
-
         int numColumns = 7;
 
         List<Column> columns = new ArrayList<Column>();
@@ -191,7 +190,7 @@ public class GraphPg extends Fragment {
         Log.d("Intended steps data", data.toString());
         return data;
     }
-
+  
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
 
         @Override

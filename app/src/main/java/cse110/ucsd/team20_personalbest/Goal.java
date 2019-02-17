@@ -145,6 +145,7 @@ public class Goal {
                 + "\n\tDisplayed popup: " + displayedPopup + "\n\tDisplayed subgoal: " + displayedSubGoal
                 + "\n\tCurrent intended steps: " + currentIntendedSteps);
 
+
         saveIntendedStepsDay(ma, editor, cal);
 
         // saves today's goal for later graphing
