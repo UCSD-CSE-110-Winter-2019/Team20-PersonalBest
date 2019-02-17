@@ -511,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             Looper.prepare();
             while (updateSteps) {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
 
                     fitnessService.updateStepCount();
                     publishProgress();
@@ -525,9 +525,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         @Override
         protected void onProgressUpdate(Void... voids) {
 
-            Log.d(TAG, "Updating pedometer");
+            Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
+            pedometer.setValue(sc.steps() * 100 / goal.getGoal());
 
-            pedometer.setValue(sc.steps());
             updateRT(Calendar.getInstance());
         }
     }
