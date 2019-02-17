@@ -19,7 +19,7 @@ import cse110.ucsd.team20_personalbest.MainActivity;
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 134;
     private final String TAG = "GoogleFitAdapter";
-
+    private long temp;
     private MainActivity activity;
 
     public GoogleFitAdapter(MainActivity activity) {
@@ -93,9 +93,10 @@ public class GoogleFitAdapter implements FitnessService {
                                         dataSet.isEmpty()
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
-
-                                activity.setStepCount(total);
-                                Log.d(TAG, "Total steps: " + total);
+                                long totalStep = activity.sc.steps() + total - temp;
+                                activity.setStepCount(totalStep);
+                                Log.d(TAG, "Total steps: " + totalStep);
+                                temp = total;
                             }
                         })
                 .addOnFailureListener(

@@ -33,7 +33,7 @@ public class Walk {
                 start.get(start.MINUTE)<10 ?
                         String.format("%02d", start.get(start.MINUTE)) :
                         start.get(start.MINUTE)
-                , start.get(start.AM_PM) == Calendar.AM ? "AM" : "PM");
+                , start.get(start.AM_PM) == start.AM ? "AM" : "PM");
     }
 
 }
