@@ -26,7 +26,7 @@
             android:hint="Add 500"
             android:inputType="number"
             android:textSize="24sp"
-            android:layout_marginTop="470dp"
+            android:layout_marginTop="520dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.697"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="130dp"
-            android:layout_marginTop="470dp"
+            android:layout_marginTop="520dp"
             android:layout_marginRight="0dp"
             android:hint="Change T"
             android:inputType="number"
@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="250dp"
-            android:layout_marginTop="470dp"
+            android:layout_marginTop="520dp"
             android:layout_marginRight="0dp"
             android:hint="Change T"
             android:inputType="number"
@@ -111,7 +111,7 @@
             android:layout_height="100dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="320dp"
+            android:layout_marginTop="360dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginBottom="32dp"
@@ -155,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="140dp"
             android:layout_marginLeft="161dp"
-            android:layout_marginTop="420dp"
+            android:layout_marginTop="465dp"
             android:layout_marginEnd="1dp"
             android:layout_marginRight="162dp"
             android:layout_marginBottom="50dp"
@@ -185,14 +185,18 @@
     <FrameLayout
         android:id="@+id/profileFrag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="160dp">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/dashFrag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="12dp"
+        tools:layout_editor_absoluteY="0dp">
 
     </FrameLayout>
 

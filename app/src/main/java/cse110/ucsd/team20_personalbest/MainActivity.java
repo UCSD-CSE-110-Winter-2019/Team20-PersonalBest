@@ -167,13 +167,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         nowTime.setTimeInMillis(nowTime.getTimeInMillis() - timeDiff);
         instantiateHistories(getTime(nowTime));
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.HISTORY_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-                .addConnectionCallbacks(this)
-                .enableAutoManage(this, 0, this)
-                .build();
-
 
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -213,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         changeTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Long.parseLong(timeText.getText().toString()) == 0) {
+                if(timeText.getText().toString().isEmpty() || Long.parseLong(timeText.getText().toString()) == 0) {
                     timeDiff = 0;
                 }
                 else
@@ -287,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                     is = new IntendedSession( getTime(nowTime), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
-                    Toast.makeText(getApplicationContext(), "Started walk", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Started " + walkOrRun, Toast.LENGTH_LONG).show();
                     startTime = Calendar.getInstance();
                     startTime.setTimeInMillis(startTime.getTimeInMillis() - timeDiff);
                     rtStat = new RTWalk(height, startTime);
@@ -297,15 +290,14 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 // stops walk
                 else {
                     updateCal();
-                    is.endSession(getTime(cal));
-                    long steps = is.returnSteps(sc.steps());
 
                     is.endSession(getTime(nowTime));
+                    long steps = is.returnSteps(sc.steps());
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
                     goal.addIntendedSteps(is.returnSteps(sc.steps()));
-                    goal.save(mainActivity, cal);
+                    goal.save(mainActivity, nowTime);
 
                     onWalk = false;
                     nowTime = Calendar.getInstance();
