@@ -29,15 +29,21 @@ public class GoalObserver implements Observer {
     public void update(Observable observable, Object o) {
         int currentsteps = (int) o;
 
+        Log.d("Goal Observer", "Popup checks\n\tWill display a popup when on dashboard: " + (goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && !goal.getIgnored())
+         + "\n\tMeetOnce: " + goal.getMeetOnce()
+         + "\n\tDashboard visible: " + mainActivity.isDashboardVisible()
+         + "\n\tGoal ignored today: " + goal.getIgnored());
+
         // if goal has been achieved and a goal hasn't already been met today or was met yesterday and not displayed
-        if(goal.popupForYesterday){
+        if(goal.getPopupForYesterday()){
 
             mainActivity.sendToast("Congratulations! Yesterday, you met your goal of " + goal.getGoal() + " steps!");
 
             // popup was for yesterday, display false
-            goal.displayedPopup = false;
+            goal.setDisplayedPopup(false);
             goal.meetGoal(false);
-            goal.popupForYesterday = false;
+            goal.setPopupForYesterday(false);
+            goal.setPopupCurrentlyOpen(true);
 
             Log.i("Goal", "Popup for yesterday's goal.");
 
@@ -45,14 +51,16 @@ public class GoalObserver implements Observer {
             createDialog();
         }
 
-        else if(goal.attemptCompleteGoal(currentsteps) && !goal.metToday()){
+        // can display goal multiple times if the getMeetOnce is on
+        else if(goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && mainActivity.isDashboardVisible() && !goal.getIgnored()){
 
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
 
             // set displayed popup and met goal to true if the popup was for today's goal
-            goal.displayedPopup = true;
+            goal.setDisplayedPopup(true);
             goal.meetGoal(true);
-            goal.popupForYesterday = false;
+            goal.setPopupForYesterday(false);
+            goal.setPopupCurrentlyOpen(true);
 
             Log.i("Goal", "Popup for today's goal.");
 
@@ -74,7 +82,7 @@ public class GoalObserver implements Observer {
         if (goal.canShowSubGoal(cal) && !goal.metToday()) {
             if (doneCalculatingYesterdaySteps) {
                 goal.displaySubGoal(mainActivity, currentsteps, yesterdaySteps);
-                goal.displayedSubGoal = true;
+                goal.setDisplayedSubGoal(true);
                 goal.save(mainActivity, cal);
                 Log.i("SubGoal","Displayed sub goal toast");
             } else {
@@ -141,6 +149,7 @@ public class GoalObserver implements Observer {
                 Log.i(TAG, "Goal cannot be met today any more \nnew goal has been created \ntime of goal has been saved  \nui updated");
 
                 Toast.makeText(mainActivity, "New goal set to " + newGoal + "!", Toast.LENGTH_LONG).show();
+                goal.setPopupCurrentlyOpen(false);
                 dialog.dismiss();
             }
         });
@@ -150,8 +159,10 @@ public class GoalObserver implements Observer {
                 Toast.makeText(mainActivity, "Kept old goal.", Toast.LENGTH_LONG).show();
 
                 goal.meetGoal(true);
+                goal.setIgnored(true);
                 goal.save(mainActivity, Calendar.getInstance());
                 Log.i("Goal Popup/Ignore", "Goal cannot be met today any more \ngoal has been saved");
+                goal.setPopupCurrentlyOpen(false);
                 dialog.dismiss();
             }
         });
