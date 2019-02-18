@@ -164,11 +164,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
+            Log.d(TAG, "Starting initial login page activity");
         }
 
         // calendar for current day
         ourCal = new OurCal(Calendar.getInstance(), 0);
         instantiateHistories(ourCal.getTime());
+
 
 
         // log height and walker/runner saved properly
@@ -204,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             @Override
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
+                Log.d(TAG, "Extra steps added; not added to google history");
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -238,9 +241,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
-
         fitnessService.setup();
-        fitnessService.updateStepCount();
 
         // gets steps
         executeAsyncTask(new ASyncStepUpdateRunner());
@@ -405,6 +406,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
     public boolean setYesterdaySteps(Calendar cal) {
+        if(dailysteps == null){
+            return false;
+        }
         ArrayList<Integer> stepsArray = dailysteps.getHistory();
         if (stepsArray.size() == 0) return false;
 

@@ -16,6 +16,7 @@ import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -93,5 +94,11 @@ public class DailyStepCountHistory {
                 Log.e(TAG, "Failed to read step history");
             }
         });
+
+        try{
+            Tasks.await(response, 500, TimeUnit.MILLISECONDS);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
