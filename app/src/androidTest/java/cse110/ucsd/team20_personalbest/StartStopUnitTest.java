@@ -18,7 +18,7 @@ public class StartStopUnitTest {
     private Button startStopbutton;
     private TextView textSteps;
     //private MainActivity activity;
-
+/*
     @Rule
     public ActivityTestRule<MainActivity> activity = new ActivityTestRule<MainActivity>(MainActivity.class);
     //public ActivityTestRule<MainActivity> activity = new ActivityTestRule<MainActivity>(MainActivity.class);
@@ -52,5 +52,5 @@ public class StartStopUnitTest {
     public void test_toastSent() {
 
     }
-
+*/
 } // end class

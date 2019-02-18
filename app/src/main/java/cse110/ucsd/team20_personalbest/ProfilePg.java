@@ -29,6 +29,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -55,6 +58,8 @@ public class ProfilePg extends Fragment {
     private TextView changeGoal;
     private TextView stepsSign;
     private CheckBox goalBox;
+    private CheckBox metBox;
+    private CheckBox ignoredBox;
     private TextView autoGoalText;
     private Button applyChanges;
   
@@ -72,7 +77,6 @@ public class ProfilePg extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ProfilePg.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProfilePg newInstance(String param1, String param2) {
         ProfilePg fragment = new ProfilePg();
         Bundle args = new Bundle();
@@ -112,9 +116,18 @@ public class ProfilePg extends Fragment {
 
         //Setting up checkbox if it should be checked or not.
         Boolean autoGoal = preferences.getBoolean("autoGoal", true);
+        Boolean meetOnce = preferences.getBoolean("meetOnlyOnce", true);
+        final Boolean ignored = preferences.getBoolean("ignored", false);
+
         goalBox = (CheckBox) getView().findViewById(R.id.goalRadio);
+        metBox = (CheckBox) getView().findViewById(R.id.metRadio);
+        ignoredBox = (CheckBox) getView().findViewById(R.id.ignoredRadio);
+
+        Log.d("Goal", "Set meet one to: " + meetOnce);
 
         goalBox.setChecked(autoGoal);
+        metBox.setChecked(meetOnce);
+        ignoredBox.setChecked(ignored);
 
         //Updating all the changes with a single button.
         applyChanges = (Button) getView().findViewById(R.id.applyChanges);
@@ -136,8 +149,9 @@ public class ProfilePg extends Fragment {
                     int feet = Integer.parseInt(feetStr);
                     int inches = Integer.parseInt(inchesStr);
                     int goal = Integer.parseInt(goalStr);
+                    BoundValidity valid = new BoundValidity();
 
-                    if (feet > 7 || inches > 11 || feet < 0 || inches < 0 || goal < 0 || goal > 50000) {
+                    if (!valid.feetAndInches(feet, inches) || !valid.manualGoal(goal)) {
                         Toast toast = Toast.makeText(getActivity() ,
                                 "Enter valid height and goal.",
                                 Toast.LENGTH_SHORT);
@@ -148,6 +162,8 @@ public class ProfilePg extends Fragment {
                     else {
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putBoolean("autoGoal", goalBox.isChecked());
+                        editor.putBoolean("meetOnlyOnce", metBox.isChecked());
+                        editor.putBoolean("ignored", metBox.isChecked());
                         editor.putInt("savedGoal", goal);
                         editor.putInt("feet", feet);
                         editor.putInt("inches", inches);
@@ -158,23 +174,25 @@ public class ProfilePg extends Fragment {
                                 Toast.LENGTH_SHORT);
 
                         Log.d("Profile", "All updated fields valid.");
+                        Log.d("Profile/Goal", "Met box is checked: " + metBox.isChecked());
+                        Log.d("Profile/Goal", "Ignored box is checked: " + ignoredBox.isChecked());
 
                         MainActivity main = (MainActivity) getActivity();
-                        main.updateGoal(goal);
+
+                        Calendar cal = main.getOurCal();
+                        main.updateGoal(goal, cal);
+
                         main.setGoalCount(Integer.parseInt(changeSteps.getText().toString()));
                         main.setAutoGoal(preferences.getBoolean("autoGoal", true));
+                        main.getGoal().setMeetOnce(metBox.isChecked());
+                        main.getGoal().setIgnored(ignoredBox.isChecked());
+                        main.getGoal().save(main, cal);
 
                         toast.show();
                     }
                 }
-
             }
         });
-
-
-
-
-
     }
 
 

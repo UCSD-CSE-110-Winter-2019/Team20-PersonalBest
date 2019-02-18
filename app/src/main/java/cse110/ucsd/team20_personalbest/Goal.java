@@ -6,26 +6,26 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class Goal {
     private int goal;
-
-    boolean useAutoGoal = true;
+    private boolean useAutoGoal = true;
+    private boolean ignored = false;
     private boolean met;
-    boolean displayedPopup = false;
-    boolean displayedSubGoal = false;
-    boolean popupForYesterday = false;
+    private boolean displayedPopup = false;
+    private boolean displayedSubGoal = false;
+    private boolean popupForYesterday = false;
+    private boolean popupCurrentlyOpen = false;
+    private boolean meetOnce = true;
     private int currentDay;
     public long currentIntendedSteps;
 
-    private String[] daysOfWeek = {"Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+    private String[] daysOfWeek = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 
     private static final int DEFAULT_GOAL_INCREMENT = 500;
     private static final int INITIAL_GOAL = 5000;
-    private static final int DEFAULT_MAX_AUTO_GOAL = 15000;
 
     private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
 
@@ -46,10 +46,15 @@ public class Goal {
                 .getBoolean("displayedSubGoal", false);
         currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getLong("currentIntendedSteps", 0);
+        meetOnce = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("meetOnlyOnce", true);
+        ignored = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("ignored", false);
 
         Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
-                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps);
+                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps
+                + "\n\tMeet goal only once: " + meetOnce + "\n\tIgnored: " + ignored);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
         // yesterday but the popup was not shown
@@ -72,10 +77,15 @@ public class Goal {
                 .getBoolean("displayedSubGoal", false);
         currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getLong("currentIntendedSteps", 0);
+        meetOnce = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("meetOnlyOnce", true);
+        ignored = context.getSharedPreferences("prefs", MODE_PRIVATE)
+                .getBoolean("ignored", false);
 
         Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
-                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps);
+                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps
+                + "\n\tMeet goal only once: " + meetOnce + "\n\tIgnored: " + ignored);
     }
 
     public void resetMetAndDisplayYesterdaysPopup(Calendar cal) {
@@ -89,6 +99,7 @@ public class Goal {
             }
             currentIntendedSteps = 0;
             met = false;
+            ignored = false;
             displayedPopup = false;
             displayedSubGoal = false;
             currentDay = today;
@@ -103,13 +114,14 @@ public class Goal {
         }
     }
 
-    // custom goal
+    // for testing
     public Goal(int steps, boolean met) {
         goal = steps;
         this.met = met;
         currentDay = -1;
     }
 
+    // for testing
     public Goal(int steps, boolean met, int nextautogoal){
         goal = steps;
         autoGoalIncr = nextautogoal;
@@ -125,10 +137,6 @@ public class Goal {
         return currentIntendedSteps;
     }
 
-    public boolean autoGoal() {
-        return useAutoGoal;
-    }
-
     // saves goal values to sharedpreferences
     public void save(Context ma, Calendar cal) {
         SharedPreferences sharedpreferences = ma.getSharedPreferences("prefs", Context.MODE_PRIVATE);
@@ -139,11 +147,13 @@ public class Goal {
         editor.putBoolean("displayedPopup", displayedPopup);
         editor.putBoolean("displayedSubGoal", displayedSubGoal);
         editor.putLong("currentIntendedSteps", currentIntendedSteps);
+        editor.putBoolean("ignored", ignored);
         editor.apply();
         Log.i("Goal", "Saving goal to sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + " = " + daysOfWeek[currentDay]
                 + "\n\tDisplayed popup: " + displayedPopup + "\n\tDisplayed subgoal: " + displayedSubGoal
-                + "\n\tCurrent intended steps: " + currentIntendedSteps);
+                + "\n\tCurrent intended steps: " + currentIntendedSteps + "\n\tMeet goal only once: " + meetOnce
+                + "\n\tIgnored: " + ignored);
 
 
         saveIntendedStepsDay(ma, editor, cal);
@@ -174,9 +184,10 @@ public class Goal {
     }
 
     public boolean attemptCompleteGoal(long steps){
-        return steps >= goal && !met;
+        return steps >= goal && !popupCurrentlyOpen;
     }
 
+    // goal only counts as met if meetOnce is on.
     public boolean metToday(){
         return met;
     }
@@ -190,8 +201,8 @@ public class Goal {
     }
 
     public boolean canSetAutomatically() {
-        int maxAutoGoal = DEFAULT_MAX_AUTO_GOAL;
-        return goal + autoGoalIncr <= maxAutoGoal && useAutoGoal;
+        BoundValidity valid = new BoundValidity();
+        return valid.autoGoal(goal + autoGoalIncr) && useAutoGoal;
     }
 
     public int nextAutoGoal() {
@@ -202,13 +213,19 @@ public class Goal {
         goal = val;
     }
 
+    public boolean getIgnored() {return ignored;}
+
+    public void setIgnored(boolean b) {ignored = b;}
+
+    public void setMeetOnce(boolean b) {meetOnce = b;}
+
     public void setAutoGoal(boolean s) {useAutoGoal = s;}
 
     // whether it is time to show a subgoal
     public boolean canShowSubGoal(Calendar calendar) {
         int currHour = calendar.get(Calendar.HOUR_OF_DAY);
         int currMinute = calendar.get(Calendar.MINUTE);
-        return currHour >= 20 && !displayedSubGoal; // 8-8:20
+        return currHour >= 20 && !displayedSubGoal; // Once after 8 pm
     }
 
     public void displaySubGoal(Context context, int steps, int yesterdaySteps) {
@@ -221,5 +238,29 @@ public class Goal {
         else {
             Log.i("SubGoal", "Subgoal not met today");
         }
+    }
+
+    public boolean getPopupForYesterday() {
+        return popupForYesterday;
+    }
+
+    public void setDisplayedPopup(boolean b) {
+        displayedPopup = b;
+    }
+
+    public void setPopupForYesterday(boolean b) {
+        popupForYesterday = b;
+    }
+
+    public void setDisplayedSubGoal(boolean b) {
+        displayedSubGoal = b;
+    }
+
+    public void setPopupCurrentlyOpen(boolean b) {
+        popupCurrentlyOpen = b;
+    }
+
+    public boolean getMeetOnce() {
+        return meetOnce;
     }
 }
