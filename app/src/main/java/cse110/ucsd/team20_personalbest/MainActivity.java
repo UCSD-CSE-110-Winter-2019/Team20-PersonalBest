@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
-        if (getIntent().getStringExtra("service_key").equals("MOCK_FIT")) {
+        if (getIntent().getStringExtra("service_key") != null && getIntent().getStringExtra("service_key").equals("MOCK_FIT")) {
             isFirstRun = true;
         }
 
