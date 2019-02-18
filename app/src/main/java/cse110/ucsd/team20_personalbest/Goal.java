@@ -57,16 +57,18 @@ public class Goal {
     }
 
     // makes a goal based on the saved shared preferences
+    public Goal(Context context) {
+        loadVariables(context);
+
+    }
+
+    // makes a goal based on the saved shared preferences
     public Goal(Context context, Calendar cal) {
         loadVariables(context);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
         // yesterday but the popup was not shown
         resetMetAndDisplayYesterdaysPopup(cal);
-    }
-
-    public Goal(Context context) {
-        loadVariables(context);
     }
 
     public void resetMetAndDisplayYesterdaysPopup(Calendar cal) {

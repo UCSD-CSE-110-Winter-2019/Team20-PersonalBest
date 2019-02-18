@@ -75,6 +75,8 @@ public class DailyStepCountHistory {
                 //Should be each day in the request
                 for(Bucket bucket : dataReadResponse.getBuckets()){
 
+                    Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
+
                     List<DataSet> dataSets = bucket.getDataSets();
 
                     for(DataSet dataSet : dataSets) {

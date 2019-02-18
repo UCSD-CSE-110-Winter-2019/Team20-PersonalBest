@@ -52,14 +52,4 @@ public class WalkTest {
         System.out.println(mc1.get(mc.MONTH));
         assertEquals("08 /11 / 2019\n10:13 AM", newWalk.getTime());
     }
-
-    @Test
-    public void test_getTime() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(1420468800000l);
-        Walk walk = new Walk("Stats...", cal);
-        String timeString = walk.getTime();
-        String time = "01 /05 / 2015\n06:40 AM";
-        assertEquals(timeString, time);
-    }
 }

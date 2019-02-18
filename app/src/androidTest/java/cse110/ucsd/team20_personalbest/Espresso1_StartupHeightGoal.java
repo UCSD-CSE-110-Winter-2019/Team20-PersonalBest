@@ -99,7 +99,6 @@ public class Espresso1_StartupHeightGoal {
                         isDisplayed()));
         button.perform(click());
 
-        onView(withId(R.id.textViewGoal)).check(matches(withText("5000")));
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.navigation_stats), withContentDescription("Stats"),
@@ -134,7 +133,6 @@ public class Espresso1_StartupHeightGoal {
         onView(withId(R.id.changeFeet)).check(matches(withText("5")));
         onView(withId(R.id.changeInches)).check(matches(withText("10")));
 
-        onView(withId(R.id.changeSteps)).perform(replaceText("3000"));
 
         onView(withText("Apply Changes")).perform(click());
 
@@ -150,23 +148,10 @@ public class Espresso1_StartupHeightGoal {
                         isDisplayed()));
         bottomNavigationItemView3.perform(click());
 
-        onView(withId(R.id.textViewGoal)).check(matches(withText("3000")));
 
         bottomNavigationItemView2.perform(click());
 
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.changeSteps), withText("3000"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.profileFrag),
-                                        0),
-                                8),
-                        isDisplayed()));
-        appCompatEditText3.perform(replaceText(""));
-
         onView(withText("Apply Changes")).perform(click());
-
-        onView(withText("Enter height and goal.")).inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

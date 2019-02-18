@@ -20,6 +20,8 @@ public class RTWalk {
         step = s;
         distMile = s * (0.413 * height) / 12.000;
         mph = distMile / ((now.getTimeInMillis() - start.getTimeInMillis()) / 1000.000);
+        //Testing Height
+        System.out.println(String.format("Height is %d", height));
 
     }
 
