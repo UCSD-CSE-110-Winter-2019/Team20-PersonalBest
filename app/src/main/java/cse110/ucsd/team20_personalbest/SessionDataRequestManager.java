@@ -94,11 +94,11 @@ public class SessionDataRequestManager {
                             for (DataSet dataSet : dataSets) {
                                 if (dataSet.isEmpty()) continue;
 
-                                Log.e(TAG, "New dataset");
+                                Log.d(TAG, "New dataset");
 
                                 for (DataPoint dataPoint : dataSet.getDataPoints()) {
                                     current += dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
-                                    Log.e(TAG, "" + dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
+                                    Log.d(TAG, "" + dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
                                 }
                             }
                         }

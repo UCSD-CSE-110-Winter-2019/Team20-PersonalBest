@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private MainActivity mainActivity;
     public String fitnessServiceKey;
 
+    private Calendar cal;
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
@@ -244,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                  }
             });
 
-            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
         }
@@ -255,6 +255,14 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 return new MockFitness(mainActivity);
             }
         });
+        FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity MainActivity) {
+                return new MockFitness(mainActivity);
+            }
+        });
+
+        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -285,12 +293,14 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     return;
                 }
 
+
+
                 // starts walk
                 if (!onWalk) {
                     // updates time
                     ourCal.setCal(Calendar.getInstance());
 
-                    is = new IntendedSession(ourCal.getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
+                    //is = new IntendedSession(ourCal.getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
                     Toast.makeText(getApplicationContext(), "Started " + walkOrRun, Toast.LENGTH_LONG).show();
                     startTime = ourCal.getCal();
@@ -303,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                     ourCal.setCal(Calendar.getInstance());
 
-                    is.endSession(ourCal.getTime());
+                    //is.endSession(ourCal.getTime());
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
                             is.returnSteps(sc.steps()) + " steps", Toast.LENGTH_LONG).show();
 
@@ -329,6 +339,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
 
+
+    public FitnessService getFitnessService(){
+        return fitnessService;
+    }
 
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
@@ -375,11 +389,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public void sendToast(String string){
+        Log.d(TAG, "Toast sent: " + string);
         Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
     }
 
     private void updateRT () {
-        Log.d(TAG, "Updating Real-Time stat");
+        Log.d(TAG, "Updating Real-Time walk stats");
         if(rtStat != null) {
             ourCal.setToCurrentTime();
             textViewStats.setTextSize(20);
@@ -404,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 134) {
+                Log.d(TAG, "User successfully logged in, booting up fitness service and history requests");
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
@@ -416,6 +432,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
     public boolean setYesterdaySteps(Calendar cal) {
+        Log.d(TAG, "Attempting to set yesterdays steps...");
         if(dailysteps == null){
             return false;
         }
@@ -450,6 +467,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
             return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
         }
+        Log.e(TAG, "Not signed in, new SessionDataRequestManager could not be created");
         return null;
     }
 
@@ -457,11 +475,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
             return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
         }
+        Log.e(TAG, "Not signed in, new DailyStepCountHistory could not be created");
         return null;
     }
 
 
-  
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -479,7 +498,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             while (updateSteps) {
                 try {
                     Thread.sleep(1000);
-
                     fitnessService.updateStepCount();
                     publishProgress();
                 } catch (Exception e) {
@@ -491,7 +509,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         @Override
         protected void onProgressUpdate(Void... voids) {
-
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
             pedometer.setValue(sc.steps() * 100 / goal.getGoal() > 100 ? 100 : sc.steps() * 100 / goal.getGoal());
             ourCal.setToCurrentTime();
