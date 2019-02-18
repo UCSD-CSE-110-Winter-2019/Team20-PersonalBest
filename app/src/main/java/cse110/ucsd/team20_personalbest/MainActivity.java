@@ -215,9 +215,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             @Override
             public void onClick(View v) {
                 long timeDiff = 0;
-                if(!timeText.getText().toString().isEmpty() && Long.parseLong(timeText.getText().toString()) != 0)
+                if(!timeText.getText().toString().isEmpty() && Long.parseLong(timeText.getText().toString()) != 0) {
                     timeDiff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(timeText.getText().toString());
-
+                Log.d(TAG, "Time Changed");}
                 ourCal.setTimeDiff(timeDiff);
             }
         });
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 // starts walk
                 if (!onWalk) {
                     // updates time
-                    ourCal.setToCurrentTime();
+                    ourCal.setCal(Calendar.getInstance());
 
                     is = new IntendedSession(ourCal.getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 // stops walk
                 else {
 
-                    ourCal.setToCurrentTime();
+                    ourCal.setCal(Calendar.getInstance());
 
                     is.endSession(ourCal.getTime());
                     Toast.makeText(getApplicationContext(), "During this intended walk, you accomplished " +
