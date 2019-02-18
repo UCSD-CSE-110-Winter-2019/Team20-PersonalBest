@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private TextView textViewGoal;
     private MainActivity mainActivity;
     public String fitnessServiceKey;
+    private long timeDiff;
 
     private Button changeStep;
     private EditText timeText;
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         changeTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                long timeDiff = 0;
+                timeDiff = 0;
                 if(!timeText.getText().toString().isEmpty() && Long.parseLong(timeText.getText().toString()) != 0) {
                     timeDiff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(timeText.getText().toString());
                 Log.d(TAG, "Time Changed");}
@@ -293,7 +294,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     is = new IntendedSession(ourCal.getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
                     Toast.makeText(getApplicationContext(), "Started " + walkOrRun, Toast.LENGTH_LONG).show();
-                    startTime = ourCal.getCal();
+                    startTime = Calendar.getInstance();
+                    startTime.setTimeInMillis(startTime.getTimeInMillis() - timeDiff);
                     rtStat = new RTWalk(height, startTime);
                     tempStep = sc.steps();
                 }
@@ -381,9 +383,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private void updateRT () {
         Log.d(TAG, "Updating Real-Time stat");
         if(rtStat != null) {
+            Calendar EndTime = Calendar.getInstance();
             ourCal.setCal(Calendar.getInstance());
             textViewStats.setTextSize(20);
-            rtStat.updateStat(sc.steps() - tempStep, ourCal.getCal());
+            EndTime.setTimeInMillis(EndTime.getTimeInMillis() - timeDiff);
+            rtStat.updateStat(sc.steps() - tempStep,EndTime);
             textViewStats.setText(rtStat.getStat());
         }
         else {

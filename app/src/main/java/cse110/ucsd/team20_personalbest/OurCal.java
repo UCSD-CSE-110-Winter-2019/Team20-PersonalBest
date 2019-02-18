@@ -8,7 +8,7 @@ import java.util.Date;
 public class OurCal {
 
     Calendar cal;
-    long timeDiff;
+    long timeDiff = 0;
 
     public OurCal(Calendar cal, int timeDiff) {
         this.cal = cal;
