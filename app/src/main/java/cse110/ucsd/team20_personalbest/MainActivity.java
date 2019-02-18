@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                  }
             });
 
+            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
         }
@@ -402,6 +403,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 134) {
                 Log.d(TAG, "User successfully logged in, booting up fitness service and history requests");
+
+
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
