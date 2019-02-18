@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 
 @RunWith(RobolectricTestRunner.class)
 public class InitialActivityTest {
@@ -62,6 +63,41 @@ public class InitialActivityTest {
 
     @Test
     public void failToEnterData(){
+        next.performClick();
+        String warning = ShadowToast.getTextOfLatestToast();
+        assert(warning.equals("Enter your height"));
 
+        int savedFeet = sharedPreferences.getInt("feet", 0);
+        int savedInches = sharedPreferences.getInt("inches", 0);
+        int savedHeight = sharedPreferences.getInt("height", 0);
+        assert(savedInches == 0);
+        assert(savedFeet == 0);
+        assert(savedHeight == 0);
+    }
+
+    @Test
+    public void enterInvalidData(){
+        heightFeet.setText("10");
+        heightInches.setText("5");
+        walker.setActivated(true);
+        next.performClick();
+
+        String warning = ShadowToast.getTextOfLatestToast();
+        System.out.println(warning);
+        assert(warning != null && warning.equals("Enter valid height"));
+
+        heightFeet.setText("5");
+        heightInches.setText("12");
+        next.performClick();
+
+        warning = ShadowToast.getTextOfLatestToast();
+        assert(warning != null && warning.equals("Enter valid height"));
+
+        heightFeet.setText("-1");
+        heightInches.setText("12");
+        next.performClick();
+
+        warning = ShadowToast.getTextOfLatestToast();
+        assert(warning != null && warning.equals("Enter valid height"));
     }
 }
