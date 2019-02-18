@@ -346,6 +346,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     }
 
+    public FitnessService getFitnessService(){
+        return fitnessService;
+    }
 
     public void setStepCount(long steps){
         sc.setSteps((int) steps);

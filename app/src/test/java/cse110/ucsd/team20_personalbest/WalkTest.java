@@ -18,11 +18,6 @@ import java.util.Calendar;
 import static org.junit.Assert.assertEquals;
 
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 public class WalkTest {
 
     private Walk newWalk;
@@ -56,5 +51,15 @@ public class WalkTest {
         Calendar mc1 = mc;
         System.out.println(mc1.get(mc.MONTH));
         assertEquals("08 /11 / 2019\n10:13 AM", newWalk.getTime());
+    }
+
+    @Test
+    public void test_getTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(1420468800000l);
+        Walk walk = new Walk("Stats...", cal);
+        String timeString = walk.getTime();
+        String time = "01 /05 / 2015\n06:40 AM";
+        assertEquals(timeString, time);
     }
 }

@@ -29,8 +29,7 @@ public class Goal {
 
     private int autoGoalIncr = DEFAULT_GOAL_INCREMENT;
 
-    // makes a goal based on the saved shared preferences
-    public Goal(Context context, Calendar cal) {
+    private void loadVariables(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences("prefs", MODE_PRIVATE);
         goal = context.getSharedPreferences("prefs", MODE_PRIVATE)
                 .getInt("savedGoal", INITIAL_GOAL);
@@ -55,6 +54,12 @@ public class Goal {
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
                 + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps
                 + "\n\tMeet goal only once: " + meetOnce + "\n\tIgnored: " + ignored);
+
+    }
+
+    // makes a goal based on the saved shared preferences
+    public Goal(Context context, Calendar cal) {
+        loadVariables(context);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
         // yesterday but the popup was not shown
@@ -62,30 +67,7 @@ public class Goal {
     }
 
     public Goal(Context context) {
-        SharedPreferences sharedpreferences = context.getSharedPreferences("prefs", MODE_PRIVATE);
-        goal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getInt("savedGoal", INITIAL_GOAL);
-        met = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("metToday", false);
-        useAutoGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("autoGoal", true);
-        currentDay = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getInt("currentDay", -1);
-        displayedPopup = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("displayedPopup", false);
-        displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("displayedSubGoal", false);
-        currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getLong("currentIntendedSteps", 0);
-        meetOnce = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("meetOnlyOnce", true);
-        ignored = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("ignored", false);
-
-        Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
-                + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
-                + "\n\tDisplayed sub goal: " + displayedSubGoal + "\n\tCurrent intended steps: " + currentIntendedSteps
-                + "\n\tMeet goal only once: " + meetOnce + "\n\tIgnored: " + ignored);
+        loadVariables(context);
     }
 
     public void resetMetAndDisplayYesterdaysPopup(Calendar cal) {

@@ -64,12 +64,16 @@ public class DailyStepCountHistory {
                         .setTimeRange(startOfWeek, endOfWeek , TimeUnit.MILLISECONDS)
                         .build();
 
+        Log.d(TAG, "Read request has been built");
+
         Task<DataReadResponse> response = Fitness.getHistoryClient(activity, googleSignIn).readData(readRequest).addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
             @Override
             public void onSuccess(DataReadResponse dataReadResponse) {
 
                 //Should be each day in the request
                 for(Bucket bucket : dataReadResponse.getBuckets()){
+
+                    Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
 
                     List<DataSet> dataSets = bucket.getDataSets();
                     for(DataSet dataSet : dataSets) {
