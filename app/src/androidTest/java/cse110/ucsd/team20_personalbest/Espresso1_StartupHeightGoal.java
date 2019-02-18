@@ -167,6 +167,7 @@ public class Espresso1_StartupHeightGoal {
         onView(withText("Apply Changes")).perform(click());
 
         onView(withText("Enter height and goal.")).inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        appCompatEditText3.perform(replaceText("5000"));
     }
 
     private static Matcher<View> childAtPosition(

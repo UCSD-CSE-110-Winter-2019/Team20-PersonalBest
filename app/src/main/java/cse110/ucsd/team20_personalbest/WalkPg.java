@@ -17,15 +17,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link WalkPg.OnWalkPgListener} interface
- * to handle interaction events.
- * Use the {@link WalkPg#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class WalkPg extends Fragment {
 
     private LinearLayout mlayout;
@@ -35,16 +26,8 @@ public class WalkPg extends Fragment {
 
     private static final String TAG = "WalkPage";
 
-    public WalkPg() {
-        // Required empty public constructor
-    }
+    public WalkPg() { }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment WalkPg.
-     */
     public static WalkPg newInstance() {
         WalkPg fragment = new WalkPg();
         return fragment;
@@ -102,7 +85,6 @@ public class WalkPg extends Fragment {
         return inflater.inflate(R.layout.fragment_walks, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             //mListener.onFragmentInteraction(uri);
@@ -132,18 +114,7 @@ public class WalkPg extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnWalkPgListener {
-        // TODO: Update argument type and name
         //void onFragmentInteraction(Uri uri);
         public void onWalkPgSelected();
     }

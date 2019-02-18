@@ -70,12 +70,15 @@ public class DailyStepCountHistory {
             @Override
             public void onSuccess(DataReadResponse dataReadResponse) {
 
+                Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
+
                 //Should be each day in the request
                 for(Bucket bucket : dataReadResponse.getBuckets()){
 
                     Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
 
                     List<DataSet> dataSets = bucket.getDataSets();
+
                     for(DataSet dataSet : dataSets) {
                         List<DataPoint> dataPoints = dataSet.getDataPoints();
                         int steps = 0;

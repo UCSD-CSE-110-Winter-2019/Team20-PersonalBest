@@ -3,7 +3,6 @@ package cse110.ucsd.team20_personalbest;
 import android.util.Log;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class OurCal {
 
@@ -34,12 +33,6 @@ public class OurCal {
         Log.d("Time", "Getting time from calendar: " + cal.getTimeInMillis());
 
         return cal.getTimeInMillis();
-    }
-
-    public static long getTime(Calendar c) {
-        Log.d("Time", "Getting time from calendar: " + c.getTimeInMillis());
-
-        return c.getTimeInMillis();
     }
 
 }

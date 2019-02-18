@@ -165,6 +165,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
+        if (getIntent().getStringExtra("service_key").equals("MOCK_FIT")) {
+            isFirstRun = true;
+        }
+
         // runs initial activity
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, InitialActivity.class));
@@ -199,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         sc = new StepContainer();
 
         frame = (FrameLayout) findViewById(R.id.mainScreen);
-      
+
         pedometer = (CustomGauge) findViewById(R.id.gauge);
         textViewSteps = (TextView) findViewById(R.id.textViewSteps);
         textViewGoal = (TextView) findViewById(R.id.textViewGoal);
@@ -219,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 timeDiff = 0;
                 if(!timeText.getText().toString().isEmpty() && Long.parseLong(timeText.getText().toString()) != 0) {
                     timeDiff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(timeText.getText().toString());
-                Log.d(TAG, "Time Changed");}
+                    Log.d(TAG, "Time Changed");}
                 ourCal.setTimeDiff(timeDiff);
             }
         });
@@ -240,10 +244,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(fitnessServiceKey == null){
             fitnessServiceKey = "GOOGLE_FIT";
             FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new GoogleFitAdapter(mainActivity);
-                 }
+                @Override
+                public FitnessService create(MainActivity mainActivity) {
+                    return new GoogleFitAdapter(mainActivity);
+                }
             });
 
             fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
@@ -251,12 +255,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             executeAsyncTask(new ASyncStepUpdateRunner());
         }
         else
-        FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new MockFitness(mainActivity);
-            }
-        });
+            FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
+                @Override
+                public FitnessService create(MainActivity mainActivity) {
+                    return new MockFitness(mainActivity);
+                }
+            });
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -470,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
 
-  
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
