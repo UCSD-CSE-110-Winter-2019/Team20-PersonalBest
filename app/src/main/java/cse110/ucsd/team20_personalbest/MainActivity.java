@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private void updateRT () {
         Log.d(TAG, "Updating Real-Time walk stats");
         if(rtStat != null) {
-            ourCal.setToCurrentTime();
+            ourCal.setCal(Calendar.getInstance());
             textViewStats.setTextSize(20);
             rtStat.updateStat(sc.steps() - tempStep, ourCal.getCal());
             textViewStats.setText(rtStat.getStat());
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
-                ourCal.setToCurrentTime();
+                ourCal.setCal(Calendar.getInstance());
                 instantiateHistories(ourCal.getTime());
             }
         }
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         protected void onProgressUpdate(Void... voids) {
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
             pedometer.setValue(sc.steps() * 100 / goal.getGoal() > 100 ? 100 : sc.steps() * 100 / goal.getGoal());
-            ourCal.setToCurrentTime();
+            ourCal.setCal(Calendar.getInstance());
             updateRT();
         }
     }

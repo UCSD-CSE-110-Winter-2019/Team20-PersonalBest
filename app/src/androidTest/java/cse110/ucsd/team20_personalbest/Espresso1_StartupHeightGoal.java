@@ -134,26 +134,9 @@ public class Espresso1_StartupHeightGoal {
         onView(withId(R.id.changeFeet)).check(matches(withText("5")));
         onView(withId(R.id.changeInches)).check(matches(withText("10")));
 
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.changeSteps), withText("5000"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.profileFrag),
-                                        0),
-                                7),
-                        isDisplayed()));
-        appCompatEditText.perform(replaceText("3000"));
+        onView(withId(R.id.changeSteps)).perform(replaceText("3000"));
 
-
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.applyChanges), withText("Apply Changes"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.profileFrag),
-                                        0),
-                                10),
-                        isDisplayed()));
-        appCompatButton.perform(click());
+        onView(withText("Apply Changes")).perform(click());
 
         onView(withText("Updates Applied")).inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
 
@@ -177,19 +160,11 @@ public class Espresso1_StartupHeightGoal {
                                 childAtPosition(
                                         withId(R.id.profileFrag),
                                         0),
-                                7),
+                                8),
                         isDisplayed()));
         appCompatEditText3.perform(replaceText(""));
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.applyChanges), withText("Apply Changes"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.profileFrag),
-                                        0),
-                                10),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
+        onView(withText("Apply Changes")).perform(click());
 
         onView(withText("Enter height and goal.")).inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
     }

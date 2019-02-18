@@ -25,10 +25,6 @@ public class OurCal {
         timeDiff = td;
     }
 
-    public void setToCurrentTime() {
-        cal = Calendar.getInstance();
-    }
-
     public Calendar getCal() {
         return cal;
     }
