@@ -473,9 +473,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         @Override
         protected void onProgressUpdate(Void... voids) {
-
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
-            pedometer.setValue(sc.steps() * 100 / goal.getGoal());
+            pedometer.setValue(sc.steps() * 100 / goal.getGoal() > 100 ? 100 : sc.steps() * 100 / goal.getGoal());
             updateCal();
             updateRT();
         }
