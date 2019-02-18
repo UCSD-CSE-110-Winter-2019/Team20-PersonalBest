@@ -317,9 +317,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     } // end onCreate
 
 
-
-
-
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
@@ -333,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             btn.setText(text);
         }
     }
-
 
     public void setStepCount(long steps){
         sc.setSteps((int) steps);
@@ -360,14 +356,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         goal.save(this, ourCal.getCal());
     }
 
-    public boolean isDashboardVisible() {
-        return dashboardVisible;
-    }
-
-    public void sendToast(String string){
-        Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
-    }
-
     private void updateRT () {
         Log.d(TAG, "Updating Real-Time stat");
         if(rtStat != null) {
@@ -382,14 +370,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     }
 
-
-
-    public void cancelUpdatingSteps(){
-        updateSteps = false;
-    }
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -402,8 +382,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             }
         }
     }
-
-
 
     public boolean setYesterdaySteps(Calendar cal) {
         if(dailysteps == null){
@@ -420,13 +398,20 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return true;
     }
 
+    public void sendToast(String string){
+        Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
+    }
 
     public int getYesterdaySteps() {
         return yesterdaySteps;
     }
 
-    public Calendar getOurCal() {
-        return ourCal.getCal();
+    public Calendar getOurCal() { return ourCal.getCal(); }
+
+    public void cancelUpdatingSteps(){ updateSteps = false; }
+
+    public boolean isDashboardVisible() {
+        return dashboardVisible;
     }
 
     public Goal getGoal() {return goal;}
@@ -450,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return null;
     }
 
-
+    // async tasks
   
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
@@ -459,7 +444,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         else
             asyncTask.execute(params);
     }
-
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void> {
 

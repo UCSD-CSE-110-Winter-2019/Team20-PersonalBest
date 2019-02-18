@@ -77,24 +77,16 @@ public class MockCalendar extends Calendar {
     }
 
     @Override
-    protected void computeTime() {
-
-    }
+    protected void computeTime() { }
 
     @Override
-    protected void computeFields() {
-
-    }
+    protected void computeFields() { }
 
     @Override
-    public void add(int field, int amount) {
-
-    }
+    public void add(int field, int amount) { }
 
     @Override
-    public void roll(int field, boolean up) {
-
-    }
+    public void roll(int field, boolean up) { }
 
     @Override
     public int getMinimum(int field) {
