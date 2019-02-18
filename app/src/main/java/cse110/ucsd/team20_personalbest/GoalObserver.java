@@ -39,7 +39,7 @@ public class GoalObserver implements Observer {
             goal.meetGoal(false);
             goal.popupForYesterday = false;
 
-            Log.i("Goal", "Popup for yesterday's goal.");
+            Log.i("Goal", "Toast message for meeting yesterday's goal.");
 
             // popup where user can choose automatic goal or set a manual goal
             createDialog();

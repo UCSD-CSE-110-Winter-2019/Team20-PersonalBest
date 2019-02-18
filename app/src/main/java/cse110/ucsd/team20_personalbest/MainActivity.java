@@ -372,11 +372,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public void sendToast(String string){
+        Log.d(TAG, "Toast sent: " + string);
         Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
     }
 
     private void updateRT () {
-        Log.d(TAG, "Updating Real-Time stat");
+        Log.d(TAG, "Updating Real-Time walk stats");
         if(rtStat != null) {
             textViewStats.setTextSize(20);
             rtStat.updateStat(sc.steps() - tempStep, cal);
@@ -396,6 +397,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 134) {
+                Log.d(TAG, "User successfully logged in, booting up fitness service and history requests");
                 fitnessService.setup();
                 fitnessService.updateStepCount();
 
@@ -406,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public boolean setYesterdaySteps(Calendar cal) {
+        Log.d(TAG, "Attempting to set yesterdays steps...");
         if(dailysteps == null){
             return false;
         }
@@ -434,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
             return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
         }
+        Log.e(TAG, "Not signed in, new SessionDataRequestManager could not be created");
         return null;
     }
 
@@ -441,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
             return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
         }
+        Log.e(TAG, "Not signed in, new DailyStepCountHistory could not be created");
         return null;
     }
   
@@ -461,7 +466,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             while (updateSteps) {
                 try {
                     Thread.sleep(1000);
-
                     fitnessService.updateStepCount();
                     publishProgress();
                 } catch (Exception e) {
