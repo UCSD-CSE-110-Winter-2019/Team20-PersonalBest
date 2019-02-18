@@ -32,12 +32,6 @@ public class GoalUnitTest {
         steps = 220;
         canComplete = goal.attemptCompleteGoal(steps);
         assertTrue(canComplete);
-
-        // goal has already been met today
-        goal.meetGoal(true);
-        steps = 200;
-        canComplete = goal.attemptCompleteGoal(steps);
-        assertFalse(canComplete);
     }
 
 
@@ -87,7 +81,7 @@ public class GoalUnitTest {
         assertTrue(canShow);
 
         // doesn't show subgoal if has already been displayed
-        goal.displayedSubGoal = true;
+        goal.setDisplayedSubGoal(true);
         c.set(Calendar.HOUR_OF_DAY, 20);
         c.set(Calendar.MINUTE, 0);
         canShow = goal.canShowSubGoal(c);
