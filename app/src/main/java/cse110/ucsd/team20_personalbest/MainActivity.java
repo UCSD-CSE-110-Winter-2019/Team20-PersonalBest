@@ -40,6 +40,7 @@ import java.util.Calendar;
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
+import cse110.ucsd.team20_personalbest.fitness.MockFitness;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public StepContainer sc;
     private TextView textViewGoal;
     private MainActivity mainActivity;
+    public String fitnessServiceKey;
 
     private Button changeStep;
     private EditText timeText;
@@ -231,20 +233,28 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         FragmentTransaction ft = fm.beginTransaction();
 
-        String fitnessServiceKey = "GOOGLE_FIT";
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+
+        fitnessServiceKey = getIntent().getStringExtra("service_key");
+        if(fitnessServiceKey == null){
+            fitnessServiceKey = "GOOGLE_FIT";
+            FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(MainActivity mainActivity) {
                 return new GoogleFitAdapter(mainActivity);
+                 }
+            });
+
+            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
+            fitnessService.setup();
+            executeAsyncTask(new ASyncStepUpdateRunner());
+        }
+        else
+        FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity mainActivity) {
+                return new MockFitness(mainActivity);
             }
         });
-
-
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
-        fitnessService.setup();
-
-        // gets steps
-        executeAsyncTask(new ASyncStepUpdateRunner());
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -483,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         protected void onProgressUpdate(Void... voids) {
 
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
-            pedometer.setValue(sc.steps() * 100 / goal.getGoal());
+            pedometer.setValue(sc.steps() * 100 / goal.getGoal() > 100 ? 100 : sc.steps() * 100 / goal.getGoal());
             ourCal.setToCurrentTime();
             updateRT();
         }

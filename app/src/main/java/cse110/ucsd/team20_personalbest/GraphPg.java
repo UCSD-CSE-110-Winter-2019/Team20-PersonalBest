@@ -75,6 +75,8 @@ public class GraphPg extends Fragment {
     private void generateData() {
 
         //ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
+        if(MainActivity.dailysteps == null)
+            return;
         ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
         ArrayList<Integer> uSteps = new ArrayList<>();
 
