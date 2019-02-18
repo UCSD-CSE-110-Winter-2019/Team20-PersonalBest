@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private int yesterdaySteps = 1000;
     public boolean getStepsDone = false;
+    private int height;
 
     private TextView textViewStats;
 
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             pastWalks = gson.fromJson(json, type);
         }
 
-        final int height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", 70);
+        height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", 70);
         boolean walker = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("isWalker", true);
         Log.i(TAG,"Height: " + height + ", walker: " + walker + "."); // height in inches
 
@@ -293,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                     is = new IntendedSession(ourCal.getTime(), activity, GoogleSignIn.getLastSignedInAccount(activity), sc.steps() );
                     onWalk = true;
+                    height = getSharedPreferences("prefs", MODE_PRIVATE).getInt("height", 70);
                     Toast.makeText(getApplicationContext(), "Started " + walkOrRun, Toast.LENGTH_LONG).show();
                     startTime = Calendar.getInstance();
                     startTime.setTimeInMillis(startTime.getTimeInMillis() - timeDiff);
