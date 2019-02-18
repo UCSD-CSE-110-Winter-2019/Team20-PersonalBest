@@ -333,11 +333,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         });
 
     } // end onCreate
-
-
-
-
-
+    
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
@@ -472,8 +468,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
         return null;
     }
-
-
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
