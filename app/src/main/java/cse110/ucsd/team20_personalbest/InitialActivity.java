@@ -76,7 +76,8 @@ public class InitialActivity extends Activity {
 
                         Log.d(TAG, "User inputted a valid height\nHeight values saved\nMoving to main activity.");
 
-                        startActivity(new Intent(InitialActivity.this, MainActivity.class));
+                        //startActivity(new Intent(InitialActivity.this, MainActivity.class));
+                        finish();
                     }
                 }
             }
