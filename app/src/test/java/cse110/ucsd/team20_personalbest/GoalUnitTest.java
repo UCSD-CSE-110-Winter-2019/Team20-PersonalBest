@@ -32,12 +32,6 @@ public class GoalUnitTest {
         steps = 220;
         canComplete = goal.attemptCompleteGoal(steps);
         assertTrue(canComplete);
-
-        // goal has already been met today
-        goal.meetGoal(true);
-        steps = 200;
-        canComplete = goal.attemptCompleteGoal(steps);
-        assertFalse(canComplete);
     }
 
 
