@@ -337,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     } // end onCreate
 
 
+<<<<<<< HEAD
 
 
 
@@ -344,6 +345,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return fitnessService;
     }
 
+=======
+>>>>>>> refactoring-and-unit-tests
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
@@ -357,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             btn.setText(text);
         }
     }
-
 
     public void setStepCount(long steps){
         sc.setSteps((int) steps);
@@ -384,6 +386,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         goal.save(this, ourCal.getCal());
     }
 
+<<<<<<< HEAD
     public boolean isDashboardVisible() {
         return dashboardVisible;
     }
@@ -393,6 +396,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
     }
 
+=======
+>>>>>>> refactoring-and-unit-tests
     private void updateRT () {
         Log.d(TAG, "Updating Real-Time walk stats");
         if(rtStat != null) {
@@ -407,14 +412,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     }
 
-
-
-    public void cancelUpdatingSteps(){
-        updateSteps = false;
-    }
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -428,8 +425,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             }
         }
     }
-
-
 
     public boolean setYesterdaySteps(Calendar cal) {
         Log.d(TAG, "Attempting to set yesterdays steps...");
@@ -447,13 +442,20 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return true;
     }
 
+    public void sendToast(String string){
+        Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
+    }
 
     public int getYesterdaySteps() {
         return yesterdaySteps;
     }
 
-    public Calendar getOurCal() {
-        return ourCal.getCal();
+    public Calendar getOurCal() { return ourCal.getCal(); }
+
+    public void cancelUpdatingSteps(){ updateSteps = false; }
+
+    public boolean isDashboardVisible() {
+        return dashboardVisible;
     }
 
     public Goal getGoal() {return goal;}
@@ -479,8 +481,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return null;
     }
 
+<<<<<<< HEAD
 
 
+=======
+    // async tasks
+  
+>>>>>>> refactoring-and-unit-tests
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -488,7 +495,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         else
             asyncTask.execute(params);
     }
-
 
     private class ASyncStepUpdateRunner extends AsyncTask<Void, Void, Void> {
 

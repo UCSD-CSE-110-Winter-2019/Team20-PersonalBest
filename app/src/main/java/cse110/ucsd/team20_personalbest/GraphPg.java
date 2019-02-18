@@ -66,7 +66,6 @@ public class GraphPg extends Fragment {
 
         generateData();
 
-
         return rootView;
     }
 
@@ -215,6 +214,4 @@ public class GraphPg extends Fragment {
             // does nothing
         }
     }
-
-
 }
