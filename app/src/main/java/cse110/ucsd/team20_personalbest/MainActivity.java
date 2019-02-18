@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public StepContainer sc;
     private TextView textViewGoal;
     private MainActivity mainActivity;
+    public String fitnessServiceKey;
 
     private Calendar cal;
     private Button changeStep;
@@ -234,12 +235,25 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         FragmentTransaction ft = fm.beginTransaction();
 
 
-        String key = getIntent().getStringExtra("service_key");
-        if(key == null) key = "GOOGLE_FIT";
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
+        fitnessServiceKey = getIntent().getStringExtra("service_key");
+        if(fitnessServiceKey == null){
+            fitnessServiceKey = "GOOGLE_FIT";
+            FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(MainActivity mainActivity) {
                 return new GoogleFitAdapter(mainActivity);
+                 }
+            });
+
+            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
+            fitnessService.setup();
+            executeAsyncTask(new ASyncStepUpdateRunner());
+        }
+        else
+        FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity mainActivity) {
+                return new MockFitness(mainActivity);
             }
         });
         FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
@@ -248,13 +262,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 return new MockFitness(mainActivity);
             }
         });
-
-
-        fitnessService = FitnessServiceFactory.create(key, activity);
-        fitnessService.setup();
-
-        // gets steps
-        executeAsyncTask(new ASyncStepUpdateRunner());
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -500,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         @Override
         protected void onProgressUpdate(Void... voids) {
             Log.d(TAG, "Updating pedometer to " + sc.steps() * 100 / goal.getGoal() + "%");
-            pedometer.setValue(sc.steps() * 100 / goal.getGoal());
+            pedometer.setValue(sc.steps() * 100 / goal.getGoal() > 100 ? 100 : sc.steps() * 100 / goal.getGoal());
             ourCal.setToCurrentTime();
             updateRT();
         }

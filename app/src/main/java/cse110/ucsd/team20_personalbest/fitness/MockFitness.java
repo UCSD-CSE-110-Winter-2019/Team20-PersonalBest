@@ -1,7 +1,9 @@
 package cse110.ucsd.team20_personalbest.fitness;
 
 import cse110.ucsd.team20_personalbest.MainActivity;
+
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
+
 
 public class MockFitness implements FitnessService {
     private int steps = 0;
