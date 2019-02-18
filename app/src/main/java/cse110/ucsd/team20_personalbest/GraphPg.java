@@ -83,16 +83,19 @@ public class GraphPg extends Fragment {
             if(steps.size() == i) steps.add(0);
         }
 
-        for (int i = 0; i < steps.size(); i++) {
+        for (int i = 0; i < 7; i++) {
             //uSteps.add(i, steps.get(i) - walks.get(i));
-            uSteps.add(i, steps.get(i) - (Integer) intendedSteps.get(i).intValue());
+            int rawUSteps = steps.get(i) - (Integer) intendedSteps.get(i).intValue();
+            int unintendedSteps = rawUSteps > 0 ? rawUSteps : 0;
+            uSteps.add(i, unintendedSteps);
         }
+
         Log.d("Graph Unintended Steps", "Calculated unintended steps a single time.");
 
-        Log.e("Graph Unintended Steps", Arrays.toString(uSteps.toArray()));
-        //Log.e("Graph Intended Steps", Arrays.toString(walks.toArray()));
-        Log.e("Graph Intended Steps", Arrays.toString(intendedSteps.toArray()));
-        Log.e("Graph Total Steps", Arrays.toString(steps.toArray()));
+        Log.d("Graph Unintended Steps", Arrays.toString(uSteps.toArray()));
+        //Log.d("Graph Intended Steps", Arrays.toString(walks.toArray()));
+        Log.d("Graph Intended Steps", Arrays.toString(intendedSteps.toArray()));
+        Log.d("Graph Total Steps", Arrays.toString(steps.toArray()));
 
         int numColumns = 7;
 
