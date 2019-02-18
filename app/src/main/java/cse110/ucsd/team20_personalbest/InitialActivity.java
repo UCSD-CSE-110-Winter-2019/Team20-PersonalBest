@@ -53,9 +53,10 @@ public class InitialActivity extends Activity {
 
                     height_ft = Integer.parseInt(enter_feet.getText().toString());
                     height_in = Integer.parseInt(enter_inch.getText().toString());
+                    BoundValidity valid = new BoundValidity();
 
                     // user entered an invalid height
-                    if (height_ft > 7 || height_in > 11 || height_ft < 0 || height_in < 0) {
+                    if (!valid.feetAndInches(height_ft, height_in)) {
                         Toast.makeText(InitialActivity.this, "Enter valid height", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "User inputted an invalid height");
                     }
