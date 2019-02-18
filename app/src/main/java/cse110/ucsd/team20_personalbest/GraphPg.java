@@ -85,8 +85,8 @@ public class GraphPg extends Fragment {
 
         for (int i = 0; i < 7; i++) {
             //uSteps.add(i, steps.get(i) - walks.get(i));
-            int rawUSteps = steps.get(i) - (Integer) intendedSteps.get(i).intValue();
-            int unintendedSteps = rawUSteps > 0 ? rawUSteps : 0;
+            int rawUsteps = steps.get(i) - (Integer) intendedSteps.get(i).intValue();
+            int unintendedSteps = rawUsteps > 0 ? rawUsteps : 0;
             uSteps.add(i, unintendedSteps);
         }
 
