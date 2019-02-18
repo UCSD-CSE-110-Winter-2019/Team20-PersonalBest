@@ -337,16 +337,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     } // end onCreate
 
 
-<<<<<<< HEAD
-
 
 
     public FitnessService getFitnessService(){
         return fitnessService;
     }
 
-=======
->>>>>>> refactoring-and-unit-tests
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
@@ -386,18 +382,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         goal.save(this, ourCal.getCal());
     }
 
-<<<<<<< HEAD
-    public boolean isDashboardVisible() {
-        return dashboardVisible;
-    }
 
-    public void sendToast(String string){
-        Log.d(TAG, "Toast sent: " + string);
-        Toast.makeText(activity, string, Toast.LENGTH_LONG).show();
-    }
-
-=======
->>>>>>> refactoring-and-unit-tests
     private void updateRT () {
         Log.d(TAG, "Updating Real-Time walk stats");
         if(rtStat != null) {
@@ -481,13 +466,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         return null;
     }
 
-<<<<<<< HEAD
 
 
-=======
-    // async tasks
-  
->>>>>>> refactoring-and-unit-tests
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
