@@ -53,11 +53,13 @@ public class GraphPg extends Fragment implements Observer {
     private SharedPreferences sharedPreferences;
     private ArrayList<Integer> lastWeeksGoals;
 
-    private ArrayList<Long> intendedSteps;
+    private ArrayList<Integer> intendedSteps;
     private ArrayList<Integer> unintendedSteps;
 
     private DailyStepCountHistory dailyStepCountHistory;
     private SessionDataRequestManager sessionDataRequestManager;
+
+    private int numCols = 7;
 
 
     public GraphPg() {}
@@ -72,17 +74,19 @@ public class GraphPg extends Fragment implements Observer {
         chart.setOnValueTouchListener(new ValueTouchListener());
 
         lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
-        intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+        //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+
+        intendedSteps = new ArrayList<>();
+        unintendedSteps = new ArrayList<>();
 
         dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
         sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
 
-
         dailyStepCountHistory.addObserver(this);
         sessionDataRequestManager.addObserver(this);
 
-        dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), 7);
-        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), 7);
+        dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numCols);
+        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numCols);
 
         //Call this in the update method instead
         //generateData();
@@ -96,26 +100,20 @@ public class GraphPg extends Fragment implements Observer {
     }
 
     // Generates the graph
-    private void generateData(ArrayList<Integer> historyData) {
+    private void generateData(int numCols) {
 
-        //ArrayList<Integer> walks = MainActivity.sdrm.getSessions();
-//        if(MainActivity.dailysteps == null)
-//            return;
-//        ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
-//        ArrayList<Integer> uSteps = new ArrayList<>();
-
-
-        ArrayList<Integer> steps = dailyStepCountHistory.getHistory();
+        ArrayList<Integer> steps = unintendedSteps;
         ArrayList<Integer> uSteps = new ArrayList<>();
 
-        for(int i = 0; i < 7; i++){
-            //if(walks.size() == i) walks.add(0);
+        for(int i = 0; i < numCols; i++){
             if(steps.size() == i) steps.add(0);
+            if(unintendedSteps.size() == i) unintendedSteps.add(0);
+            if(intendedSteps.size() == i) intendedSteps.add(0);
         }
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < numCols; i++) {
             //uSteps.add(i, steps.get(i) - walks.get(i));
-            int rawUsteps = steps.get(i) - (Integer) intendedSteps.get(i).intValue();
+            int rawUsteps = steps.get(i) -  intendedSteps.get(i);
             int unintendedSteps = rawUsteps > 0 ? rawUsteps : 0;
             uSteps.add(i, unintendedSteps);
         }
@@ -127,7 +125,7 @@ public class GraphPg extends Fragment implements Observer {
         Log.d("Graph Intended Steps", Arrays.toString(intendedSteps.toArray()));
         Log.d("Graph Total Steps", Arrays.toString(steps.toArray()));
 
-        int numColumns = 7;
+        int numColumns = numCols;
 
         List<Column> columns = new ArrayList<Column>();
         List<PointValue> line = new ArrayList<PointValue>();
@@ -228,14 +226,19 @@ public class GraphPg extends Fragment implements Observer {
     public void update(Observable observable, Object o) {
         Log.d("Graph", "Graph has been notified, updating graph");
         if(observable instanceof DailyStepCountHistory)
-            generateData((ArrayList<Integer>) o);
+            unintendedSteps = (ArrayList<Integer>) o;
+        if(observable instanceof SessionDataRequestManager)
+            intendedSteps = (ArrayList<Integer>) o;
+
+        generateData(numCols);
     }
 
+    //TODO fix for many days (more than 7)
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
 
         @Override
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            String message = DAYS_OF_WEEK_LONG[columnIndex] + "'s " + SUBCOLUMN[subcolumnIndex] + " steps: " + Math.round(value.getValue());
+            String message = /*DAYS_OF_WEEK_LONG[columnIndex] + "'s " + SUBCOLUMN[subcolumnIndex] + */" steps: " + Math.round(value.getValue());
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
 

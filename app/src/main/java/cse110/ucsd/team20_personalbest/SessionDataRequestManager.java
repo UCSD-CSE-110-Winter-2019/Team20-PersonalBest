@@ -46,11 +46,11 @@ public class SessionDataRequestManager extends Observable {
     public void requestSessions(long startTime, int numOfDays){
 
         sessions = new ArrayList<>(size);
-        this.size = size;
+        this.size = numOfDays;
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add(Calendar.DATE, -1 * numOfDays);
+        start.add(Calendar.DATE, -1 * numOfDays + 1);
         start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
@@ -65,13 +65,12 @@ public class SessionDataRequestManager extends Observable {
             requestTotalSessionStepData(startRequest, start.getTimeInMillis(), i);
         }
 
-        setChanged();
-        notifyObservers(sessions);
-
     }
 
     private void requestTotalSessionStepData(long starttime, long endtime, final int i){
         if(starttime < 1001) return;
+
+        final SessionDataRequestManager t = this;
 
         SessionReadRequest readRequest = new SessionReadRequest.Builder()
                 .setTimeInterval(starttime - 1000, endtime + 1000, TimeUnit.MILLISECONDS)
@@ -107,7 +106,10 @@ public class SessionDataRequestManager extends Observable {
                             }
                         }
                         Log.d(TAG, "Steps from one request:" + current);
-                        SessionDataRequestManager.this.sessions.set(i, current);
+                        t.sessions.set(i, current);
+                        t.setChanged();
+                        t.notifyObservers(t.sessions);
+                        Log.d(TAG, "Observers notified with " + sessions.toString() + ": " + countObservers());
                     }
 
                 })

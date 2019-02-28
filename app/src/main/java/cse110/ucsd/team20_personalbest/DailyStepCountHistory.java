@@ -32,7 +32,6 @@ public class DailyStepCountHistory extends Observable {
     private GoogleSignInAccount googleSignIn;
     private final String TAG = "StepHistory";
 
-
     public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
