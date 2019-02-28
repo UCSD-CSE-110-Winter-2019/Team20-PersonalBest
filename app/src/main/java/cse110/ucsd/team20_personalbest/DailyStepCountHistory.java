@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
-public class DailyStepCountHistory {
+public class DailyStepCountHistory extends Observable {
 
     private ArrayList<Integer> data;
     private Activity activity;
@@ -32,28 +33,30 @@ public class DailyStepCountHistory {
     private final String TAG = "StepHistory";
 
 
-    public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn, long startTime){
+    public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
         data = new ArrayList<>();
-        format(startTime);
+    }
+
+    public void requestHistory( long startTime, int numOfDays){
+        format(startTime, numOfDays);
     }
 
     public ArrayList<Integer> getHistory(){
         return data;
     }
 
-    private void format(long startTime){
+    private void format(long startTime, int numOfDays){
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add( Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
-        start.set(Calendar.HOUR_OF_DAY, 0);
-        start.set(Calendar.MINUTE, 0);
-        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.HOUR_OF_DAY, 24);
+        start.set(Calendar.MINUTE, 59);
+        start.set(Calendar.SECOND, 59);
         start.set(Calendar.MILLISECOND, 0);
-        long startOfWeek = start.getTimeInMillis();
-        start.add(Calendar.DAY_OF_WEEK, 7);
         long endOfWeek = start.getTimeInMillis();
+        start.add(Calendar.DAY_OF_WEEK, -1 * numOfDays);
+        long startOfWeek = start.getTimeInMillis();
 
         Log.d(TAG, "Requesting history from " + startOfWeek + " to " + endOfWeek);
 
@@ -66,16 +69,16 @@ public class DailyStepCountHistory {
 
         Log.d(TAG, "Read request has been built");
 
+        final Object t = this;
+
         Task<DataReadResponse> response = Fitness.getHistoryClient(activity, googleSignIn).readData(readRequest).addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
             @Override
             public void onSuccess(DataReadResponse dataReadResponse) {
 
-                Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
+                Log.d(TAG, dataReadResponse.getBuckets().size() + " buckets received");
 
                 //Should be each day in the request
                 for(Bucket bucket : dataReadResponse.getBuckets()){
-
-                    Log.d(TAG, dataReadResponse.getBuckets().size() + " bucketes received");
 
                     List<DataSet> dataSets = bucket.getDataSets();
 
@@ -94,6 +97,8 @@ public class DailyStepCountHistory {
                         data.add(steps);
                     }
                 }
+                ((DailyStepCountHistory) t).notifyObservers(data);
+                Log.d(TAG, "Observers notified with " + data.toString() + " : " + ((DailyStepCountHistory) t).countObservers());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -108,4 +113,5 @@ public class DailyStepCountHistory {
             e.printStackTrace();
         }
     }
+
 }

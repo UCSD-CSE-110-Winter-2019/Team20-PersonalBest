@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private FitnessService fitnessService;
     private MainActivity activity;
-    public static SessionDataRequestManager sdrm;
-    public static DailyStepCountHistory dailysteps;
+    public SessionDataRequestManager sdrm;
+    public DailyStepCountHistory dailysteps;
 
     private String walkOrRun = "Walk";
 
@@ -177,9 +177,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         // calendar for current day
         ourCal = new OurCal(Calendar.getInstance(), 0);
-        instantiateHistories(ourCal.getTime());
-
-
 
         // log height and walker/runner saved properly
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -417,7 +414,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 fitnessService.updateStepCount();
 
                 ourCal.setCal(Calendar.getInstance());
-                instantiateHistories(ourCal.getTime());
             }
         }
     }
@@ -450,24 +446,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     public Goal getGoal() {return goal;}
 
-    private void instantiateHistories(long startTime){
-        sdrm = instantiateSessionHistory(7, startTime);
-        dailysteps = instantiateDailyHistory(startTime);
-    }
-
-    private SessionDataRequestManager instantiateSessionHistory(int dayRange, long timeToStart){
-        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
-            return new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity), dayRange, timeToStart);
-        }
-        return null;
-    }
-
-    private DailyStepCountHistory instantiateDailyHistory(long startTime){
-        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
-            return new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity), startTime);
-        }
-        return null;
-    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {

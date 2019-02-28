@@ -40,18 +40,18 @@ public class SessionDataRequestManager {
         week = new ArrayList<>(size);
         for(int i = 0; i < size; i++) week.add(0);
         this.size = size;
-        requestLastWeek(startTime);
+        requestSessions(startTime, size);
     }
 
     public ArrayList<Integer> getWeek(){
         return week;
     }
 
-    private void requestLastWeek(long startTime){
+    private void requestSessions(long startTime, int numOfDays){
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add(Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.add(Calendar.DATE, -1 * numOfDays);
         start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
