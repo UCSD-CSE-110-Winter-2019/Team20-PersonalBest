@@ -91,7 +91,7 @@ public class GraphPg extends Fragment implements Observer {
     // Generates the graph
     private void generateData(ArrayList<Integer> historyData) {
 
-        //ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
+        //ArrayList<Integer> walks = MainActivity.sdrm.getSessions();
 //        if(MainActivity.dailysteps == null)
 //            return;
 //        ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();

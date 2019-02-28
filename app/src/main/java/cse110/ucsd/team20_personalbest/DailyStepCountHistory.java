@@ -107,12 +107,6 @@ public class DailyStepCountHistory extends Observable {
                 Log.e(TAG, "Failed to read step history");
             }
         });
-
-        try{
-            Tasks.await(response, 500, TimeUnit.MILLISECONDS);
-        } catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
 }
