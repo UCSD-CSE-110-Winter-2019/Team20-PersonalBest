@@ -165,6 +165,7 @@ public class GraphPg extends Fragment implements Observer {
             values.add(new SubcolumnValue(intendedSteps.get(i), ISTEP_COLOR));
 
             Column column = new Column(values);
+            //TODO disable labels for the monthly summary when its done
             column.setHasLabels(true);
             column.setHasLabelsOnlyForSelected(false);
             columns.add(column);
