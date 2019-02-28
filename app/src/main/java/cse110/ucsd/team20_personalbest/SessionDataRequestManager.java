@@ -34,20 +34,19 @@ public class SessionDataRequestManager extends Observable {
     private final String TAG = "SessionRequests";
 
 
-    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn, int size, long startTime){
+    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
-        sessions = new ArrayList<>(size);
-        for(int i = 0; i < size; i++) sessions.add(0);
-        this.size = size;
-        requestSessions(startTime, size);
     }
 
     public ArrayList<Integer> getSessions(){
         return sessions;
     }
 
-    private void requestSessions(long startTime, int numOfDays){
+    public void requestSessions(long startTime, int numOfDays){
+
+        sessions = new ArrayList<>(size);
+        this.size = size;
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
@@ -56,6 +55,8 @@ public class SessionDataRequestManager extends Observable {
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
+
+        for(int i = 0; i < size; i++) sessions.add(0);
 
         for(int i = 0; i < size; i++) {
             long startRequest = start.getTimeInMillis();

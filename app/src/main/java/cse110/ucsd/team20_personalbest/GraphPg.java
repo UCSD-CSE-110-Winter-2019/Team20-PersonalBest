@@ -52,9 +52,12 @@ public class GraphPg extends Fragment implements Observer {
     private ComboLineColumnChartData data;
     private SharedPreferences sharedPreferences;
     private ArrayList<Integer> lastWeeksGoals;
+
     private ArrayList<Long> intendedSteps;
+    private ArrayList<Integer> unintendedSteps;
 
     private DailyStepCountHistory dailyStepCountHistory;
+    private SessionDataRequestManager sessionDataRequestManager;
 
 
     public GraphPg() {}
@@ -72,10 +75,14 @@ public class GraphPg extends Fragment implements Observer {
         intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
 
         dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+        sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+
 
         dailyStepCountHistory.addObserver(this);
+        sessionDataRequestManager.addObserver(this);
 
         dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), 7);
+        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), 7);
 
         //Call this in the update method instead
         //generateData();
@@ -220,7 +227,8 @@ public class GraphPg extends Fragment implements Observer {
     @Override
     public void update(Observable observable, Object o) {
         Log.d("Graph", "Graph has been notified, updating graph");
-        generateData((ArrayList<Integer>) o);
+        if(observable instanceof DailyStepCountHistory)
+            generateData((ArrayList<Integer>) o);
     }
 
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
