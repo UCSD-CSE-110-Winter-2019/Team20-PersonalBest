@@ -10,9 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import lecho.lib.hellocharts.listener.ComboLineColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
@@ -28,7 +33,7 @@ import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class GraphPg extends Fragment {
+public class GraphPg extends Fragment implements Observer {
 
     static boolean gotUnintendedSteps;
 
@@ -47,7 +52,12 @@ public class GraphPg extends Fragment {
     private ComboLineColumnChartData data;
     private SharedPreferences sharedPreferences;
     private ArrayList<Integer> lastWeeksGoals;
+
     private ArrayList<Long> intendedSteps;
+    private ArrayList<Integer> unintendedSteps;
+
+    private DailyStepCountHistory dailyStepCountHistory;
+    private SessionDataRequestManager sessionDataRequestManager;
 
 
     public GraphPg() {}
@@ -64,19 +74,38 @@ public class GraphPg extends Fragment {
         lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
         intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
 
-        generateData();
+        dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+        sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+
+
+        dailyStepCountHistory.addObserver(this);
+        sessionDataRequestManager.addObserver(this);
+
+        dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), 7);
+        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), 7);
+
+        //Call this in the update method instead
+        //generateData();
 
         return rootView;
     }
 
+    //Call requestHistory in dailystepcounthistory
+    private void scrollGraph(){
+
+    }
 
     // Generates the graph
-    private void generateData() {
+    private void generateData(ArrayList<Integer> historyData) {
 
-        //ArrayList<Integer> walks = MainActivity.sdrm.getWeek();
-        if(MainActivity.dailysteps == null)
-            return;
-        ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
+        //ArrayList<Integer> walks = MainActivity.sdrm.getSessions();
+//        if(MainActivity.dailysteps == null)
+//            return;
+//        ArrayList<Integer> steps = MainActivity.dailysteps.getHistory();
+//        ArrayList<Integer> uSteps = new ArrayList<>();
+
+
+        ArrayList<Integer> steps = dailyStepCountHistory.getHistory();
         ArrayList<Integer> uSteps = new ArrayList<>();
 
         for(int i = 0; i < 7; i++){
@@ -194,7 +223,14 @@ public class GraphPg extends Fragment {
         Log.d("Intended steps data", data.toString());
         return data;
     }
-  
+
+    @Override
+    public void update(Observable observable, Object o) {
+        Log.d("Graph", "Graph has been notified, updating graph");
+        if(observable instanceof DailyStepCountHistory)
+            generateData((ArrayList<Integer>) o);
+    }
+
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
 
         @Override

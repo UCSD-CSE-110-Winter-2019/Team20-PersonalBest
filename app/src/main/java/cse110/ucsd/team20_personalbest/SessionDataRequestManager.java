@@ -16,46 +16,47 @@ import com.google.android.gms.fitness.result.SessionReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
-public class SessionDataRequestManager {
+public class SessionDataRequestManager extends Observable {
 
     private Activity activity;
     private GoogleSignInAccount googleSignIn;
     private int index = 0;
     private int size;
-    private ArrayList<Integer> week;
+    private ArrayList<Integer> sessions;
     private final String TAG = "SessionRequests";
 
 
-    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn, int size, long startTime){
+    public SessionDataRequestManager(Activity activity, GoogleSignInAccount googleSignIn){
         this.activity = activity;
         this.googleSignIn = googleSignIn;
-        week = new ArrayList<>(size);
-        for(int i = 0; i < size; i++) week.add(0);
+    }
+
+    public ArrayList<Integer> getSessions(){
+        return sessions;
+    }
+
+    public void requestSessions(long startTime, int numOfDays){
+
+        sessions = new ArrayList<>(size);
         this.size = size;
-        requestLastWeek(startTime);
-    }
-
-    public ArrayList<Integer> getWeek(){
-        return week;
-    }
-
-    private void requestLastWeek(long startTime){
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
-        start.add(Calendar.DAY_OF_WEEK, -(start.get(Calendar.DAY_OF_WEEK)-1));
+        start.add(Calendar.DATE, -1 * numOfDays);
         start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
+
+        for(int i = 0; i < size; i++) sessions.add(0);
 
         for(int i = 0; i < size; i++) {
             long startRequest = start.getTimeInMillis();
@@ -63,6 +64,9 @@ public class SessionDataRequestManager {
             start.add(Calendar.DATE, 1);
             requestTotalSessionStepData(startRequest, start.getTimeInMillis(), i);
         }
+
+        setChanged();
+        notifyObservers(sessions);
 
     }
 
@@ -103,7 +107,7 @@ public class SessionDataRequestManager {
                             }
                         }
                         Log.d(TAG, "Steps from one request:" + current);
-                        week.set(i, current);
+                        SessionDataRequestManager.this.sessions.set(i, current);
                     }
 
                 })
@@ -111,15 +115,10 @@ public class SessionDataRequestManager {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG,"Failed to read session data");
-                        week.set(i, 0);
+                        sessions.set(i, 0);
                     }
                 });
 
-        try{
-            Tasks.await(task, 500, TimeUnit.MILLISECONDS);
-        } catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
 }
