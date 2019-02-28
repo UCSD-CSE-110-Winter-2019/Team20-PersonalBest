@@ -69,7 +69,7 @@ public class DailyStepCountHistory extends Observable {
 
         Log.d(TAG, "Read request has been built");
 
-        final Object t = this;
+        final DailyStepCountHistory t = this;
 
         Task<DataReadResponse> response = Fitness.getHistoryClient(activity, googleSignIn).readData(readRequest).addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
             @Override
@@ -97,8 +97,9 @@ public class DailyStepCountHistory extends Observable {
                         data.add(steps);
                     }
                 }
-                ((DailyStepCountHistory) t).notifyObservers(data);
-                Log.d(TAG, "Observers notified with " + data.toString() + " : " + ((DailyStepCountHistory) t).countObservers());
+                t.setChanged();
+                t.notifyObservers(data);
+                Log.d(TAG, "Observers notified with " + data.toString() + " : " + t.countObservers());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
