@@ -398,13 +398,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     }
 
-
-
     public void cancelUpdatingSteps(){
         updateSteps = false;
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
