@@ -1,29 +1,36 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentController;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cse110.ucsd.team20_personalbest.FriendFragment.OnListFragmentInteractionListener;
-import cse110.ucsd.team20_personalbest.dummy.DummyContent.DummyItem;
+import cse110.ucsd.team20_personalbest.friends.FriendsContent.Friend;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Friend} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Friend> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private FragmentActivity main;
 
-    public MyFriendRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyFriendRecyclerViewAdapter(List<Friend> items, OnListFragmentInteractionListener listener, FragmentActivity activity) {
         mValues = items;
         mListener = listener;
+        main = activity;
     }
 
     @Override
@@ -35,9 +42,23 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        final String name = mValues.get(position).Name;
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).Name);
+
+        holder.mMessageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(main, "Sending Message to " + name, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.mSummaryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(main, "Viewing Summary of " + name, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,19 +80,16 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final Button mMessageBtn;
+        public final Button mSummaryBtn;
+        public Friend mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            mMessageBtn = (Button) view.findViewById(R.id.Message);
+            mSummaryBtn = (Button) view.findViewById(R.id.Summary);
         }
     }
 }
