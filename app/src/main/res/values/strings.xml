@@ -7,6 +7,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_stats">Stats</string>
     <string name="title_walks">Walks</string>
+    <string name="title_friends">Friends</string>
     <string name="title_notifications">Notifications</string>
 
     // for initial activity

@@ -192,6 +192,15 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/friendFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="160dp">
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/dashFrag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

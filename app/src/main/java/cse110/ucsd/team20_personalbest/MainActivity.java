@@ -129,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     frame.setVisibility(View.GONE);
                     dashboardVisible = false;
                     break;
+                case R.id.navigation_friend:
+                    fragmentClass = FriendFragment.class;
+                    fragID = R.id.friendFrag;
+                    frame.setVisibility(View.GONE);
+                    dashboardVisible = false;
+                    break;
             }
 
             try {
