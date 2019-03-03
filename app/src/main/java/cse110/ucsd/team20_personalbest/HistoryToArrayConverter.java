@@ -1,6 +1,8 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 
@@ -10,6 +12,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class HistoryToArrayConverter extends Observable implements Observer {
+
+    private Activity activity;
 
     private DailyStepCountHistory dailyStepCountHistory;
     private SessionDataRequestManager sessionDataRequestManager;
@@ -34,7 +38,12 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numDays);
         sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
 
-        data = new long[2 * numDays + 1];
+        data = new long[2 * numDays + 1 /*For timestamp*/ + 1 /*For goal*/];
+    }
+
+    public void requestHistory(){
+        dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numDays);
+        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
     }
 
     public long[] getData(){
@@ -49,6 +58,8 @@ public class HistoryToArrayConverter extends Observable implements Observer {
             data[i + 1] = unintendedSteps.get(i);
             data[numDays + i + 1] = intendedSteps.get(i);
         }
+
+        data[data.length] = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE).getInt("savedGoal", 17);
 
     }
 
