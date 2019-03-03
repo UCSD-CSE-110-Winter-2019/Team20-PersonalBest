@@ -62,6 +62,7 @@ public class GraphPg extends Fragment implements Observer {
     private GraphManager graphManager;
 
     private int numCols = 7;
+    private int sessionsReturned = 0;
 
 
     public GraphPg() {}
@@ -223,12 +224,19 @@ public class GraphPg extends Fragment implements Observer {
     @Override
     public void update(Observable observable, Object o) {
         Log.d("Graph", "Graph has been notified, updating graph");
-        if(observable instanceof DailyStepCountHistory)
-            graphManager.updateUnintendedData((ArrayList<Integer>)o);
-        if(observable instanceof SessionDataRequestManager)
-            graphManager.updateIntendedData((ArrayList<Integer>)o);
+        if(observable instanceof DailyStepCountHistory) {
+            graphManager.updateUnintendedData((ArrayList<Integer>) o);
+            graphManager.draw();
 
-        graphManager.draw();
+        }
+        if(observable instanceof SessionDataRequestManager) {
+            graphManager.updateIntendedData((ArrayList<Integer>) o);
+            sessionsReturned++;
+            if( sessionsReturned >= numCols){
+                graphManager.draw();
+            }
+        }
+
     }
 
     private class ValueTouchListener implements ComboLineColumnChartOnValueSelectListener {
