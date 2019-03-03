@@ -26,6 +26,7 @@ public class HistoryUploader extends Service implements Observer {
 
         //Request history here
         //TODO FIND A WAY TO PASS IN THE ACTIVITY WHEN STARTING THE SERVICE
+        //TODO YOU CAN USE GETLASTSIGNEDINACCOUNT WITH CONTEXT, DONT NEED ACTIVITY, CHANGE YOUR HISTORY AND SESSION REQUESTS YOU CABBAGE
         historyToArrayConverter = new HistoryToArrayConverter(activity);
         Thread thread = new Thread(new MyThread());
         thread.start();
