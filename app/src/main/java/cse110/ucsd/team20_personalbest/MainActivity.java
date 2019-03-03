@@ -252,6 +252,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
 
+            //Start history upload service here
+            if(!HistoryUploader.isRunning){
+                //TODO FIND A WAY TO PASS IN THIS ACTIVITY TO THE HISTORYUPLOADER CLASS
+                Intent intent = new Intent(MainActivity.this, HistoryUploader.class);
+                startService(intent);
+            }
+
         }
         else
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {

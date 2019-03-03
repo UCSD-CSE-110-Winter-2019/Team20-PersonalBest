@@ -10,6 +10,7 @@ import java.util.Observer;
 
 public class HistoryUploader extends Service implements Observer {
 
+    public static boolean isRunning = false;
     private Activity activity;
     private HistoryToArrayConverter historyToArrayConverter;
 
@@ -22,9 +23,19 @@ public class HistoryUploader extends Service implements Observer {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         //Request history here
+        //TODO FIND A WAY TO PASS IN THE ACTIVITY WHEN STARTING THE SERVICE
         historyToArrayConverter = new HistoryToArrayConverter(activity);
+        Thread thread = new Thread(new MyThread());
+        thread.start();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy(){
+        isRunning = false;
+        super.onDestroy();
     }
 
     @Override
@@ -43,6 +54,7 @@ public class HistoryUploader extends Service implements Observer {
         @Override
         public void run() {
             synchronized (this){
+                isRunning = true;
                 try{
                     historyToArrayConverter.requestHistory();
                     wait(60000 * 5);
