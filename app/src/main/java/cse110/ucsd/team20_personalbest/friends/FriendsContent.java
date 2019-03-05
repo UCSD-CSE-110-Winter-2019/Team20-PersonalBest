@@ -21,7 +21,7 @@ public class FriendsContent {
     static {
         addItem(createFriend("Dominic"));
         addItem(createFriend("Francis"));
-        addItem(createFriend("Jeremyy"));
+        addItem(createFriend("Jeremy"));
         addItem(createFriend("Rachel"));
         addItem(createFriend("Alex"));
         addItem(createFriend("Michelle"));

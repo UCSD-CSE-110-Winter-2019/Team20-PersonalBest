@@ -50,6 +50,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
             @Override
             public void onClick(View v) {
                 Toast.makeText(main, "Sending Message to " + name, Toast.LENGTH_SHORT).show();
+
             }
         });
 

@@ -20,27 +20,44 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Document;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import cse110.ucsd.team20_personalbest.fitness.MockFitness;
+import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
@@ -144,11 +161,37 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 e.printStackTrace();
             }
 
-
             ft.replace(fragID, currentFrag).commit();
             return true;
         }
     };
+
+    public void onButtonShowPopupWindowClick(View view) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+    }
 
     @Override
     public void onWalkPgSelected() {
@@ -218,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
                 Log.d(TAG, "Extra steps added; not added to google history");
+                onButtonShowPopupWindowClick(frame);
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -418,6 +462,15 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 ourCal.setCal(Calendar.getInstance());
             }
         }
+
+        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+            Map<String, String> newUser = new HashMap<>();
+            CollectionReference user = FirebaseFirestore.getInstance()
+                    .collection("users");
+
+            System.err.println("*********************" + Auth.GoogleSignInApi.getSignInResultFromIntent(data).getSignInAccount().getEmail());
+        }
+
     }
 
 
