@@ -47,8 +47,8 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
     }
 
-    public long[] getData(){
-        return data;
+    public HistoryStructure getData(){
+        return new HistoryStructure().setData(data);
     }
 
     private void formatArray(){

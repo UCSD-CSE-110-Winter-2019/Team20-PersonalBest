@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -199,6 +200,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         activity = this;
         sc = new StepContainer();
+
+        FirebaseApp.initializeApp(this);
 
         frame = (FrameLayout) findViewById(R.id.mainScreen);
 

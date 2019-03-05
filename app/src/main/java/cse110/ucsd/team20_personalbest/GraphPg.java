@@ -70,6 +70,7 @@ public class GraphPg extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         setHasOptionsMenu(false);
         View rootView = inflater.inflate(R.layout.fragment_graph, container, false);
 
