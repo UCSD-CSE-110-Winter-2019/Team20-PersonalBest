@@ -25,9 +25,10 @@ public class HistoryToArrayConverter extends Observable implements Observer {
     private int returnedSessions = 0;
     private long[] data;
 
-    public HistoryToArrayConverter(Context context){
-        dailyStepCountHistory = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity.getBaseContext()));
-        sessionDataRequestManager = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity.getBaseContext()));
+    public HistoryToArrayConverter(Activity activity){
+        this.activity = activity;
+        dailyStepCountHistory = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity));
+        sessionDataRequestManager = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity));
 
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
