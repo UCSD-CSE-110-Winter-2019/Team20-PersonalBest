@@ -25,7 +25,7 @@ public class HistoryToArrayConverter extends Observable implements Observer {
     private int returnedSessions = 0;
     private long[] data;
 
-    public HistoryToArrayConverter(Activity activity){
+    public HistoryToArrayConverter(Context context){
         dailyStepCountHistory = new DailyStepCountHistory(activity, GoogleSignIn.getLastSignedInAccount(activity.getBaseContext()));
         sessionDataRequestManager = new SessionDataRequestManager(activity, GoogleSignIn.getLastSignedInAccount(activity.getBaseContext()));
 
@@ -50,16 +50,18 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         return data;
     }
 
-    public void formatArray(){
+    private void formatArray(){
         //Set first item to current time or date
         data[0] = Calendar.getInstance().getTimeInMillis();
+        data[1] = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE).getInt("savedGoal", 17);
 
         for(int i = 0; i < numDays; i++){
-            data[i + 1] = unintendedSteps.get(i);
-            data[numDays + i + 1] = intendedSteps.get(i);
-        }
+            if(unintendedSteps.size() == i) unintendedSteps.add(0);
+            if(intendedSteps.size() == i) intendedSteps.add(0);
 
-        data[data.length] = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE).getInt("savedGoal", 17);
+            data[i + 2] = unintendedSteps.get(i);
+            data[numDays + i + 2] = intendedSteps.get(i);
+        }
 
     }
 
@@ -68,6 +70,8 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         if(observable instanceof DailyStepCountHistory){
             unintendedSteps = (ArrayList<Integer> ) o;
             formatArray();
+            setChanged();
+            notifyObservers("unintended");
         }
         if(observable instanceof  SessionDataRequestManager){
             intendedSteps = (ArrayList<Integer> ) o;
@@ -75,7 +79,7 @@ public class HistoryToArrayConverter extends Observable implements Observer {
             if(returnedSessions >= numDays){
                 formatArray();
                 setChanged();
-                notifyObservers();
+                notifyObservers("intended");
             }
         }
     }
