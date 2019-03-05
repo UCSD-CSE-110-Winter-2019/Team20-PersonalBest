@@ -58,6 +58,7 @@ public class GraphPg extends Fragment implements Observer {
 
     private DailyStepCountHistory dailyStepCountHistory;
     private SessionDataRequestManager sessionDataRequestManager;
+    private GoalDataRequestManager goalDataRequestManager;
 
     private GraphManager graphManager;
 
@@ -75,7 +76,10 @@ public class GraphPg extends Fragment implements Observer {
         chart = (ComboLineColumnChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
 
-        graphManager = new GraphManager(chart, numCols, this.getActivity());
+        goalDataRequestManager = new GoalDataRequestManager(this.getActivity());
+        goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
+
+        graphManager = new GraphManager(chart, numCols, goalDataRequestManager);
 
         //lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
         //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
@@ -85,6 +89,7 @@ public class GraphPg extends Fragment implements Observer {
 
         dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
         sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+
 
         dailyStepCountHistory.addObserver(this);
         sessionDataRequestManager.addObserver(this);
@@ -224,9 +229,9 @@ public class GraphPg extends Fragment implements Observer {
     public void update(Observable observable, Object o) {
         Log.d("Graph", "Graph has been notified, updating graph");
         if(observable instanceof DailyStepCountHistory)
-            graphManager.updateUnintendedData((ArrayList<Integer>)o);
+            graphManager.updateUnintendedData((ArrayList<Integer>) o);
         if(observable instanceof SessionDataRequestManager)
-            graphManager.updateIntendedData((ArrayList<Integer>)o);
+            graphManager.updateIntendedData((ArrayList<Integer>) o);
 
         graphManager.draw();
     }
@@ -235,7 +240,10 @@ public class GraphPg extends Fragment implements Observer {
 
         @Override
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            String message = /*DAYS_OF_WEEK_LONG[columnIndex] + "'s " + SUBCOLUMN[subcolumnIndex] + */" Steps: " + Math.round(value.getValue());
+
+            String message = /*DAYS_OF_WEEK_LONG[columnIndex] + "'s " +*/ SUBCOLUMN[subcolumnIndex] + " Steps: " + Math.round(value.getValue());
+            if (numCols == 7)
+                message = DAYS_OF_WEEK_LONG[columnIndex] + "'s " + message;
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
 

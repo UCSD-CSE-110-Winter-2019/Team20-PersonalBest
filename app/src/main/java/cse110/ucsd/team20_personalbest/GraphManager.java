@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import lecho.lib.hellocharts.model.Axis;
@@ -27,13 +28,12 @@ public class GraphManager {
     private ComboLineColumnChartView chart;
     private ComboLineColumnChartData data;
 
-    private Context calledFrom;
-
     private int numCols;
     private int maxColNumberWithLabels = 10;
 
     private boolean hasLabels = true;
 
+    GoalDataRequestManager goalDataRequestManager;
 
     private ArrayList<Integer> intendedSteps;
     private ArrayList<Integer> unintendedSteps;
@@ -41,15 +41,17 @@ public class GraphManager {
 
     private ArrayList<Integer> formattedUSteps;
 
-    public GraphManager(ComboLineColumnChartView chartView, int numCols, Context context){
+    String TAG = "GraphManager";
+
+    public GraphManager(ComboLineColumnChartView chartView, int numCols, GoalDataRequestManager goalDataRequestManager){
         chart = chartView;
         this.numCols = numCols;
-        calledFrom = context;
 
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
         formattedUSteps = new ArrayList<>();
-        goalData = new ArrayList<>();
+        goalData = goalDataRequestManager.getGoalDataArray();
+        this.goalDataRequestManager = goalDataRequestManager;
 
         if(numCols >= maxColNumberWithLabels){
             hasLabels = false;
@@ -84,14 +86,9 @@ public class GraphManager {
             columns.add(column);
         }
 
-        Goal g = new Goal(calledFrom);
-        int currentDay = g.getCurrentDay();
-        int goalValue = 0;
-        int defaultGoal = g.getGoal();
-
         //Add goal data to the line
         for (int i = 0; i < numCols; i++) {
-            goalValue = goalData.get(i);
+            int goalValue = goalData.get(i);
             line.add(new PointValue(i, goalValue));
         }
 
@@ -137,20 +134,15 @@ public class GraphManager {
     }
 
     public void updateIntendedData(ArrayList<Integer> newData){
+        Log.d(TAG, "Updating Intended Steps Data");
         intendedSteps = newData;
         formatData();
     }
 
     public void updateUnintendedData(ArrayList<Integer> newData){
+        Log.d(TAG, "Updating Unintended Steps Data");
         unintendedSteps = newData;
         formatData();
     }
-
-    public void updateGoalData(ArrayList<Integer> newData){
-        goalData = newData;
-        formatData();
-    }
-
-
 }
 
