@@ -1,3 +1,4 @@
+
 package cse110.ucsd.team20_personalbest;
 
 import android.annotation.TargetApi;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private RTWalk rtStat;
     private int tempStep;
     private boolean dashboardVisible = true;
+    private FloatingActionButton floatBtn;
 
     private OurCal ourCal;
 
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             FragmentTransaction ft = fm.beginTransaction();
+            floatBtn = (FloatingActionButton) findViewById(R.id.floatBtn);
             if(currentFrag != null)
                 ft.remove(currentFrag);
             switch (item.getItemId()) {
@@ -126,16 +130,19 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     fragmentClass = dashboard.class;
                     fragID = R.id.dashFrag;
                     frame.setVisibility(View.VISIBLE);
+                    floatBtn.hide();
                     dashboardVisible = true;
                     break;
                 case R.id.navigation_walks:
                     fragmentClass = WalkPg.class;
                     fragID = R.id.walkFrag;
                     frame.setVisibility(View.GONE);
+                    floatBtn.hide();
                     dashboardVisible = false;
                     break;
                 case R.id.navigation_stats:
                     fragID = R.id.statFrag;
+                    floatBtn.hide();
                     fragmentClass = GraphPg.class;
                     frame.setVisibility(View.GONE);
                     dashboardVisible = false;
@@ -143,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 case R.id.navigation_profile:
                     fragmentClass = ProfilePg.class;
                     fragID = R.id.profileFrag;
+                    floatBtn.hide();
                     frame.setVisibility(View.GONE);
                     dashboardVisible = false;
                     break;
@@ -150,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     fragmentClass = FriendFragment.class;
                     fragID = R.id.friendFrag;
                     frame.setVisibility(View.GONE);
+                    floatBtn.show();
                     dashboardVisible = false;
                     break;
             }
@@ -207,9 +216,18 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        floatBtn = (FloatingActionButton) findViewById(R.id.floatBtn);
+        floatBtn.hide();
         activity = this;
         sc = new StepContainer();
+
+
+        floatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, PopupFriendRequest.class));
+            }
+        });
 
         boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
@@ -380,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         });
 
     } // end onCreate
-    
+
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
