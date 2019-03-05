@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
 
-            HistoryUploader historyUploader = new HistoryUploader(this);
+            new HistoryUploader(this);
 
         }
         else
@@ -417,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 fitnessService.updateStepCount();
 
                 ourCal.setCal(Calendar.getInstance());
+
             }
         }
     }

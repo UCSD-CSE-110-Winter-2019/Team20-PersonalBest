@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
@@ -7,7 +8,9 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,8 +33,6 @@ public class HistoryUploader implements Observer {
 
     private String TAG = "HistoryUploader";
 
-    //TODO add firebase to this
-    //Set some firebase stuff in here
     public HistoryUploader(Activity activity) {
         this.activity = activity;
         historyToArrayConverter = new HistoryToArrayConverter(activity);
@@ -57,7 +58,15 @@ public class HistoryUploader implements Observer {
             //UPLOAD HERE
             HistoryStructure data = historyToArrayConverter.getData();
 
-            String email = GoogleSignIn.getLastSignedInAccount(activity).getId();
+            //TODO configure somewhere to request email from googlesigninoptions
+//            String email = "failure";
+//            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+//            if(acct != null){
+//                email = acct.getAccount().name;
+//                Log.d(TAG, "Account exists: " + email);
+//            }
+
+
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference history = db.collection("users")
