@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         activity = this;
         sc = new StepContainer();
         fbcc = new FBCommandCenter();
-        fbcc.addUser("yiw679@ucsd.edu", "Yiming", "Wang");
+
 
 
         floatBtn.setOnClickListener(new View.OnClickListener() {
@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                 try {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
-                    System.err.println("*********************" + account.getEmail());
+                    fbcc.addUser(account.getEmail(), account.getGivenName(), account.getFamilyName());
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }
