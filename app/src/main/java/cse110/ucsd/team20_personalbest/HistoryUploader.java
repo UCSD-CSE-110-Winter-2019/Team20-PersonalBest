@@ -59,33 +59,27 @@ public class HistoryUploader implements Observer {
             HistoryStructure data = historyToArrayConverter.getData();
 
             //TODO configure somewhere to request email from googlesigninoptions
-//            String email = "failure";
-//            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-//            if(acct != null){
-//                email = acct.getAccount().name;
-//                Log.d(TAG, "Account exists: " + email);
-//            }
 
+            //TODO uncomment to upload data to firebase, use proper email
 
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference history = db.collection("users")
-                    .document("dominic.simone@gmail.com")
-                    .collection("history")
-                    .document("data");
-
-
-            history.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "Upload successful");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "Upload failed...");
-                }
-            });
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            DocumentReference history = db.collection("users")
+//                    .document("dominic.simone@gmail.com")
+//                    .collection("history")
+//                    .document("data");
+//
+//
+//            history.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//                    Log.d(TAG, "Upload successful");
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Log.d(TAG, "Upload failed...");
+//                }
+//            });
         }
 
     }
