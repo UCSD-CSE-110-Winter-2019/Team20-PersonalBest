@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -27,11 +26,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-}
-
-repositories {
-    maven {
-        url "https://jitpack.io"
+    productFlavors {
     }
 }
 
@@ -62,4 +57,8 @@ dependencies {
     implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
     implementation 'com.google.code.gson:gson:2.8.5'
     //
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
 }

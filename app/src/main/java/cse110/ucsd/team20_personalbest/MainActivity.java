@@ -39,7 +39,11 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private MainActivity mainActivity;
     public String fitnessServiceKey;
     private long timeDiff;
+    public static FBCommandCenter fbcc;
 
     private Button changeStep;
     private EditText timeText;
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private boolean onWalk = false;
     private IntendedSession is;
-
+    private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -175,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     };
 
+
     public void onButtonShowPopupWindowClick(View view) {
 
         // inflate the layout of the popup window
@@ -220,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         floatBtn.hide();
         activity = this;
         sc = new StepContainer();
+        fbcc = new FBCommandCenter();
+        fbcc.addUser("yiw679@ucsd.edu", "Yiming", "Wang");
 
 
         floatBtn.setOnClickListener(new View.OnClickListener() {
@@ -318,6 +326,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
+
+
         }
         else
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
@@ -396,7 +406,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 setButton(btnStartStop, onWalk);
             }
         });
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     } // end onCreate
 
     public void setButton(Button btn, boolean onWalk) {
@@ -478,17 +491,23 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 fitnessService.updateStepCount();
 
                 ourCal.setCal(Calendar.getInstance());
+
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+                try {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    System.err.println("*********************" + account.getEmail());
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                }
+
+                if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+                    Map<String, String> newUser = new HashMap<>();
+                    CollectionReference user = FirebaseFirestore.getInstance()
+                            .collection("users");
+                }
             }
         }
-
-        if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
-            Map<String, String> newUser = new HashMap<>();
-            CollectionReference user = FirebaseFirestore.getInstance()
-                    .collection("users");
-
-            System.err.println("*********************" + Auth.GoogleSignInApi.getSignInResultFromIntent(data).getSignInAccount().getEmail());
-        }
-
     }
 
 
