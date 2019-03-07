@@ -18,8 +18,7 @@
         android:layout_marginLeft="56dp"
         android:layout_marginRight="56dp"
         android:layout_marginBottom="32dp"
-        android:layout_marginTop="32dp">
-    </lecho.lib.hellocharts.view.ComboLineColumnChartView>
+        android:layout_marginTop="32dp"/>
 
     <EditText
         android:id="@+id/textView"
