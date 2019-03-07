@@ -410,6 +410,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 134);
     } // end onCreate
 
     public void setButton(Button btn, boolean onWalk) {
