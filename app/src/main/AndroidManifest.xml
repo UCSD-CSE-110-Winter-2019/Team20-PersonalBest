@@ -11,10 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_pb_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".HistoryUploader"
-            android:enabled="true"
-            android:exported="true"></service>
+        <activity android:name=".GraphMessageActivity"></activity>
 
         <activity
             android:name=".MainActivity"
@@ -28,7 +25,7 @@
         </activity>
         <activity
             android:name=".InitialActivity"
-            android:label="Profile"></activity>
+            android:label="Profile" />
     </application>
 
 </manifest>
