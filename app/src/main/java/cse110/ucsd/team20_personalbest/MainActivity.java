@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private int tempStep;
     private boolean dashboardVisible = true;
     private FloatingActionButton floatBtn;
+    private boolean isFirstRun;
 
     private OurCal ourCal;
 
@@ -180,34 +181,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         }
     };
 
-
-    public void onButtonShowPopupWindowClick(View view) {
-
-        // inflate the layout of the popup window
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_window, null);
-
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return true;
-            }
-        });
-    }
-
     @Override
     public void onWalkPgSelected() {
         Log.d(TAG, "Loading Walk Page");
@@ -226,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         floatBtn.hide();
         activity = this;
         sc = new StepContainer();
-        fbcc = new FBCommandCenter();
-
-
 
         floatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,9 +207,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             }
         });
 
-        boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+        isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
-
         if (getIntent().getStringExtra("service_key") != null && getIntent().getStringExtra("service_key").equals("MOCK_FIT")) {
             isFirstRun = true;
         }
@@ -287,7 +256,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
                 Log.d(TAG, "Extra steps added; not added to google history");
-                onButtonShowPopupWindowClick(frame);
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -498,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                 try {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
-                    fbcc.addUser(account.getEmail(), account.getGivenName(), account.getFamilyName());
+                    fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }

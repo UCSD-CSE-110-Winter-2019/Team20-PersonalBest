@@ -16,18 +16,7 @@ public class FriendsContent {
 
     public static final Map<String, Friend> FRIENDS_MAP = new HashMap<String, Friend>();
 
-    private static final int COUNT = 25;
-
-    static {
-        addItem(createFriend("Dominic"));
-        addItem(createFriend("Francis"));
-        addItem(createFriend("Jeremy"));
-        addItem(createFriend("Rachel"));
-        addItem(createFriend("Alex"));
-        addItem(createFriend("Michelle"));
-    }
-
-    private static void addItem(Friend item) {
+    public static void addItem(Friend item) {
         FRIENDS.add(item);
         FRIENDS_MAP.put(item.Name, item);
     }
