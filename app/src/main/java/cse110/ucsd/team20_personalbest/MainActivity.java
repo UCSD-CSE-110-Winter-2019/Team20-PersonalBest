@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             email = email.substring(0,email.indexOf('@'));
             fpg.updateUserName(email);
         }
+        new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
     }
 
     @Override
