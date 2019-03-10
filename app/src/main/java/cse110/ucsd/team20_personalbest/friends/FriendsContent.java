@@ -25,11 +25,11 @@ public class FriendsContent {
     }
 
     public static void addItem(Friend item) {
+        for(int i = 0; i < FRIENDS.size(); i++) {
+            if(FRIENDS.get(i).Name.equals(item.Name))
+                return;
+        }
         FRIENDS.add(item);
-    }
-
-    private static Friend createFriend(String name) {
-        return new Friend(name);
     }
 
     public static class Friend {
