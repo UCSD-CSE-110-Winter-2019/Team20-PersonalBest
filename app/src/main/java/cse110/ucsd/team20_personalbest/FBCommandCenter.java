@@ -31,20 +31,26 @@ public class FBCommandCenter {
     public FBCommandCenter(String userToAdd, final String fName, String lName) {
         usersCollection = FirebaseFirestore.getInstance().collection(USER_KEY);
 
-        dataToSave = new HashMap<String, Object>();
-        dataToSave.put("firstName", fName);
-        dataToSave.put("lastName", lName);
-        usersCollection.document(userToAdd).set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
+        usersCollection.document(userToAdd).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("SUCCESSADDUSER", "User " + fName + " added");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("FAILADDUSER", "User " + fName + " removed");
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    dataToSave = documentSnapshot.getData();
+                    for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
+                        String friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
+                        fc.addFriend(friendEntry.substring(6,friendEntry.length() - 1));
+                    }
+                }
+                else {
+                    dataToSave = new HashMap<String, Object>();
+                    dataToSave.put("firstName", fName);
+                    dataToSave.put("lastName", lName);
+                    usersCollection.document(userToAdd).set(dataToSave);
+                }
             }
         });
+
+        //fc.FRIENDS = (List) dataToSave.get("friends");
         user = usersCollection.document(userToAdd);
     }
 

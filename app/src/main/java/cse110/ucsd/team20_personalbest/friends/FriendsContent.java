@@ -12,13 +12,18 @@ public class FriendsContent {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Friend> FRIENDS = new ArrayList<Friend>();
+    public static List<Friend> FRIENDS = new ArrayList<Friend>();
 
-    public static final Map<String, Friend> FRIENDS_MAP = new HashMap<String, Friend>();
+    public FriendsContent () {
+
+    }
+
+    public static void addFriend(String name) {
+        addItem(new Friend(name));
+    }
 
     public static void addItem(Friend item) {
         FRIENDS.add(item);
-        FRIENDS_MAP.put(item.Name, item);
     }
 
     private static Friend createFriend(String name) {
