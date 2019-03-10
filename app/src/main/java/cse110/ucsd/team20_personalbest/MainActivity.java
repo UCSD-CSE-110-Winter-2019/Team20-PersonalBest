@@ -197,9 +197,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Log.d(TAG, "Loading Friend Page");
         FriendFragment fpg = (FriendFragment) getSupportFragmentManager().findFragmentById(R.id.friendFrag);
         if(fpg != null) {
-            Log.d(TAG, "Sending username");
-            System.out.println("************************************"+account.getGivenName()+account.getFamilyName());
-            fpg.updateUserName(account.getGivenName()+account.getFamilyName());
+            Log.d(TAG, "Sending email");
+            String email = account.getEmail();
+            email = email.substring(0,email.indexOf('@'));
+            fpg.updateUserName(email);
         }
     }
 

@@ -35,7 +35,10 @@ public class ChatActivity extends AppCompatActivity {
 
         from = this.getIntent().getStringExtra("UserName");
         String friendKey = this.getIntent().getStringExtra("friend");
-        DOCUMENT_KEY = from + friendKey;
+        if(from.compareTo(friendKey) >= 0)
+            DOCUMENT_KEY = from + friendKey;
+        else
+            DOCUMENT_KEY =friendKey + from ;
 
         fb = ChatAdapterFactory.build(factoryKey, from, COLLECTION_KEY, DOCUMENT_KEY, MESSAGES_KEY);
 
