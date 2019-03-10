@@ -6,20 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/user_name"
+    <TextView
+        android:id="@+id/friend_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:hint="user name" />
+        android:layout_margin="5dp" />
 
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/text_message"
-        android:layout_below="@+id/user_name"
+        android:layout_below="@+id/friend_name"
         android:background="#ECEFF1"
         android:fillViewport="true"
         android:overScrollMode="always">

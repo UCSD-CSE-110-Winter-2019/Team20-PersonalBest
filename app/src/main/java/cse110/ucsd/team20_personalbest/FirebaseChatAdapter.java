@@ -21,9 +21,9 @@ import static android.content.ContentValues.TAG;
 public class FirebaseChatAdapter implements ChatAdapter {
     CollectionReference chat;
 
-    String COLLECTION_KEY = "chat logs";
-    String DOCUMENT_KEY = "chat1";
-    String MESSAGES_KEY = "messages";
+    String COLLECTION_KEY;
+    String DOCUMENT_KEY;
+    String MESSAGES_KEY;
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
     String TIMESTAMP_KEY = "timestamp";

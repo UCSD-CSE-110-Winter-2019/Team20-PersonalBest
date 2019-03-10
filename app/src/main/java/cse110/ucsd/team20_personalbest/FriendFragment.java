@@ -26,6 +26,7 @@ public class FriendFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private String username;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,17 +70,21 @@ public class FriendFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyFriendRecyclerViewAdapter(FriendsContent.FRIENDS, mListener, getActivity()));
+            recyclerView.setAdapter(new MyFriendRecyclerViewAdapter(FriendsContent.FRIENDS, mListener, getActivity(), username));
         }
         return view;
     }
 
+    public void updateUserName(String userName) {
+        this.username = userName;
+    }
 
-    /*@Override
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            mListener.onFriendPgSelected();
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -90,7 +95,7 @@ public class FriendFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }*/
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -104,6 +109,6 @@ public class FriendFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Friend item);
+        public void onFriendPgSelected();
     }
 }

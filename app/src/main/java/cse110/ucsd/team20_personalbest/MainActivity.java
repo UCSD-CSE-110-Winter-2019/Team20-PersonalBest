@@ -66,7 +66,7 @@ import cse110.ucsd.team20_personalbest.fitness.MockFitness;
 import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
-public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
+public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, FriendFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
     private Fragment currentFrag = new dashboard();
@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private boolean onWalk = false;
     private IntendedSession is;
     private GoogleSignInClient mGoogleSignInClient;
+    public GoogleSignInAccount account;
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -188,6 +189,17 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         if(walks != null) {
             Log.d(TAG, "Sending past walks");
             walks.updateWalks(pastWalks);
+        }
+    }
+
+    @Override
+    public void onFriendPgSelected() {
+        Log.d(TAG, "Loading Friend Page");
+        FriendFragment fpg = (FriendFragment) getSupportFragmentManager().findFragmentById(R.id.friendFrag);
+        if(fpg != null) {
+            Log.d(TAG, "Sending username");
+            System.out.println("************************************"+account.getGivenName()+account.getFamilyName());
+            fpg.updateUserName(account.getGivenName()+account.getFamilyName());
         }
     }
 
@@ -465,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
                 try {
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    account = task.getResult(ApiException.class);
                     fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
                 } catch (ApiException e) {
                     e.printStackTrace();

@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 exports.addTimeStamp = functions.firestore
-   .document('chats/{chatId}/messages/{messageId}')
+   .document('chatlogs/{chatId}/messages/{messageId}')
    .onCreate((snap, context) => {
      if (snap) {
        return snap.ref.update({
@@ -14,7 +14,7 @@ exports.addTimeStamp = functions.firestore
      return "snap was null or empty";
    });
 exports.sendChatNotifications = functions.firestore
-   .document('chats/{chatId}/messages/{messageId}')
+   .document('chatlogs/{chatId}/messages/{messageId}')
    .onCreate((snap, context) => {
      // Get an object with the current document value.
      // If the document does not exist, it has been deleted.

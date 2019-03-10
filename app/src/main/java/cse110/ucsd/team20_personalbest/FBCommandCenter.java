@@ -27,6 +27,7 @@ public class FBCommandCenter {
     DocumentReference user;
     FriendsContent fc;
     private Map<String, Object> dataToSave;
+    private String friendEntry;
 
     public FBCommandCenter(String userToAdd, final String fName, String lName) {
         usersCollection = FirebaseFirestore.getInstance().collection(USER_KEY);
@@ -37,14 +38,16 @@ public class FBCommandCenter {
                 if (documentSnapshot.exists()) {
                     dataToSave = documentSnapshot.getData();
                     for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
-                        String friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
-                        fc.addFriend(friendEntry.substring(6,friendEntry.length() - 1));
+                        friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
+                        friendEntry = friendEntry.substring(6,friendEntry.length() - 1);
+                        fc.addFriend(friendEntry);
                     }
                 }
                 else {
                     dataToSave = new HashMap<String, Object>();
                     dataToSave.put("firstName", fName);
                     dataToSave.put("lastName", lName);
+                    dataToSave.put("friends", fc.FRIENDS);
                     usersCollection.document(userToAdd).set(dataToSave);
                 }
             }
@@ -55,7 +58,7 @@ public class FBCommandCenter {
     }
 
     public void addFriend(String friendEmail) {
-        fc.addItem(new FriendsContent.Friend(friendEmail));
+        fc.addFriend(friendEmail.substring(0, friendEmail.indexOf('@')));
         dataToSave.put("friends", fc.FRIENDS);
         user.set(dataToSave);
     }

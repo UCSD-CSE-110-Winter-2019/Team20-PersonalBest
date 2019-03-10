@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentController;
 import android.support.v7.widget.RecyclerView;
@@ -26,11 +27,13 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
     private final List<Friend> mValues;
     private final OnListFragmentInteractionListener mListener;
     private FragmentActivity main;
+    private String userName;
 
-    public MyFriendRecyclerViewAdapter(List<Friend> items, OnListFragmentInteractionListener listener, FragmentActivity activity) {
+    public MyFriendRecyclerViewAdapter(List<Friend> items, OnListFragmentInteractionListener listener, FragmentActivity activity, String username) {
         mValues = items;
         mListener = listener;
         main = activity;
+        userName = username;
     }
 
     @Override
@@ -50,7 +53,10 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
             @Override
             public void onClick(View v) {
                 Toast.makeText(main, "Sending Message to " + name, Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(main, ChatActivity.class);
+                intent.putExtra("friend", name);
+                intent.putExtra("UserName", userName);
+                main.startActivity(intent);
             }
         });
 
@@ -67,7 +73,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onFriendPgSelected();
                 }
             }
         });
