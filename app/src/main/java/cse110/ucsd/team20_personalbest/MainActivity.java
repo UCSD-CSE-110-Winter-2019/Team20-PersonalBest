@@ -217,7 +217,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         floatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PopupFriendRequest.class));
+                Intent intent = new Intent(MainActivity.this, PopupFriendRequest.class);
+                intent.putExtra("email", account.getEmail());
+                startActivity(intent);
             }
         });
 

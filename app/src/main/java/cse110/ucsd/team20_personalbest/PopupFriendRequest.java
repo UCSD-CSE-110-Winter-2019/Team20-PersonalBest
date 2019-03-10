@@ -33,9 +33,6 @@ public class PopupFriendRequest extends AppCompatActivity {
             public void onClick(View v) {
                 if(friendEmail.getText().toString() != "")
                     fbcc.addFriend(friendEmail.getText().toString());
-
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
             }
         });
 
