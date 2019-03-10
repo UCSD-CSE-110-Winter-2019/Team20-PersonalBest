@@ -40,7 +40,7 @@ public class FBCommandCenter {
                     dataToSave = documentSnapshot.getData();
                     for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
                         friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
-                        friendEntry = friendEntry.substring(6,friendEntry.length() - 1);
+                        //friendEntry = friendEntry.substring(6,friendEntry.length() - 1);
                         fc.addFriend(friendEntry);
                     }
                 }
@@ -59,24 +59,49 @@ public class FBCommandCenter {
     }
 
     public void addFriend(String friendEmail) {
-        if(fc.FRIENDS_TOBEADDED.contains(friendEmail.substring(0, friendEmail.indexOf('@')))) {
-            fc.addFriend(friendEmail.substring(0, friendEmail.indexOf('@')));
-            dataToSave.put("friends", fc.FRIENDS);
-            user.set(dataToSave);
-        }
-        else {
-            DocumentReference friendDocument = FirebaseFirestore.getInstance().collection(USER_KEY).document(friendEmail);
-            friendDocument.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        List ftba = (List)(documentSnapshot.getData().get("friends_tobeadded"));
-                        ftba.add(userEmail.substring(0,userEmail.indexOf('@')));
-                        friendDocument.update("friends_tobeadded", ftba);
+            user.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    DocumentReference friendDocument = FirebaseFirestore.getInstance().collection(USER_KEY).document(friendEmail);
+                    List ft = (List) (documentSnapshot.getData().get("friends"));
+                    List ftba = (List) (documentSnapshot.getData().get("friends_tobeadded"));
+                    if (ftba.contains(friendEmail.substring(0, friendEmail.indexOf('@')))) {
+                        ft.add(friendEmail.substring(0, friendEmail.indexOf('@')));
+                        user.update("friends", ft);
+                        friendDocument.get().addOnSuccessListener(documentSnapshot12 -> {
+                            List ft1 = (List)(documentSnapshot12.getData().get("friends"));
+                            ft1.add(userEmail.substring(0,userEmail.indexOf('@')));
+                            friendDocument.update("friends", ft1);
+                        });
+                    }
+                    else {
+                        friendDocument.get().addOnSuccessListener(documentSnapshot1 -> {
+                            if (documentSnapshot1.exists()) {
+                                List ftba1 = (List)(documentSnapshot1.getData().get("friends_tobeadded"));
+                                ftba1.add(userEmail.substring(0,userEmail.indexOf('@')));
+                                friendDocument.update("friends_tobeadded", ftba1);
+                            }
+                        });
                     }
                 }
             });
-        }
+//        if(fc.FRIENDS_TOBEADDED.contains(friendEmail.substring(0, friendEmail.indexOf('@')))) {
+//            fc.addFriend(friendEmail.substring(0, friendEmail.indexOf('@')));
+//            dataToSave.put("friends", fc.FRIENDS);
+//            user.set(dataToSave);
+//        }
+//        else {
+//            DocumentReference friendDocument = FirebaseFirestore.getInstance().collection(USER_KEY).document(friendEmail);
+//            friendDocument.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                @Override
+//                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                    if (documentSnapshot.exists()) {
+//                        List ftba = (List)(documentSnapshot.getData().get("friends_tobeadded"));
+//                        ftba.add(userEmail.substring(0,userEmail.indexOf('@')));
+//                        friendDocument.update("friends_tobeadded", ftba);
+//                    }
+//                }
+//            });
+//        }
     }
 
 
