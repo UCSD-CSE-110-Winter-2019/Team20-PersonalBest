@@ -14,6 +14,8 @@ public class FriendsContent {
      */
     public static List<Friend> FRIENDS = new ArrayList<Friend>();
 
+    public static List<String> FRIENDS_TOBEADDED = new ArrayList<String>();
+
     public FriendsContent () {
 
     }
