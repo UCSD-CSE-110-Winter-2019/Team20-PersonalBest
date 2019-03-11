@@ -78,6 +78,8 @@ public class FBCommandCenter {
                         friendDocument.get().addOnSuccessListener(documentSnapshot1 -> {
                             if (documentSnapshot1.exists()) {
                                 List ftba1 = (List)(documentSnapshot1.getData().get("friends_tobeadded"));
+                                if(ftba1.contains(userEmail.substring(0,userEmail.indexOf('@'))))
+                                    return;
                                 ftba1.add(userEmail.substring(0,userEmail.indexOf('@')));
                                 friendDocument.update("friends_tobeadded", ftba1);
                             }
