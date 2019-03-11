@@ -61,25 +61,28 @@ public class HistoryUploader implements Observer {
             //TODO configure somewhere to request email from googlesigninoptions
 
             //TODO uncomment to upload data to firebase, use proper email
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(activity);
+            String email = account.getEmail();
+            if (email == null) return;
 
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            DocumentReference history = db.collection("users")
-//                    .document("dominic.simone@gmail.com")
-//                    .collection("history")
-//                    .document("data");
-//
-//
-//            history.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                @Override
-//                public void onSuccess(Void aVoid) {
-//                    Log.d(TAG, "Upload successful");
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Log.d(TAG, "Upload failed...");
-//                }
-//            });
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference history = db.collection("users")
+                    .document(email)
+                    .collection("history")
+                    .document("data");
+
+
+            history.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "Upload successful");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "Upload failed...");
+                }
+            });
         }
 
     }
