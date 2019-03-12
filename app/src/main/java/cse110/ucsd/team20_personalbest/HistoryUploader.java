@@ -35,6 +35,7 @@ public class HistoryUploader implements Observer {
 
     public HistoryUploader(Activity activity) {
         this.activity = activity;
+        Log.d(TAG, "Starting the history requests");
         historyToArrayConverter = new HistoryToArrayConverter(activity);
         historyToArrayConverter.addObserver(this);
     }
@@ -58,12 +59,12 @@ public class HistoryUploader implements Observer {
             //UPLOAD HERE
             HistoryStructure data = historyToArrayConverter.getData();
 
-            //TODO configure somewhere to request email from googlesigninoptions
-
-            //TODO uncomment to upload data to firebase, use proper email
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(activity);
-            String email = account.getEmail();
-            if (email == null) return;
+            final String email = account.getEmail();
+            if (email == null){
+                Log.d(TAG, "Email was null");
+                return;
+            }
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference history = db.collection("users")
@@ -75,12 +76,12 @@ public class HistoryUploader implements Observer {
             history.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "Upload successful");
+                    Log.d(TAG, "Upload successful, with email " + email);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "Upload failed...");
+                    Log.d(TAG, "Upload failed..., with email " + email);
                 }
             });
         }
