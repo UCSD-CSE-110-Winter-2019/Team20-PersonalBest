@@ -57,6 +57,18 @@ public class FBCommandCenter {
         user = usersCollection.document(userToAdd);
     }
 
+    public void updateFriends() {
+        user.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                dataToSave = documentSnapshot.getData();
+                for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
+                    friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
+                    fc.addFriend(friendEntry);
+                }
+            }
+        });
+    }
+
     public void addFriend(String friendEmail) {
             user.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {

@@ -2,6 +2,7 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.annotation.TargetApi;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
+    private NotificationManager notificationManager;
+    private Ntfc ntfc;
 
     private TextView textViewSteps;
 
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             email = email.substring(0,email.indexOf('@'));
             fpg.updateUserName(email);
         }
-        new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
+        fbcc.updateFriends();
     }
 
     @Override
@@ -310,8 +313,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
-
-
         }
         else
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
@@ -396,6 +397,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 134);
+
+
+        ntfc = new Ntfc(this, "Goal Met", "Goal Met", "goal", getSystemService(NotificationManager.class));
     } // end onCreate
 
     public void setButton(Button btn, boolean onWalk) {
