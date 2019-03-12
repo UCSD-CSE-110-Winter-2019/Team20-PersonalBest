@@ -31,24 +31,15 @@ public class Goal {
 
     private void loadVariables(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences("prefs", MODE_PRIVATE);
-        goal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getInt("savedGoal", INITIAL_GOAL);
-        met = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("metToday", false);
-        useAutoGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("autoGoal", true);
-        currentDay = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getInt("currentDay", -1);
-        displayedPopup = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("displayedPopup", false);
-        displayedSubGoal = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("displayedSubGoal", false);
-        currentIntendedSteps = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getLong("currentIntendedSteps", 0);
-        meetOnce = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("meetOnlyOnce", true);
-        ignored = context.getSharedPreferences("prefs", MODE_PRIVATE)
-                .getBoolean("ignored", false);
+        goal = sharedpreferences.getInt("savedGoal", INITIAL_GOAL);
+        met = sharedpreferences.getBoolean("metToday", false);
+        useAutoGoal = sharedpreferences.getBoolean("autoGoal", true);
+        currentDay = sharedpreferences.getInt("currentDay", -1);
+        displayedPopup = sharedpreferences.getBoolean("displayedPopup", false);
+        displayedSubGoal = sharedpreferences.getBoolean("displayedSubGoal", false);
+        currentIntendedSteps = sharedpreferences.getLong("currentIntendedSteps", 0);
+        meetOnce = sharedpreferences.getBoolean("meetOnlyOnce", true);
+        ignored = sharedpreferences.getBoolean("ignored", false);
 
         Log.i("Goal", "Loading goal from sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + "\n\tDisplayed popup: " + displayedPopup
@@ -59,7 +50,6 @@ public class Goal {
     // makes a goal based on the saved shared preferences
     public Goal(Context context) {
         loadVariables(context);
-
     }
 
     // makes a goal based on the saved shared preferences
@@ -123,6 +113,7 @@ public class Goal {
         editor.putBoolean("displayedSubGoal", displayedSubGoal);
         editor.putLong("currentIntendedSteps", currentIntendedSteps);
         editor.putBoolean("ignored", ignored);
+        editor.putInt("goal" + cal.get(Calendar.YEAR) + cal.get(Calendar.DAY_OF_YEAR), goal);
         editor.apply();
         Log.i("Goal", "Saving goal to sharedPreferences\n\tGoal: " + goal + "\n\tMet: " + met
                 + "\n\tCurrent day: " + currentDay + " = " + daysOfWeek[currentDay]

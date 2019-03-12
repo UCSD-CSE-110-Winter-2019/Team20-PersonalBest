@@ -1,10 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "cse110.ucsd.team20_personalbest"
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -16,11 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
     testOptions {
         unitTests {
             includeAndroidResources = true
             unitTests.returnDefaultValues = true
         }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
     }
 }
 
@@ -53,6 +61,11 @@ dependencies {
     // authentication
     implementation 'com.google.android.gms:play-services-fitness:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+
+    // firebase
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-firestore:18.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
 
     //custom items and drawables
     implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
