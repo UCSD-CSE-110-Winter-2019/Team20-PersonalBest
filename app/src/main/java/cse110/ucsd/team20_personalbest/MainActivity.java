@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
                 Log.d(TAG, "Extra steps added; not added to google history");
+                ntfc.push(238647667);
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -410,6 +411,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
         ntfc = new Ntfc(this, "Goal Met", "Goal Met", "goal", getSystemService(NotificationManager.class));
+
     } // end onCreate
 
     public void setButton(Button btn, boolean onWalk) {
