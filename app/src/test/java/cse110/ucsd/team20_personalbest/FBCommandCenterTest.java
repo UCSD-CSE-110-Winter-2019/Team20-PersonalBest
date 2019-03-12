@@ -37,6 +37,11 @@ public class FBCommandCenterTest {
 
     }
 
+
+    @Test
+    public void testAddUser() {
+        assert true;
+    }
 //    @Test
 //    public void testAddUser() {
 //
