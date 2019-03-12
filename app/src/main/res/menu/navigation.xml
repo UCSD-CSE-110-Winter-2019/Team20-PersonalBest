@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_person_black_24dp"
         android:title="@string/title_profile"/>
 
+    <item
+        android:id="@+id/navigation_friend"
+        android:icon="@drawable/ic_people_black_24dp"
+        android:title="@string/title_friends"/>
+
 </menu>

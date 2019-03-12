@@ -26,6 +26,26 @@
         <activity
             android:name=".InitialActivity"
             android:label="Profile" />
+
+        <activity
+            android:name=".InitialActivity"
+            android:label="Profile">
+        </activity>
+
+        <activity
+            android:name=".ChatActivity"
+            android:label="Chat">
+        </activity>
+
+        <service android:name="MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".PopupFriendRequest">
+        </activity>
+
     </application>
 
 </manifest>
