@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "87297772092",
+    "firebase_url": "https://team20-personalbest.firebaseio.com",
+    "project_id": "team20-personalbest",
+    "storage_bucket": "team20-personalbest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87297772092:android:ac4bc02b9dd9a210",
+        "android_client_info": {
+          "package_name": "cse110.ucsd.team20_personalbest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87297772092-3s85nb7653s8hfpbk2ihifa3ao7krg9r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cse110.ucsd.team20_personalbest",
+            "certificate_hash": "7b8d79c575531a60e9f1d7f717ed089ee45d78b7"
+          }
+        },
+        {
+          "client_id": "87297772092-ic91871vbveaujcejkloqhsvmt4ut035.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cse110.ucsd.team20_personalbest",
+            "certificate_hash": "da3fe9ce7e52d20f17f0060be0f2ae8d14d59104"
+          }
+        },
+        {
+          "client_id": "87297772092-f4pvjimfr9rodtdre5vhuqr6at2q1q5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cse110.ucsd.team20_personalbest",
+            "certificate_hash": "2fb87eee97b8500bf0b36f394df5c4f92895bdd5"
+          }
+        },
+        {
+          "client_id": "87297772092-1g3js301m253snq4b7380hvu483ubtd4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXksN_E9i705RUtWE3-fJ7A3DiL6Fj5w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87297772092-1g3js301m253snq4b7380hvu483ubtd4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

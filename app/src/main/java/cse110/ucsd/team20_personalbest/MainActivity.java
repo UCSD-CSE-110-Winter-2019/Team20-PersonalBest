@@ -1,6 +1,8 @@
+
 package cse110.ucsd.team20_personalbest;
 
 import android.annotation.TargetApi;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,38 +23,59 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.core.FirestoreClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import org.w3c.dom.Document;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observer;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import cse110.ucsd.team20_personalbest.fitness.MockFitness;
+import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
-
-public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener {
+public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, FriendFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
     private Fragment currentFrag = new dashboard();
@@ -62,10 +86,13 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private MainActivity mainActivity;
     public String fitnessServiceKey;
     private long timeDiff;
+    public static FBCommandCenter fbcc;
 
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
+    private NotificationManager notificationManager;
+    private Ntfc ntfc;
 
     private TextView textViewSteps;
 
@@ -92,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private RTWalk rtStat;
     private int tempStep;
     private boolean dashboardVisible = true;
+    private FloatingActionButton floatBtn;
+    private boolean isFirstRun;
 
     private OurCal ourCal;
 
@@ -101,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     private boolean onWalk = false;
     private IntendedSession is;
-
+    private GoogleSignInClient mGoogleSignInClient;
+    public GoogleSignInAccount account;
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -110,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             FragmentTransaction ft = fm.beginTransaction();
+            floatBtn = (FloatingActionButton) findViewById(R.id.floatBtn);
             if(currentFrag != null)
                 ft.remove(currentFrag);
             switch (item.getItemId()) {
@@ -117,16 +148,19 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     fragmentClass = dashboard.class;
                     fragID = R.id.dashFrag;
                     frame.setVisibility(View.VISIBLE);
+                    floatBtn.hide();
                     dashboardVisible = true;
                     break;
                 case R.id.navigation_walks:
                     fragmentClass = WalkPg.class;
                     fragID = R.id.walkFrag;
                     frame.setVisibility(View.GONE);
+                    floatBtn.hide();
                     dashboardVisible = false;
                     break;
                 case R.id.navigation_stats:
                     fragID = R.id.statFrag;
+                    floatBtn.hide();
                     fragmentClass = GraphPg.class;
                     frame.setVisibility(View.GONE);
                     dashboardVisible = false;
@@ -134,7 +168,15 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 case R.id.navigation_profile:
                     fragmentClass = ProfilePg.class;
                     fragID = R.id.profileFrag;
+                    floatBtn.hide();
                     frame.setVisibility(View.GONE);
+                    dashboardVisible = false;
+                    break;
+                case R.id.navigation_friend:
+                    fragmentClass = FriendFragment.class;
+                    fragID = R.id.friendFrag;
+                    frame.setVisibility(View.GONE);
+                    floatBtn.show();
                     dashboardVisible = false;
                     break;
             }
@@ -145,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             catch(Exception e) {
                 e.printStackTrace();
             }
-
 
             ft.replace(fragID, currentFrag).commit();
             return true;
@@ -163,14 +204,37 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     @Override
+    public void onFriendPgSelected() {
+        Log.d(TAG, "Loading Friend Page");
+        FriendFragment fpg = (FriendFragment) getSupportFragmentManager().findFragmentById(R.id.friendFrag);
+        if(fpg != null) {
+            Log.d(TAG, "Sending email");
+            String email = account.getEmail();
+            email = email.substring(0,email.indexOf('@'));
+            fpg.updateUserName(email);
+        }
+        fbcc.updateFriends();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        floatBtn = (FloatingActionButton) findViewById(R.id.floatBtn);
+        floatBtn.hide();
         activity = this;
         sc = new StepContainer();
 
-        boolean isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
+        floatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PopupFriendRequest.class);
+                intent.putExtra("email", account.getEmail());
+                startActivity(intent);
+            }
+        });
+
+        isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 
         // for espresso tests
@@ -337,9 +401,17 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 setButton(btnStartStop, onWalk);
             }
         });
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 134);
 
+
+        ntfc = new Ntfc(this, "Goal Met", "Goal Met", "goal", getSystemService(NotificationManager.class));
     } // end onCreate
-    
+
     public void setButton(Button btn, boolean onWalk) {
         if (onWalk) {
             btn.setBackgroundColor(Color.RED);
@@ -419,6 +491,21 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 fitnessService.updateStepCount();
 
                 ourCal.setCal(Calendar.getInstance());
+
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+                try {
+                    account = task.getResult(ApiException.class);
+                    fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                }
+
+                if(GoogleSignIn.getLastSignedInAccount(activity) != null) {
+                    Map<String, String> newUser = new HashMap<>();
+                    CollectionReference user = FirebaseFirestore.getInstance()
+                            .collection("users");
+                }
             }
         }
     }
