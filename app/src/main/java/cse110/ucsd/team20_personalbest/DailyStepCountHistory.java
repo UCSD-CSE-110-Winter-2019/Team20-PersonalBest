@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 
 public class DailyStepCountHistory extends Observable {
 
-    private ArrayList<Integer> data;
     private Activity activity;
     private GoogleSignInAccount googleSignIn;
+    private ArrayList<Integer> data;
     private final String TAG = "StepHistory";
 
     public DailyStepCountHistory(Activity activity, GoogleSignInAccount googleSignIn){

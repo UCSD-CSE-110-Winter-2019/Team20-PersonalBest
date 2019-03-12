@@ -38,6 +38,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.core.FirestoreClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -50,6 +52,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import org.w3c.dom.Document;
 
 import java.lang.reflect.Type;
@@ -66,6 +69,10 @@ import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import cse110.ucsd.team20_personalbest.fitness.MockFitness;
 import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
+
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, FriendFragment.OnListFragmentInteractionListener {
 
@@ -226,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
         isFirstRun = getSharedPreferences("prefs", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
+
+        // for espresso tests
         if (getIntent().getStringExtra("service_key") != null && getIntent().getStringExtra("service_key").equals("MOCK_FIT")) {
             isFirstRun = true;
         }
@@ -525,7 +534,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     }
 
     public Goal getGoal() {return goal;}
-
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
     public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> asyncTask, T... params) {
