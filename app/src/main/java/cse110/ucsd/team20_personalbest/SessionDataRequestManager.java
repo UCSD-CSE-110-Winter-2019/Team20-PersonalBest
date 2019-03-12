@@ -45,8 +45,8 @@ public class SessionDataRequestManager extends Observable {
 
     public void requestSessions(long startTime, int numOfDays){
 
-        sessions = new ArrayList<>(size);
         this.size = numOfDays;
+        sessions = new ArrayList<>(size);
 
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
