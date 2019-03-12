@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                 try {
                     account = task.getResult(ApiException.class);
-                    fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName());
+                    fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName(), this);
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }
