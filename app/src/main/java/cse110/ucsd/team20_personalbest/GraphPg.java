@@ -81,7 +81,8 @@ public class GraphPg extends Fragment implements Observer {
         goalDataRequestManager = new GoalDataRequestManager(this.getActivity());
         goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
 
-        graphManager = new GraphManager(chart, numCols, goalDataRequestManager);
+        graphManager = new GraphManager(chart, numCols);
+        graphManager.setGoalRequestManager(goalDataRequestManager);
 
         //lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
         //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));

@@ -23,7 +23,7 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
 
         chart = findViewById(R.id.chart_month);
 
-        graphManager = new GraphManager(chart, numCols, this);
+        graphManager = new GraphManager(chart, numCols);
 
         //TODO make sure when this activity is called the email is passed in
         String email = getIntent().getStringExtra("email");

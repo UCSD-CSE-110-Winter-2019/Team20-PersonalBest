@@ -43,20 +43,25 @@ public class GraphManager {
 
     String TAG = "GraphManager";
 
-    public GraphManager(ComboLineColumnChartView chartView, int numCols, GoalDataRequestManager goalDataRequestManager){
+    public GraphManager(ComboLineColumnChartView chartView, int numCols){
         chart = chartView;
         this.numCols = numCols;
 
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
         formattedUSteps = new ArrayList<>();
-        goalData = goalDataRequestManager.getGoalDataArray();
-        this.goalDataRequestManager = goalDataRequestManager;
+
 
         if(numCols >= maxColNumberWithLabels){
             hasLabels = false;
         }
     }
+
+    public void setGoalRequestManager(GoalDataRequestManager goalDataRequestManager){
+        goalDataRequestManager = goalDataRequestManager;
+        goalData = goalDataRequestManager.getGoalDataArray();
+    }
+
 
     public void draw(){
         //use formatted arraylists
@@ -88,6 +93,7 @@ public class GraphManager {
 
         //Add goal data to the line
         for (int i = 0; i < numCols; i++) {
+            if(goalData.size() == i) goalData.add(0);
             int goalValue = goalData.get(i);
             line.add(new PointValue(i, goalValue));
         }
