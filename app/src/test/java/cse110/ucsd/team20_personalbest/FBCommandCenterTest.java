@@ -37,34 +37,34 @@ public class FBCommandCenterTest {
 
     }
 
-    @Test
-    public void testAddUser() {
+//    @Test
+//    public void testAddUser() {
+//
+//        collectionReference = FirebaseFirestore.getInstance().collection("users");
+//
+//        fbcc.addUser(a, fName, lName);
+//        fbcc.addUser(b, fName, lName);
+//        fbcc.addUser(c, fName, lName);
+//
+//        Assert.assertEquals(collectionReference.document(a).getId().toString(), a);
+//        Assert.assertEquals(collectionReference.document(b).getId().toString(), b);
+//        Assert.assertEquals(collectionReference.document(c).getId().toString(), c);
+//
+//    }
 
-        collectionReference = FirebaseFirestore.getInstance().collection("users");
-
-        fbcc.addUser(a, fName, lName);
-        fbcc.addUser(b, fName, lName);
-        fbcc.addUser(c, fName, lName);
-
-        Assert.assertEquals(collectionReference.document(a).getId().toString(), a);
-        Assert.assertEquals(collectionReference.document(b).getId().toString(), b);
-        Assert.assertEquals(collectionReference.document(c).getId().toString(), c);
-
-    }
-
-    @Test
-    public void testUserExists() {
-
-        collectionReference = FirebaseFirestore.getInstance().collection("users");
-
-        fbcc.addUser(a, fName, lName);
-        fbcc.addUser(b, fName, lName);
-        fbcc.addUser(c, fName, lName);
-        fbcc.userExists(a);
-        Assert.assertEquals(true, true);
-
-
-    }
+//    @Test
+//    public void testUserExists() {
+//
+//        collectionReference = FirebaseFirestore.getInstance().collection("users");
+//
+//        fbcc.addUser(a, fName, lName);
+//        fbcc.addUser(b, fName, lName);
+//        fbcc.addUser(c, fName, lName);
+//        fbcc.userExists(a);
+//        Assert.assertEquals(true, true);
+//
+//
+//    }
 
 
 }
