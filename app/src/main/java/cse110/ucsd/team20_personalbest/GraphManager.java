@@ -95,6 +95,12 @@ public class GraphManager {
         for (int i = 0; i < numCols; i++) {
             if(goalData.size() == i) goalData.add(0);
             int goalValue = goalData.get(i);
+            int j = i - 1;
+            while(goalValue == 0 && j >= 0){
+                goalValue = goalData.get(j);
+                j--;
+            }
+
             line.add(new PointValue(i, goalValue));
         }
 
