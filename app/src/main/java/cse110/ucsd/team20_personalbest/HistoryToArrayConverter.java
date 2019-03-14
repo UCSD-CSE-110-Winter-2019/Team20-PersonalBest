@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class HistoryToArrayConverter extends Observable implements Observer {
 
@@ -39,12 +42,15 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numDays);
         sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
 
+        Log.d(TAG,"Date is now being instantiated" );
         data = new long[2 * numDays + 1 /*For timestamp*/ + 1 /*For goal*/];
+        Log.d(TAG,"Data created is equivalent to: " + data );
     }
 
     public void requestHistory(){
         dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numDays);
         sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
+        Log.d(TAG,"History Request Thrown" );
     }
 
     public HistoryStructure getData(){
@@ -63,6 +69,8 @@ public class HistoryToArrayConverter extends Observable implements Observer {
             data[i + 2] = unintendedSteps.get(i);
             data[numDays + i + 2] = intendedSteps.get(i);
         }
+
+        Log.d(TAG,"Array of data has been formatted" );
 
     }
 
@@ -84,4 +92,5 @@ public class HistoryToArrayConverter extends Observable implements Observer {
             }
         }
     }
+
 }

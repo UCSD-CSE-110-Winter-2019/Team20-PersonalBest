@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentController;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import cse110.ucsd.team20_personalbest.FriendFragment.OnListFragmentInteractionL
 import cse110.ucsd.team20_personalbest.friends.FriendsContent.Friend;
 
 import java.util.List;
+
+import static android.support.constraint.Constraints.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Friend} and makes a call to the
@@ -53,6 +56,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
             @Override
             public void onClick(View v) {
                 Toast.makeText(main, "Sending Message to " + name, Toast.LENGTH_SHORT).show();
+                Log.d(TAG,"Message has been instantiated and sent to: "+ name );
                 Intent intent = new Intent(main, ChatActivity.class);
                 intent.putExtra("friend", name);
                 intent.putExtra("UserName", userName);
@@ -63,6 +67,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
         holder.mSummaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"Graph Summary instantiated" );
                 Toast.makeText(main, "Viewing Summary of " + name, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(main, GraphMessageActivity.class);
                 intent.putExtra("email", name);

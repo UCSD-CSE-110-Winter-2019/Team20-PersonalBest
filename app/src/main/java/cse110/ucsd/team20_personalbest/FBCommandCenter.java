@@ -21,6 +21,8 @@ import java.util.Map;
 
 import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class FBCommandCenter {
     final String USER_KEY = "users";
     final String FIRST_NAME_KEY = "firstName";
@@ -59,6 +61,7 @@ public class FBCommandCenter {
         });
 
         user = usersCollection.document(userToAdd);
+        Log.d(TAG,"The following user has been added: " + userToAdd );
     }
 
     public void updateFriends() {
@@ -68,6 +71,7 @@ public class FBCommandCenter {
                 for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
                     friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
                     fc.addFriend(friendEntry);
+                    Log.d(TAG,"A friend has been added successfully!" );
                 }
             }
         });
@@ -131,6 +135,7 @@ public class FBCommandCenter {
 
             }
         });
+        Log.d(TAG,"User indeed exists" );
         return true;
     }
 

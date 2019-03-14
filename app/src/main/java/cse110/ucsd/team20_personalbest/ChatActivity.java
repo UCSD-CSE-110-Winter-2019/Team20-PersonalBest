@@ -34,6 +34,7 @@ public class ChatActivity extends AppCompatActivity {
         if(factoryKey == null) factoryKey = "";
 
         from = this.getIntent().getStringExtra("UserName");
+        Log.d(TAG,"Getting message from: " + from);
         String friendKey = this.getIntent().getStringExtra("friend");
         friendKey = friendKey.substring(0,friendKey.indexOf('@'));
         if(from.compareTo(friendKey) >= 0)
@@ -59,6 +60,7 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage() {
         if (from == null || from.isEmpty()) {
             Toast.makeText(this, "User Name Not Detected", Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"The user to send the message to does not exist" );
             return;
         }
 
