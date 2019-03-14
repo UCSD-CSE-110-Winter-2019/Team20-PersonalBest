@@ -33,6 +33,10 @@ public class GoalDataRequestManager {
 
     private String userEmail;
 
+    public GoalDataRequestManager(){
+
+    }
+
     public GoalDataRequestManager(Activity activity){
         this.activity = activity;
         this.sharedPreferences = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
