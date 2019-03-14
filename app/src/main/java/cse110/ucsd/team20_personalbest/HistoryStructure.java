@@ -6,8 +6,11 @@ public class HistoryStructure {
 
     ArrayList<Long> data;
 
-    public HistoryStructure setData(long[] d) {
+    public HistoryStructure() {
         this.data = new ArrayList<Long>();
+    }
+
+    public HistoryStructure setData(long[] d) {
         for(long i : d){
             data.add(i);
         }
