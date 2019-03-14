@@ -50,7 +50,7 @@ public class GraphManager {
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
         formattedUSteps = new ArrayList<>();
-
+        goalData = new ArrayList<>();
 
         if(numCols >= maxColNumberWithLabels){
             hasLabels = false;
@@ -154,6 +154,12 @@ public class GraphManager {
     public void updateUnintendedData(ArrayList<Integer> newData){
         Log.d(TAG, "Updating Unintended Steps Data");
         unintendedSteps = newData;
+        formatData();
+    }
+
+    public void updateGoalData(ArrayList<Integer> newData){
+        Log.d(TAG, "Updating goal data");
+        goalData = newData;
         formatData();
     }
 }
