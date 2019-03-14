@@ -44,7 +44,7 @@ public class HistoryToArrayConverter extends Observable implements Observer {
 
         Log.d(TAG,"Date is now being instantiated" );
         data = new long[2 * numDays + 1 /*For timestamp*/ + 1 /*For goal*/];
-        Log.d(TAG,"Data created is equivalent to: " + data );
+        Log.d(TAG,"Data created" );
     }
 
     public void requestHistory(){
