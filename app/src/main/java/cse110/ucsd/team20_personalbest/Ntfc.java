@@ -27,6 +27,8 @@ public class Ntfc{
                 .setContentText(textContent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
+
+        createNotificationChannel();
     }
 
    public void createNotificationChannel() {
