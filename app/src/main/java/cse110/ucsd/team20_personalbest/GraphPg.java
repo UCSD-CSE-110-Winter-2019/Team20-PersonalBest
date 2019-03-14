@@ -78,7 +78,7 @@ public class GraphPg extends Fragment implements Observer {
         chart = (ComboLineColumnChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
 
-        goalDataRequestManager = new GoalDataRequestManager(this.getActivity());
+        goalDataRequestManager = new GoalDataRequestManager(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
         goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
 
         graphManager = new GraphManager(chart, numCols);
