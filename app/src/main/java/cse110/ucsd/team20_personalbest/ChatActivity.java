@@ -34,10 +34,12 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         String factoryKey = this.getIntent().getStringExtra("FACTORY_KEY");
-        SharedPreferences sp = getSharedPreferences("prefs", MODE_PRIVATE);
+
         if(factoryKey == null) factoryKey = "";
-        System.out.println("**************************"+sp.getString("UE","no value"));
-        from = sp.getString("UE", this.getIntent().getStringExtra("UserName"));
+        SharedPreferences sp = getSharedPreferences("prefs", MODE_PRIVATE);
+        from = this.getIntent().getStringExtra("UserName");
+        if(from == null)
+            from = sp.getString("UE", null);
         String friendKey = this.getIntent().getStringExtra("friend");
         friendKey = friendKey.substring(0,friendKey.indexOf('@'));
         if(from.compareTo(friendKey) >= 0)
