@@ -90,12 +90,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public String fitnessServiceKey;
     private long timeDiff;
     public static FBCommandCenter fbcc;
+    private SharedPreferences sharedPreferences;
 
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
-    private NotificationManager notificationManager;
-    private Ntfc ntfc;
 
     private TextView textViewSteps;
 
@@ -181,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     frame.setVisibility(View.GONE);
                     floatBtn.show();
                     dashboardVisible = false;
+                    fbcc.updateFriends();
                     break;
             }
 
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         ourCal = new OurCal(Calendar.getInstance(), 0);
 
         // log height and walker/runner saved properly
-        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         final Gson gson = new Gson();
         String json = sharedPreferences.getString("pastwalks", null);
@@ -288,7 +288,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
                 Log.d(TAG, "Extra steps added; not added to google history");
-                ntfc.push(238647667);
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -330,13 +329,15 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
         }
-        else
+        else {
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
                 @Override
                 public FitnessService create(MainActivity mainActivity) {
                     return new MockFitness(mainActivity);
                 }
             });
+            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
+        }
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -413,9 +414,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 134);
-
-
-        ntfc = new Ntfc(this, "Goal Met", "Goal Met", "goal", getSystemService(NotificationManager.class));
 
     } // end onCreate
 
@@ -504,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 try {
                     account = task.getResult(ApiException.class);
                     fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName(), this);
+                    sharedPreferences.edit().putString("UE", account.getEmail().substring(0,account.getEmail().indexOf('@'))).apply();
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }

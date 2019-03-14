@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +39,10 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
         graphManager = new GraphManager(chart, numCols);
 
         String friendEmail = getIntent().getStringExtra("friendEmail");
+        SharedPreferences sp = getSharedPreferences("prefs", MODE_PRIVATE);
         String myEmail = getIntent().getStringExtra("myEmail");
+        if(myEmail == null)
+            myEmail = sp.getString("UE",null);
         String factoryKey = this.getIntent().getStringExtra("FACTORY_KEY");
         if(factoryKey == null) factoryKey = "";
 
