@@ -1,7 +1,9 @@
 package cse110.ucsd.team20_personalbest;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,9 +31,11 @@ public class FBCommandCenter {
     private Map<String, Object> dataToSave;
     private String friendEntry;
     String userEmail;
+    MainActivity activity;
 
-    public FBCommandCenter(String userToAdd, final String fName, String lName) {
+    public FBCommandCenter(String userToAdd, final String fName, String lName, MainActivity activity) {
         usersCollection = FirebaseFirestore.getInstance().collection(USER_KEY);
+        this.activity = activity;
         userEmail = userToAdd;
         usersCollection.document(userToAdd).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -75,24 +79,40 @@ public class FBCommandCenter {
                     DocumentReference friendDocument = FirebaseFirestore.getInstance().collection(USER_KEY).document(friendEmail);
                     List ft = (List) (documentSnapshot.getData().get("friends"));
                     List ftba = (List) (documentSnapshot.getData().get("friends_tobeadded"));
-                    if (ftba.contains(friendEmail.substring(0, friendEmail.indexOf('@')))) {
-                        ft.add(friendEmail.substring(0, friendEmail.indexOf('@')));
+                    friendDocument.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if(documentSnapshot.exists()) {
+                                if(ft.contains(friendEmail)) {
+                                    activity.sendToast(friendEmail + " is ALREADY your friend!");
+                                    return;
+                                }
+                                activity.sendToast("Friend Request sent to" + friendEmail);
+                            }
+                            else {
+                                activity.sendToast(friendEmail + " does not use Personal Best !!!");
+                                return;
+                            }
+                        }
+                    });
+                    if (ftba.contains(friendEmail)) {
+                        ft.add(friendEmail);
                         user.update("friends", ft);
                         friendDocument.get().addOnSuccessListener(documentSnapshot12 -> {
                             List ft1 = (List)(documentSnapshot12.getData().get("friends"));
-                            ft1.add(userEmail.substring(0,userEmail.indexOf('@')));
+                            ft1.add(userEmail);
                             friendDocument.update("friends", ft1);
                         });
-                        ftba.remove(friendEmail.substring(0, friendEmail.indexOf('@')));
+                        ftba.remove(friendEmail);
                         user.update("friends_tobeadded", ftba);
                     }
                     else {
                         friendDocument.get().addOnSuccessListener(documentSnapshot1 -> {
                             if (documentSnapshot1.exists()) {
                                 List ftba1 = (List)(documentSnapshot1.getData().get("friends_tobeadded"));
-                                if(ftba1.contains(userEmail.substring(0,userEmail.indexOf('@'))))
+                                if(ftba1.contains(userEmail))
                                     return;
-                                ftba1.add(userEmail.substring(0,userEmail.indexOf('@')));
+                                ftba1.add(userEmail);
                                 friendDocument.update("friends_tobeadded", ftba1);
                             }
                         });

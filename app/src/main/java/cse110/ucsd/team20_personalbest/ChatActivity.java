@@ -35,6 +35,7 @@ public class ChatActivity extends AppCompatActivity {
 
         from = this.getIntent().getStringExtra("UserName");
         String friendKey = this.getIntent().getStringExtra("friend");
+        friendKey = friendKey.substring(0,friendKey.indexOf('@'));
         if(from.compareTo(friendKey) >= 0)
             DOCUMENT_KEY = from + friendKey;
         else
