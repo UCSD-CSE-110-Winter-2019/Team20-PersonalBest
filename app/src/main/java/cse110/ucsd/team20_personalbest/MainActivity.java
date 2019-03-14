@@ -328,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
 
-            new HistoryUploader(this);
 
         }
         else
@@ -500,7 +499,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
                 ourCal.setCal(Calendar.getInstance());
 
-
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
                 try {
@@ -514,6 +512,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     Map<String, String> newUser = new HashMap<>();
                     CollectionReference user = FirebaseFirestore.getInstance()
                             .collection("users");
+                    new HistoryUploader(this);
                 }
             }
         }
