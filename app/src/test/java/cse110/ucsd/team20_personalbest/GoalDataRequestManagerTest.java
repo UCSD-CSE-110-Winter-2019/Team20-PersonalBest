@@ -12,6 +12,8 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import cse110.ucsd.team20_personalbest.goal.GoalDataRequestManager;
+
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)

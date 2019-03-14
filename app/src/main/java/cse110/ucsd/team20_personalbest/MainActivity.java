@@ -23,60 +23,57 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.core.FirestoreClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import org.w3c.dom.Document;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observer;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import cse110.ucsd.team20_personalbest.fitness.MockFitness;
-import cse110.ucsd.team20_personalbest.friends.FriendsContent;
+import cse110.ucsd.team20_personalbest.fragments.FriendFragment;
+import cse110.ucsd.team20_personalbest.fragments.GraphPg;
+import cse110.ucsd.team20_personalbest.activities.InitialActivity;
+import cse110.ucsd.team20_personalbest.fragments.ProfilePg;
+import cse110.ucsd.team20_personalbest.fragments.WalkPg;
+import cse110.ucsd.team20_personalbest.fragments.dashboard;
+import cse110.ucsd.team20_personalbest.friends.FBCommandCenter;
+import cse110.ucsd.team20_personalbest.activities.PopupFriendRequest;
+import cse110.ucsd.team20_personalbest.friends.FirebaseCommandCenterInterface;
+import cse110.ucsd.team20_personalbest.goal.Goal;
+import cse110.ucsd.team20_personalbest.goal.GoalObserver;
+import cse110.ucsd.team20_personalbest.history.DailyStepCountHistory;
+import cse110.ucsd.team20_personalbest.history.HistoryUploader;
+import cse110.ucsd.team20_personalbest.walk.SessionDataRequestManager;
+import cse110.ucsd.team20_personalbest.util.Ntfc;
+import cse110.ucsd.team20_personalbest.util.OurCal;
+import cse110.ucsd.team20_personalbest.walk.IntendedSession;
+import cse110.ucsd.team20_personalbest.walk.RTWalk;
+import cse110.ucsd.team20_personalbest.walk.StepContainer;
+import cse110.ucsd.team20_personalbest.walk.Walk;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
-
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, FriendFragment.OnListFragmentInteractionListener {
 
@@ -89,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private MainActivity mainActivity;
     public String fitnessServiceKey;
     private long timeDiff;
-    public static FBCommandCenter fbcc;
+    public static FirebaseCommandCenterInterface fbcc;
 
     private Button changeStep;
     private EditText timeText;
