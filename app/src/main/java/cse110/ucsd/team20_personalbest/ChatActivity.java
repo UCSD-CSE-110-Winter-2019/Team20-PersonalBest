@@ -25,15 +25,19 @@ public class ChatActivity extends AppCompatActivity {
     ChatAdapter fb;
     String from;
 
+    public boolean testsub;
+    public boolean msgsent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         String factoryKey = this.getIntent().getStringExtra("FACTORY_KEY");
+        SharedPreferences sp = getSharedPreferences("prefs", MODE_PRIVATE);
         if(factoryKey == null) factoryKey = "";
-
-        from = this.getIntent().getStringExtra("UserName");
+        System.out.println("**************************"+sp.getString("UE","no value"));
+        from = sp.getString("UE", this.getIntent().getStringExtra("UserName"));
         String friendKey = this.getIntent().getStringExtra("friend");
         friendKey = friendKey.substring(0,friendKey.indexOf('@'));
         if(from.compareTo(friendKey) >= 0)
