@@ -39,6 +39,14 @@
           }
         },
         {
+          "client_id": "87297772092-451plkftg5v4schv7o4thanq0a9na73c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cse110.ucsd.team20_personalbest",
+            "certificate_hash": "2336ba117339e5d050d48c86a70e0ecdf1dd5da2"
+          }
+        },
+        {
           "client_id": "87297772092-1g3js301m253snq4b7380hvu483ubtd4.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -71,6 +71,7 @@ public class GraphPg extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         setHasOptionsMenu(false);
         View rootView = inflater.inflate(R.layout.fragment_graph, container, false);
 
@@ -80,7 +81,8 @@ public class GraphPg extends Fragment implements Observer {
         goalDataRequestManager = new GoalDataRequestManager(this.getActivity());
         goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
 
-        graphManager = new GraphManager(chart, numCols, goalDataRequestManager);
+        graphManager = new GraphManager(chart, numCols);
+        graphManager.setGoalRequestManager(goalDataRequestManager);
 
         //lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
         //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
