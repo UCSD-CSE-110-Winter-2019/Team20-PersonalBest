@@ -36,6 +36,7 @@ public class HistoryUploader implements Observer {
     public HistoryUploader(Activity activity) {
         this.activity = activity;
         Log.d(TAG, "Starting the history requests");
+        if(activity == null) return;
         historyToArrayConverter = new HistoryToArrayConverter(activity);
         historyToArrayConverter.addObserver(this);
     }
