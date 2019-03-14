@@ -16,7 +16,7 @@ public class HistoryDownloader extends Observable {
     private ArrayList<Long> history;
 
     public HistoryDownloader(String email){
-
+        this.email = email;
     }
 
     public void requestData(){
@@ -35,6 +35,7 @@ public class HistoryDownloader extends Observable {
                     ArrayList<Long> history = (ArrayList<Long>) documentSnapshot.getData().get("data");
                     setChanged();
                     notifyObservers(history);
+                    Log.d(TAG, history.toString());
                 }
             }
         });

@@ -64,9 +64,9 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
             @Override
             public void onClick(View v) {
                 Toast.makeText(main, "Viewing Summary of " + name, Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(main, GraphMessageActivity.class);
-//                intent.putExtra("email", name);
-//                main.startActivity(intent);
+                Intent intent = new Intent(main, GraphMessageActivity.class);
+                intent.putExtra("email", name);
+                main.startActivity(intent);
             }
         });
 
