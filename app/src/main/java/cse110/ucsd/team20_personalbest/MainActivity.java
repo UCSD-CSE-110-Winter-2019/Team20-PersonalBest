@@ -50,6 +50,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -323,6 +326,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
             fitnessService.setup();
             executeAsyncTask(new ASyncStepUpdateRunner());
+
+
         }
         else {
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
@@ -506,12 +511,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     Map<String, String> newUser = new HashMap<>();
                     CollectionReference user = FirebaseFirestore.getInstance()
                             .collection("users");
+                    new HistoryUploader(this);
                 }
             }
         }
     }
-
-
 
     public boolean setYesterdaySteps(Calendar cal) {
         if(dailysteps == null){
