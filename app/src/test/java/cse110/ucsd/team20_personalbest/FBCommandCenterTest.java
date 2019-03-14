@@ -33,7 +33,7 @@ public class FBCommandCenterTest {
     public void setup() {
 
 
-        activity = Robolectric.setupActivity(MainActivity.class);
+        //activity = Robolectric.setupActivity(MainActivity.class);
 
     }
 

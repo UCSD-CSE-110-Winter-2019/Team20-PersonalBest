@@ -46,7 +46,7 @@ public class DailyStepCountHistory extends Observable {
         return data;
     }
 
-    private void format(long startTime, int numOfDays){
+    private void format(long startTime, int numOfDays) {
         Calendar start = Calendar.getInstance();
         start.setTime(new Date(startTime));
         start.set(Calendar.HOUR_OF_DAY, 24);
@@ -63,49 +63,55 @@ public class DailyStepCountHistory extends Observable {
                 new DataReadRequest.Builder()
                         .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
                         .bucketByTime(1, TimeUnit.DAYS)
-                        .setTimeRange(startOfWeek, endOfWeek , TimeUnit.MILLISECONDS)
+                        .setTimeRange(startOfWeek, endOfWeek, TimeUnit.MILLISECONDS)
                         .build();
 
         Log.d(TAG, "Read request has been built");
 
         final DailyStepCountHistory t = this;
 
-        Task<DataReadResponse> response = Fitness.getHistoryClient(activity, googleSignIn).readData(readRequest).addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
-            @Override
-            public void onSuccess(DataReadResponse dataReadResponse) {
+        try {
+            Task<DataReadResponse> response = Fitness.getHistoryClient(activity, googleSignIn).readData(readRequest).addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
+                @Override
+                public void onSuccess(DataReadResponse dataReadResponse) {
 
-                Log.d(TAG, dataReadResponse.getBuckets().size() + " buckets received");
+                    Log.d(TAG, dataReadResponse.getBuckets().size() + " buckets received");
 
-                //Should be each day in the request
-                for(Bucket bucket : dataReadResponse.getBuckets()){
+                    //Should be each day in the request
+                    for (Bucket bucket : dataReadResponse.getBuckets()) {
 
-                    List<DataSet> dataSets = bucket.getDataSets();
+                        List<DataSet> dataSets = bucket.getDataSets();
 
-                    for(DataSet dataSet : dataSets) {
-                        List<DataPoint> dataPoints = dataSet.getDataPoints();
-                        int steps = 0;
-                        for (DataPoint dataPoint : dataPoints) {
-                            steps = dataPoint.getValue(Field.FIELD_STEPS).asInt();
-                            long durationInMillis = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
+                        for (DataSet dataSet : dataSets) {
+                            List<DataPoint> dataPoints = dataSet.getDataPoints();
+                            int steps = 0;
+                            for (DataPoint dataPoint : dataPoints) {
+                                steps = dataPoint.getValue(Field.FIELD_STEPS).asInt();
+                                long durationInMillis = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
 
-                            Calendar time = Calendar.getInstance();
-                            time.setTimeInMillis(durationInMillis);
+                                Calendar time = Calendar.getInstance();
+                                time.setTimeInMillis(durationInMillis);
 
-                            Log.d(TAG, "Steps: " + steps  + " from " + time.toString());
+                                Log.d(TAG, "Steps: " + steps + " from " + time.toString());
+                            }
+                            data.add(steps);
                         }
-                        data.add(steps);
                     }
+                    t.setChanged();
+                    t.notifyObservers(data);
+                    Log.d(TAG, "Observers notified with " + data.toString() + " : " + t.countObservers());
                 }
-                t.setChanged();
-                t.notifyObservers(data);
-                Log.d(TAG, "Observers notified with " + data.toString() + " : " + t.countObservers());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "Failed to read step history");
-            }
-        });
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "Failed to read step history");
+                }
+            });
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
+
 
 }

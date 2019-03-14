@@ -43,20 +43,25 @@ public class GraphManager {
 
     String TAG = "GraphManager";
 
-    public GraphManager(ComboLineColumnChartView chartView, int numCols, GoalDataRequestManager goalDataRequestManager){
+    public GraphManager(ComboLineColumnChartView chartView, int numCols){
         chart = chartView;
         this.numCols = numCols;
 
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
         formattedUSteps = new ArrayList<>();
-        goalData = goalDataRequestManager.getGoalDataArray();
-        this.goalDataRequestManager = goalDataRequestManager;
+        goalData = new ArrayList<>();
 
         if(numCols >= maxColNumberWithLabels){
             hasLabels = false;
         }
     }
+
+    public void setGoalRequestManager(GoalDataRequestManager goalDataRequestManager){
+        goalDataRequestManager = goalDataRequestManager;
+        goalData = goalDataRequestManager.getGoalDataArray();
+    }
+
 
     public void draw(){
         //use formatted arraylists
@@ -88,7 +93,14 @@ public class GraphManager {
 
         //Add goal data to the line
         for (int i = 0; i < numCols; i++) {
+            if(goalData.size() == i) goalData.add(0);
             int goalValue = goalData.get(i);
+            int j = i - 1;
+            while(goalValue == 0 && j >= 0){
+                goalValue = goalData.get(j);
+                j--;
+            }
+
             line.add(new PointValue(i, goalValue));
         }
 
@@ -142,6 +154,12 @@ public class GraphManager {
     public void updateUnintendedData(ArrayList<Integer> newData){
         Log.d(TAG, "Updating Unintended Steps Data");
         unintendedSteps = newData;
+        formatData();
+    }
+
+    public void updateGoalData(ArrayList<Integer> newData){
+        Log.d(TAG, "Updating goal data");
+        goalData = newData;
         formatData();
     }
 }
