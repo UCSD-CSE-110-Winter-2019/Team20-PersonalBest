@@ -26,21 +26,21 @@ public class GraphManager implements GraphManagerInterface {
     public static final int ISTEP_COLOR = Color.parseColor("#FFBB33"); // orange
     public static final int LINE_COLOR = Color.parseColor("#dd1616"); // red
 
-    private ComboLineColumnChartView chart;
-    private ComboLineColumnChartData data;
+    ComboLineColumnChartView chart;
+    ComboLineColumnChartData data;
 
-    private int numCols;
-    private int maxColNumberWithLabels = 10;
+    int numCols;
+    int maxColNumberWithLabels = 10;
 
-    private boolean hasLabels = true;
+    boolean hasLabels = true;
 
     GoalDataRequestManager goalDataRequestManager;
 
-    private ArrayList<Integer> intendedSteps;
-    private ArrayList<Integer> unintendedSteps;
-    private ArrayList<Integer> goalData;
+    ArrayList<Integer> intendedSteps;
+    ArrayList<Integer> unintendedSteps;
+    ArrayList<Integer> goalData;
 
-    private ArrayList<Integer> formattedUSteps;
+    ArrayList<Integer> formattedUSteps;
 
     String TAG = "GraphManager";
 

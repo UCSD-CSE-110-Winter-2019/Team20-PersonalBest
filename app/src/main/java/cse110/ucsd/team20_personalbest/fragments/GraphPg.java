@@ -30,38 +30,30 @@ import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class GraphPg extends Fragment implements Observer {
+public class GraphPg extends Fragment implements Observer, GraphPgInterface {
 
     static boolean gotUnintendedSteps;
 
-    // colors for the stacked chart
-    public static final int USTEP_COLOR = Color.parseColor("#33B5E5"); // blue
-    public static final int ISTEP_COLOR = Color.parseColor("#FFBB33"); // orange
-    public static final int LINE_COLOR = Color.parseColor("#dd1616"); // red
-
-    public static final String[] DAYS_OF_WEEK = new String[]{"Sun", "Mon", "Tues", "Wed",
-            "Thurs", "Fri", "Sat"};
-    public static final String[] DAYS_OF_WEEK_LONG = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday", "Saturday"};
-    public static final String[] SUBCOLUMN = new String[]{"unintentional", "intentional"};
-
-    private ComboLineColumnChartView chart;
+    ComboLineColumnChartView chart;
     private ComboLineColumnChartData data;
     private SharedPreferences sharedPreferences;
     private ArrayList<Integer> lastWeeksGoals;
 
-    private ArrayList<Integer> intendedSteps;
+    private final String[] SUBCOLUMN = {"Unintended", "Intended"};
+
+    private final String[] DAYS_OF_WEEK_LONG = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+    ArrayList<Integer> intendedSteps;
     private ArrayList<Integer> unintendedSteps;
 
-    private DailyStepCountHistory dailyStepCountHistory;
-    private SessionDataRequestManager sessionDataRequestManager;
-    private GoalDataRequestManager goalDataRequestManager;
+    DailyStepCountHistory dailyStepCountHistory;
+    SessionDataRequestManager sessionDataRequestManager;
+    GoalDataRequestManager goalDataRequestManager;
 
-    private GraphManager graphManager;
+    GraphManager graphManager;
 
-    private int numCols = 7;
-    private int sessionsReturned = 0;
-
+    int numCols = 7;
+    int sessionsReturned = 0;
 
     public GraphPg() {}
 
@@ -75,29 +67,35 @@ public class GraphPg extends Fragment implements Observer {
         chart = (ComboLineColumnChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
 
-        goalDataRequestManager = new GoalDataRequestManager(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
-        goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
-
         graphManager = new GraphManager(chart, numCols);
-        graphManager.setGoalRequestManager(goalDataRequestManager);
-
-        //lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
-        //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+        goalDataRequestManager = new GoalDataRequestManager(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+        dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
+        sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
 
         intendedSteps = new ArrayList<>();
         unintendedSteps = new ArrayList<>();
 
-        dailyStepCountHistory = new DailyStepCountHistory(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
-        sessionDataRequestManager = new SessionDataRequestManager(this.getActivity(), GoogleSignIn.getLastSignedInAccount(this.getActivity().getBaseContext()));
-
-
-        dailyStepCountHistory.addObserver(this);
-        sessionDataRequestManager.addObserver(this);
-
-        dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numCols);
-        sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numCols);
+        setValues();
 
         return rootView;
+    }
+
+
+    @Override
+    public void setValues() {
+
+            this.goalDataRequestManager.requestGoals(Calendar.getInstance().getTimeInMillis(), numCols);
+
+            this.graphManager.setGoalRequestManager(goalDataRequestManager);
+
+            //lastWeeksGoals = getWeeksGoals(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+            //intendedSteps = getWeeksSteps(this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE));
+
+            this.dailyStepCountHistory.addObserver(this);
+            this.sessionDataRequestManager.addObserver(this);
+
+            this.dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numCols);
+            this.sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numCols);
     }
 
 
@@ -249,8 +247,8 @@ public class GraphPg extends Fragment implements Observer {
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
             String message = /*DAYS_OF_WEEK_LONG[columnIndex] + "'s " +*/ SUBCOLUMN[subcolumnIndex] + " Steps: " + Math.round(value.getValue());
-            if (numCols == 7)
-                message = DAYS_OF_WEEK_LONG[columnIndex] + "'s " + message;
+            //if (numCols == 7)
+            //    message = DAYS_OF_WEEK_LONG[columnIndex] + "'s " + message;
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
 

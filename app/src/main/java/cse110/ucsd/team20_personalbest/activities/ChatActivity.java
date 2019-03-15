@@ -14,12 +14,12 @@ import cse110.ucsd.team20_personalbest.chat.ChatAdapterFactory;
 public class ChatActivity extends AppCompatActivity {
     String TAG = ChatActivity.class.getSimpleName();
 
-    String COLLECTION_KEY = "chatlogs";
-    String DOCUMENT_KEY;
-    String MESSAGES_KEY = "messages";
+    public String COLLECTION_KEY = "chatlogs";
+    public String DOCUMENT_KEY;
+    public String MESSAGES_KEY = "messages";
 
-    ChatAdapter fb;
-    String from;
+    public ChatAdapter fb;
+    public String from;
 
     public boolean testsub;
     public boolean msgsent;

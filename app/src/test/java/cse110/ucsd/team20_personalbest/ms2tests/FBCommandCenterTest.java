@@ -1,4 +1,4 @@
-package cse110.ucsd.team20_personalbest;
+package cse110.ucsd.team20_personalbest.ms2tests;
 
 
 import android.app.Activity;
