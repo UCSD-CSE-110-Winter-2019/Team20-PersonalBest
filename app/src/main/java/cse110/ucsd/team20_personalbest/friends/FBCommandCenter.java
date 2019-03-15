@@ -34,6 +34,10 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
     String userEmail;
     MainActivity activity;
 
+    public FBCommandCenter() {
+
+    }
+
     public FBCommandCenter(String userToAdd, final String fName, String lName, MainActivity activity) {
         usersCollection = FirebaseFirestore.getInstance().collection(USER_KEY);
         this.activity = activity;
@@ -85,10 +89,11 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             if(documentSnapshot.exists()) {
                                 if(ft.contains(friendEmail)) {
-                                    activity.sendToast(friendEmail + " is ALREADY your friend!");
-                                    return;
+                                        activity.sendToast("You and "+friendEmail + " are NOW friends!");
                                 }
-                                activity.sendToast("Friend Request sent to" + friendEmail);
+                                else {
+                                    activity.sendToast("Friend Request sent to" + friendEmail);
+                                }
                             }
                             else {
                                 activity.sendToast(friendEmail + " does not use Personal Best !!!");
@@ -110,6 +115,9 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
                     else {
                         friendDocument.get().addOnSuccessListener(documentSnapshot1 -> {
                             if (documentSnapshot1.exists()) {
+                                List ft1 = (List)(documentSnapshot1.getData().get("friends"));
+                                if(ft1.contains(userEmail))
+                                    return;
                                 List ftba1 = (List)(documentSnapshot1.getData().get("friends_tobeadded"));
                                 if(ftba1.contains(userEmail))
                                     return;

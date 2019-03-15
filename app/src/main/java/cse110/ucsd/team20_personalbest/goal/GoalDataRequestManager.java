@@ -24,6 +24,7 @@ import java.util.Observable;
 
 public class GoalDataRequestManager {
 
+    private Activity activity;
     private ArrayList<Integer> goalDataArray;
     private SharedPreferences sharedPreferences;
 
@@ -32,8 +33,17 @@ public class GoalDataRequestManager {
 
     private String userEmail;
 
+    public GoalDataRequestManager() {
+
+    }
+
     public GoalDataRequestManager(SharedPreferences sharedPreferences){
         this.sharedPreferences = sharedPreferences;
+    }
+
+    public GoalDataRequestManager(Activity activity){
+        this.activity = activity;
+        this.sharedPreferences = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
     }
 
     public ArrayList<Integer> getGoalDataArray() { return goalDataArray; }

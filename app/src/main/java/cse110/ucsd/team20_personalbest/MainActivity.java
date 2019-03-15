@@ -23,31 +23,49 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.core.FirestoreClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import org.w3c.dom.Document;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observer;
 
 import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
@@ -73,7 +91,12 @@ import cse110.ucsd.team20_personalbest.walk.IntendedSession;
 import cse110.ucsd.team20_personalbest.walk.RTWalk;
 import cse110.ucsd.team20_personalbest.walk.StepContainer;
 import cse110.ucsd.team20_personalbest.walk.Walk;
+import cse110.ucsd.team20_personalbest.walk.StepContainer;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
+
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
 public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgListener, FriendFragment.OnListFragmentInteractionListener {
 
@@ -87,12 +110,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     public String fitnessServiceKey;
     private long timeDiff;
     public static FirebaseCommandCenterInterface fbcc;
+    private SharedPreferences sharedPreferences;
 
     private Button changeStep;
     private EditText timeText;
     private Button changeTime;
-    private NotificationManager notificationManager;
-    private Ntfc ntfc;
 
     private TextView textViewSteps;
 
@@ -178,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     frame.setVisibility(View.GONE);
                     floatBtn.show();
                     dashboardVisible = false;
+                    fbcc.updateFriends();
                     break;
             }
 
@@ -252,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         ourCal = new OurCal(Calendar.getInstance(), 0);
 
         // log height and walker/runner saved properly
-        SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         final Gson gson = new Gson();
         String json = sharedPreferences.getString("pastwalks", null);
@@ -285,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             public void onClick(View v) {
                 setStepCount(sc.steps() + 500);
                 Log.d(TAG, "Extra steps added; not added to google history");
-                ntfc.push(238647667);
             }
         });
         changeTime.setOnClickListener(new View.OnClickListener() {
@@ -327,13 +349,15 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
 
         }
-        else
+        else {
             FitnessServiceFactory.put("MOCK_FIT", new FitnessServiceFactory.BluePrint() {
                 @Override
                 public FitnessService create(MainActivity mainActivity) {
                     return new MockFitness(mainActivity);
                 }
             });
+            fitnessService = FitnessServiceFactory.create(fitnessServiceKey, activity);
+        }
 
         // creates goal based on shared preferences
         goal = new Goal(this, ourCal.getCal());
@@ -410,9 +434,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 134);
-
-
-        ntfc = new Ntfc(this, "Goal Met", "Goal Met", "goal", getSystemService(NotificationManager.class));
 
     } // end onCreate
 
@@ -501,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                 try {
                     account = task.getResult(ApiException.class);
                     fbcc = new FBCommandCenter(account.getEmail(), account.getGivenName(), account.getFamilyName(), this);
+                    sharedPreferences.edit().putString("UE", account.getEmail().substring(0,account.getEmail().indexOf('@'))).apply();
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }

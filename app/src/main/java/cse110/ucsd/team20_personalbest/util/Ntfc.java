@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest.util;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -28,7 +29,8 @@ public class Ntfc{
                 .setContentTitle(textTitle)
                 .setContentText(textContent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setSmallIcon(R.mipmap.ic_launcher);
 
         createNotificationChannel();
     }
@@ -42,8 +44,8 @@ public class Ntfc{
         }
     }
 
-    public void push (int id) {
+    public void push () {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(id, builder.build());
+        notificationManager.notify(0, builder.build());
     }
 }
