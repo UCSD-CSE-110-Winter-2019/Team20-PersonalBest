@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest.ms2tests;
 
 import android.app.Activity;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -13,7 +14,12 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
+import cse110.ucsd.team20_personalbest.MainActivity;
+import cse110.ucsd.team20_personalbest.friends.FBCommandCenter;
+import cse110.ucsd.team20_personalbest.friends.FirebaseCommandCenterInterface;
+
 import static cse110.ucsd.team20_personalbest.MainActivity.fbcc;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 public class FBCommandCenterTest {
@@ -25,51 +31,50 @@ public class FBCommandCenterTest {
     String lName = "LastExample";
 
 
-   // FBCommandCenter fbcc;
+    FBCommandCenter fbcc;
     CollectionReference collectionReference;
     Activity activity;
 
     @Before
     public void setup() {
-
-
-        //activity = Robolectric.setupActivity(MainActivity.class);
-
+        activity = Robolectric.setupActivity(MainActivity.class);
+        FirebaseApp.initializeApp(activity);
+        fbcc = mock(FBCommandCenter.class);
     }
 
+
+    //@Test
+    //public void testAddUser() {
+    //    assert true;
+    //}
 
     @Test
     public void testAddUser() {
-        assert true;
-    }
-//    @Test
-//    public void testAddUser() {
-//
-//        collectionReference = FirebaseFirestore.getInstance().collection("users");
-//
-//        fbcc.addUser(a, fName, lName);
-//        fbcc.addUser(b, fName, lName);
-//        fbcc.addUser(c, fName, lName);
-//
-//        Assert.assertEquals(collectionReference.document(a).getId().toString(), a);
-//        Assert.assertEquals(collectionReference.document(b).getId().toString(), b);
-//        Assert.assertEquals(collectionReference.document(c).getId().toString(), c);
-//
-//    }
 
-//    @Test
-//    public void testUserExists() {
-//
-//        collectionReference = FirebaseFirestore.getInstance().collection("users");
-//
-//        fbcc.addUser(a, fName, lName);
-//        fbcc.addUser(b, fName, lName);
-//        fbcc.addUser(c, fName, lName);
-//        fbcc.userExists(a);
-//        Assert.assertEquals(true, true);
-//
-//
-//    }
+        collectionReference = FirebaseFirestore.getInstance().collection("users");
+
+        fbcc.addFriend(a);
+        fbcc.addFriend(b);
+        fbcc.addFriend(c);
+
+        Assert.assertEquals(collectionReference.document(a).getId().toString(), a);
+        Assert.assertEquals(collectionReference.document(b).getId().toString(), b);
+        Assert.assertEquals(collectionReference.document(c).getId().toString(), c);
+
+    }
+
+    @Test
+    public void testUserExists() {
+
+        collectionReference = FirebaseFirestore.getInstance().collection("users");
+
+        fbcc.addFriend(a);
+        fbcc.addFriend(b);
+        fbcc.addFriend(c);
+        fbcc.userExists(a);
+        Assert.assertEquals(true, true);
+
+    }
 
 
 }
