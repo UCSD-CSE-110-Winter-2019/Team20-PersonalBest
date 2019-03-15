@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +15,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
+
+import cse110.ucsd.team20_personalbest.activities.InitialActivity;
 
 @RunWith(RobolectricTestRunner.class)
 public class InitialActivityTest {

@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "cse110.ucsd.team20_personalbest"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -69,6 +69,8 @@ dependencies {
     implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
     implementation 'com.google.code.gson:gson:2.8.5'
     //
+
+    testImplementation 'org.mockito:mockito-core:2.24.5'
 }
 
 repositories {

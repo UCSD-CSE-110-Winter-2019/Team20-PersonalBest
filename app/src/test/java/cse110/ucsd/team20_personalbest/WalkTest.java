@@ -1,19 +1,13 @@
 package cse110.ucsd.team20_personalbest;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentController;
-import android.support.v4.app.FragmentTransaction;
-import android.widget.LinearLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+
+import cse110.ucsd.team20_personalbest.fragments.WalkPg;
+import cse110.ucsd.team20_personalbest.util.MockCalendar;
+import cse110.ucsd.team20_personalbest.walk.RTWalk;
+import cse110.ucsd.team20_personalbest.walk.Walk;
 
 import static org.junit.Assert.assertEquals;
 
