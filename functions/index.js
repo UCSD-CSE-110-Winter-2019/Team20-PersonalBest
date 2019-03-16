@@ -13,6 +13,7 @@ exports.addTimeStamp = functions.firestore
 
      return "snap was null or empty";
    });
+
 exports.sendChatNotifications = functions.firestore
    .document('chatlogs/{chatId}/messages/{messageId}')
    .onCreate((snap, context) => {
@@ -22,11 +23,12 @@ exports.sendChatNotifications = functions.firestore
 
      if (document) {
        var message = {
-         notification: {
+         data: {
            title: document.from + ' sent you a message',
            body: document.text
          },
          topic: context.params.chatId
+
        };
 
        return admin.messaging().send(message)
@@ -43,10 +45,3 @@ exports.sendChatNotifications = functions.firestore
 
      return "document was null or emtpy";
    });
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });

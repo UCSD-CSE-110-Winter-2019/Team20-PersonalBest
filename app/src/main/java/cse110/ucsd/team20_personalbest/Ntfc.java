@@ -26,7 +26,8 @@ public class Ntfc{
         builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(textTitle)
-                .setContentText(textContent).setContentIntent(pendingIntent)
+                .setContentText(textContent)
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher);
