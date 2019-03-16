@@ -35,6 +35,7 @@ public class PopupFriendRequest extends AppCompatActivity implements PopupFriend
             public void onClick(View v) {
                 if(checkValidEmail(friendEmail.getText().toString()))
                     fbcc.addFriend(friendEmail.getText().toString());
+                Log.d("PopUpFriendRequest","Friend request sent");
             }
         });
 
