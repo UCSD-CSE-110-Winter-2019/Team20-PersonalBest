@@ -32,7 +32,7 @@ public class GoalObserver implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        notificationManager.notify(6789, builder.build());
+
 
 
         int currentsteps = (int) o;
@@ -61,7 +61,7 @@ public class GoalObserver implements Observer {
 
         // can display goal multiple times if the getMeetOnce is on
         else if(goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && mainActivity.isDashboardVisible() && !goal.getIgnored()){
-
+            ntfc.push();
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
 
             // set displayed popup and met goal to true if the popup was for today's goal

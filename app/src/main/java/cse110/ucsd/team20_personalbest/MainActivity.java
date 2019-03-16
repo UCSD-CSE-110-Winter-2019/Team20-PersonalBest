@@ -227,19 +227,11 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+    Ntfc ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "personal")
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentTitle("Personal Best")
-                .setContentText("You've comepleted your goal")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -433,6 +425,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 134);
+
+
+
 
     } // end onCreate
 

@@ -18,7 +18,8 @@ public class Ntfc{
     public Context context;
 
 
-    public Ntfc (Context context, String textTitle, String textContent, String id, NotificationManager nm) {
+
+    public Ntfc (Context context, String textTitle, String textContent, String id, NotificationManager nm, PendingIntent pendingIntent) {
         CHANNEL_ID = id;
         this.nm = nm;
         this.context = context;
@@ -26,10 +27,12 @@ public class Ntfc{
         builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(textTitle)
-                .setContentText(textContent)
+                .setContentText(textContent).setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher);
+
+
 
         createNotificationChannel();
     }
