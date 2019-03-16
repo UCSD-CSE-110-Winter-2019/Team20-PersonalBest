@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentController;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
                 intent.putExtra("friend", name);
                 intent.putExtra("UserName", userName);
                 main.startActivity(intent);
+                Log.d("FriendAdapter","Opening Chat Screen for "+ userName+" and " + name);
             }
         });
 
@@ -68,6 +70,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
                 intent.putExtra("friendEmail", name);
                 intent.putExtra("myEmail", userName);
                 main.startActivity(intent);
+                Log.d("FriendAdapter","Opening History Screen for "+name);
             }
         });
 
