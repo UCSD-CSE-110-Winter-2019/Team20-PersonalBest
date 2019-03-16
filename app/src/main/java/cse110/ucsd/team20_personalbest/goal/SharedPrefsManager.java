@@ -11,7 +11,7 @@ import cse110.ucsd.team20_personalbest.util.BoundValidity;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class Goal implements SharedPrefsManagerInterface {
+public class SharedPrefsManager implements SharedPrefsManagerInterface {
     private int goal;
     private boolean useAutoGoal = true;
     private boolean ignored = false;
@@ -50,12 +50,12 @@ public class Goal implements SharedPrefsManagerInterface {
     }
 
     // makes a goal based on the saved shared preferences
-    public Goal(Context context) {
+    public SharedPrefsManager(Context context) {
         loadVariables(context);
     }
 
     // makes a goal based on the saved shared preferences
-    public Goal(Context context, Calendar cal) {
+    public SharedPrefsManager(Context context, Calendar cal) {
         loadVariables(context);
 
         // sets met to false if its the next day and displays goal met popup if goal was met
@@ -91,14 +91,14 @@ public class Goal implements SharedPrefsManagerInterface {
     }
 
     // for testing
-    public Goal(int steps, boolean met) {
+    public SharedPrefsManager(int steps, boolean met) {
         goal = steps;
         this.met = met;
         currentDay = -1;
     }
 
     // for testing
-    public Goal(int steps, boolean met, int nextautogoal){
+    public SharedPrefsManager(int steps, boolean met, int nextautogoal){
         goal = steps;
         autoGoalIncr = nextautogoal;
         this.met = met;

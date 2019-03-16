@@ -2,7 +2,6 @@ package cse110.ucsd.team20_personalbest.goal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +14,18 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
-import static cse110.ucsd.team20_personalbest.MainActivity.builder;
-import static cse110.ucsd.team20_personalbest.MainActivity.notificationManager;
 import static cse110.ucsd.team20_personalbest.MainActivity.ntfc;
 
 import cse110.ucsd.team20_personalbest.MainActivity;
 import cse110.ucsd.team20_personalbest.R;
-import cse110.ucsd.team20_personalbest.goal.Goal;
 
 public class GoalObserver implements Observer {
 
-    private Goal goal;
+    private SharedPrefsManager goal;
     private MainActivity mainActivity;
     private boolean doneCalculatingYesterdaySteps;
 
-    public GoalObserver(Goal gl, MainActivity ma){
+    public GoalObserver(SharedPrefsManager gl, MainActivity ma){
         goal = gl;
         mainActivity = ma;
     }
