@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest.activities;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,9 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
     String MESSAGES_KEY = "messages";
     String DOCUMENT_KEY;
 
+    String TAG = "GraphMessageActivity";
+
+
     private ComboLineColumnChartView chart;
     private GraphManager graphManager;
     private ArrayToHistoryConverter arrayToHistoryConverter;
@@ -46,11 +50,14 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
         String factoryKey = this.getIntent().getStringExtra("FACTORY_KEY");
         if(factoryKey == null) factoryKey = "";
 
+        Log.d(TAG, myEmail + " is looking at the graph page of " + friendEmail);
+
         String friendKey = friendEmail.substring(0,friendEmail.indexOf('@'));
         if(myEmail.compareTo(friendKey) >= 0)
             DOCUMENT_KEY = myEmail + friendKey;
         else
             DOCUMENT_KEY =friendKey + myEmail ;
+        Log.d(TAG, "Building chat adapter with document key " + DOCUMENT_KEY + "\nand message key " + MESSAGES_KEY);
 
         ChatAdapter fb = ChatAdapterFactory.build(factoryKey, myEmail, COLLECTION_KEY, DOCUMENT_KEY, MESSAGES_KEY);
 
@@ -60,6 +67,7 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
             @Override
             public void onClick(View view) {
                 fb.sendMessage(messageView.getText().toString(), messageView);
+                Log.d(TAG, "Attempting to send message");
             }
         });
 
@@ -76,6 +84,7 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
 
     @Override
     public void update(Observable observable, Object o) {
+        Log.d(TAG, "Updating data and redrawing graph");
         //Will update when arraytohistoryconverter gets the data back from historydownloader
         graphManager.updateUnintendedData(arrayToHistoryConverter.getUnintendedSteps());
         graphManager.updateIntendedData(arrayToHistoryConverter.getIntendedSteps());

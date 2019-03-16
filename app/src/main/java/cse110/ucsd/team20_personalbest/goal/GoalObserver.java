@@ -2,6 +2,7 @@ package cse110.ucsd.team20_personalbest.goal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+
+import static cse110.ucsd.team20_personalbest.MainActivity.builder;
+import static cse110.ucsd.team20_personalbest.MainActivity.notificationManager;
+import static cse110.ucsd.team20_personalbest.MainActivity.ntfc;
 
 import cse110.ucsd.team20_personalbest.MainActivity;
 import cse110.ucsd.team20_personalbest.R;
@@ -57,7 +62,7 @@ public class GoalObserver implements Observer {
 
         // can display goal multiple times if the getMeetOnce is on
         else if(goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && mainActivity.isDashboardVisible() && !goal.getIgnored()){
-
+            ntfc.push();
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
 
             // set displayed popup and met goal to true if the popup was for today's goal

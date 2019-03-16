@@ -55,7 +55,9 @@ public class GraphManager implements GraphManagerInterface {
 
         if(numCols >= maxColNumberWithLabels){
             hasLabels = false;
+            Log.d(TAG, "Drawing graph of width "+numCols+" with no labels");
         }
+        Log.d(TAG, "Drawing graph of width "+numCols+" with labels");
     }
 
     public void setGoalRequestManager(GoalDataRequestManager goalDataRequestManager){
@@ -101,9 +103,9 @@ public class GraphManager implements GraphManagerInterface {
                 goalValue = goalData.get(j);
                 j--;
             }
-
             line.add(new PointValue(i, goalValue));
         }
+        Log.d(TAG, "Graph goal line set as following: " + line.toString());
 
         Line lineObj = new Line(line);
         lineObj.setColor(LINE_COLOR);
@@ -128,6 +130,7 @@ public class GraphManager implements GraphManagerInterface {
 
 
     public void formatData(){
+
         for(int i = 0; i < numCols; i++){
             if(formattedUSteps.size() == i) formattedUSteps.add(0);
             if(unintendedSteps.size() == i) unintendedSteps.add(0);
