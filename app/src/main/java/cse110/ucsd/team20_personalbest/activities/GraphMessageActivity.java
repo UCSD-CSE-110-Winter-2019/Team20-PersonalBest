@@ -25,7 +25,6 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
     String MESSAGES_KEY = "messages";
     String DOCUMENT_KEY;
 
-
     private ComboLineColumnChartView chart;
     private GraphManager graphManager;
     private ArrayToHistoryConverter arrayToHistoryConverter;
@@ -37,9 +36,7 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_message);
 
-        chart = findViewById(R.id.chart_month);
-
-        graphManager = new GraphManager(chart, numCols);
+        getChart(numCols);
 
         String friendEmail = getIntent().getStringExtra("friendEmail");
         SharedPreferences sp = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -70,10 +67,11 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
         arrayToHistoryConverter = new ArrayToHistoryConverter(historyDownloader);
         arrayToHistoryConverter.addObserver(this);
         historyDownloader.requestData();
+    }
 
-
-
-
+    public void getChart(int numCols) {
+        chart = findViewById(R.id.chart_month);
+        graphManager = new GraphManager(chart, numCols);
     }
 
     @Override
@@ -85,5 +83,12 @@ public class GraphMessageActivity extends AppCompatActivity implements Observer 
         goalData.add((int)arrayToHistoryConverter.getGoal());
         graphManager.updateGoalData(goalData);
         graphManager.draw();
+    }
+
+    public void mockUpdate(GraphManager graphManager, ArrayToHistoryConverter arrayToHistoryConverter) {
+
+        this.graphManager = graphManager;
+        this.arrayToHistoryConverter = arrayToHistoryConverter;
+        update(null,null);
     }
 }
