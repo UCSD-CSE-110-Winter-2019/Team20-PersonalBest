@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import cse110.ucsd.team20_personalbest.R;
 
@@ -25,6 +26,7 @@ public class OurNotificationManager {
         this.nm = nm;
         this.context = context;
 
+        Log.i("Notification Manager", "Building notification...");
         builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(textTitle)
