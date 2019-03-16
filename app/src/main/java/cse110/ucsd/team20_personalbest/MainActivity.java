@@ -2,7 +2,9 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.annotation.TargetApi;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -91,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private long timeDiff;
     public static FBCommandCenter fbcc;
     private SharedPreferences sharedPreferences;
+    static public Ntfc ntfc;
 
     private Button changeStep;
     private EditText timeText;
@@ -123,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private boolean dashboardVisible = true;
     private FloatingActionButton floatBtn;
     private boolean isFirstRun;
+    public static NotificationManagerCompat notificationManager;
+    public static NotificationCompat.Builder builder;
 
     private OurCal ourCal;
 
@@ -221,13 +228,18 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         floatBtn = (FloatingActionButton) findViewById(R.id.floatBtn);
         floatBtn.hide();
         activity = this;
         sc = new StepContainer();
-
         floatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -563,7 +575,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             while (updateSteps) {
                 try {
                     Thread.sleep(1000);
-
                     fitnessService.updateStepCount();
                     publishProgress();
                 } catch (Exception e) {
