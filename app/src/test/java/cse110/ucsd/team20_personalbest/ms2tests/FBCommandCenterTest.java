@@ -54,12 +54,14 @@ public class FBCommandCenterTest {
         usersCollection = mock(CollectionReference.class);
         user = mock(DocumentReference.class);
         fc = new FriendsContent();
+        FriendsContent.FRIENDS = new ArrayList<>();
 
         fbcc = new MockFBCommandCenter(usersCollection, user, fc);
     }
 
     @Test
     public void testAddFriends() {
+
 
         fbcc.addFriend(a);
 
