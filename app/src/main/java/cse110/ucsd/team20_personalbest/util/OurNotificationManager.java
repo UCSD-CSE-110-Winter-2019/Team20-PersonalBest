@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import cse110.ucsd.team20_personalbest.R;
 
-public class Ntfc{
+public class OurNotificationManager {
 
     public String CHANNEL_ID;
     public NotificationCompat.Builder builder;
@@ -20,7 +20,7 @@ public class Ntfc{
     public Context context;
 
 
-    public Ntfc (Context context, String textTitle, String textContent, String id, NotificationManager nm, PendingIntent pendingIntent) {
+    public OurNotificationManager(Context context, String textTitle, String textContent, String id, NotificationManager nm, PendingIntent pendingIntent) {
         CHANNEL_ID = id;
         this.nm = nm;
         this.context = context;

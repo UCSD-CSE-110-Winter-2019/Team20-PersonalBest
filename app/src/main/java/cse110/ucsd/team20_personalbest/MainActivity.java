@@ -70,7 +70,7 @@ import cse110.ucsd.team20_personalbest.goal.GoalObserver;
 import cse110.ucsd.team20_personalbest.history.DailyStepCountHistory;
 import cse110.ucsd.team20_personalbest.history.HistoryUploader;
 import cse110.ucsd.team20_personalbest.walk.SessionDataRequestManager;
-import cse110.ucsd.team20_personalbest.util.Ntfc;
+import cse110.ucsd.team20_personalbest.util.OurNotificationManager;
 import cse110.ucsd.team20_personalbest.util.OurCal;
 import cse110.ucsd.team20_personalbest.walk.IntendedSession;
 import cse110.ucsd.team20_personalbest.walk.RTWalk;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private long timeDiff;
     public static FirebaseCommandCenterInterface fbcc;
     private SharedPreferences sharedPreferences;
-    static public Ntfc ntfc;
+    static public OurNotificationManager ntfc;
 
     private Button changeStep;
     private EditText timeText;
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
+        ntfc = new OurNotificationManager(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
 
 
         super.onCreate(savedInstanceState);

@@ -4,10 +4,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
-import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -15,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import cse110.ucsd.team20_personalbest.activities.ChatActivity;
-import cse110.ucsd.team20_personalbest.util.Ntfc;
+import cse110.ucsd.team20_personalbest.util.OurNotificationManager;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
@@ -42,7 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Ntfc n = new Ntfc(this,data.get("title"), data.get("body"), "msg", notificationManager,pendingIntent);
+        OurNotificationManager n = new OurNotificationManager(this,data.get("title"), data.get("body"), "msg", notificationManager,pendingIntent);
         n.push();
     }
 }
