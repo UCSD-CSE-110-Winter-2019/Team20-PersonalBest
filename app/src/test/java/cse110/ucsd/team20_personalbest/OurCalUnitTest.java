@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
+import cse110.ucsd.team20_personalbest.util.OurCal;
+
 public class OurCalUnitTest {
     OurCal ourCal;
     Calendar testCal;

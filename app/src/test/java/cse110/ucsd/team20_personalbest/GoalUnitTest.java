@@ -5,15 +5,17 @@ import org.junit.Test;
 
 import java.util.Calendar;
 
+import cse110.ucsd.team20_personalbest.goal.SharedPrefsManager;
+
 import static org.junit.Assert.*;
 
 public class GoalUnitTest {
 
-    Goal goal;
+    SharedPrefsManager goal;
 
     @Before
     public void setup() {
-        goal = new Goal(200, false, 20);
+        goal = new SharedPrefsManager(200, false, 20);
     }
 
     @Test

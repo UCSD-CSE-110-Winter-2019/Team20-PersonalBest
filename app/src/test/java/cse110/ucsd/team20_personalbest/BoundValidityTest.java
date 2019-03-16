@@ -3,6 +3,8 @@ package cse110.ucsd.team20_personalbest;
 import org.junit.Before;
 import org.junit.Test;
 
+import cse110.ucsd.team20_personalbest.util.BoundValidity;
+
 import static org.junit.Assert.*;
 
 public class BoundValidityTest {

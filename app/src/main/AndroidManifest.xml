@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_pb_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GraphMessageActivity"></activity>
+        <activity android:name=".activities.GraphMessageActivity"></activity>
 
         <activity
             android:name=".MainActivity"
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InitialActivity"
+            android:name=".activities.InitialActivity"
             android:label="Profile" />
 
         <activity
-            android:name=".ChatActivity"
+            android:name=".activities.ChatActivity"
             android:label="Chat">
             <intent-filter>
                 <action android:name=".ChatActivity" />
@@ -36,13 +36,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name="MyFirebaseMessagingService">
+        <service android:name=".chat.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".PopupFriendRequest">
+        <activity android:name=".activities.PopupFriendRequest">
         </activity>
 
     </application>
