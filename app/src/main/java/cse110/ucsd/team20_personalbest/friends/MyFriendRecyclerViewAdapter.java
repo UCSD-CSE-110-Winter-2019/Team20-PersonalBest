@@ -3,6 +3,7 @@ package cse110.ucsd.team20_personalbest.friends;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import cse110.ucsd.team20_personalbest.friends.FriendsContent.Friend;
 import cse110.ucsd.team20_personalbest.activities.GraphMessageActivity;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Friend} and makes a call to the
@@ -54,6 +57,7 @@ public class MyFriendRecyclerViewAdapter extends RecyclerView.Adapter<MyFriendRe
             @Override
             public void onClick(View v) {
                 Toast.makeText(main, "Sending Message to " + name, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Message has been sent successfully");
                 Intent intent = new Intent(main, ChatActivity.class);
                 intent.putExtra("friend", name);
                 intent.putExtra("UserName", userName);

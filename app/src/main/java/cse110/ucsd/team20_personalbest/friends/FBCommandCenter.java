@@ -22,6 +22,8 @@ import java.util.Map;
 import cse110.ucsd.team20_personalbest.MainActivity;
 import cse110.ucsd.team20_personalbest.friends.FriendsContent;
 
+import static android.content.ContentValues.TAG;
+
 public class FBCommandCenter implements FirebaseCommandCenterInterface {
     final String USER_KEY = "users";
     final String FIRST_NAME_KEY = "firstName";
@@ -50,6 +52,7 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
                     for(int i = 0; i < ((List)documentSnapshot.getData().get("friends")).size(); i++) {
                         friendEntry = ((List)documentSnapshot.getData().get("friends")).get(i).toString();
                         fc.addFriend(friendEntry);
+                        Log.d(TAG, "Friend has been successfully added");
                     }
                 }
                 else {
@@ -59,6 +62,7 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
                     dataToSave.put("friends", fc.FRIENDS);
                     dataToSave.put("friends_tobeadded", fc.FRIENDS_TOBEADDED);
                     usersCollection.document(userToAdd).set(dataToSave);
+                    Log.d(TAG, "New friend user has been saved");
                 }
             }
         });
@@ -140,6 +144,7 @@ public class FBCommandCenter implements FirebaseCommandCenterInterface {
 
             }
         });
+        Log.d(TAG, "User most definitely exists");
         return true;
     }
 

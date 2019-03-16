@@ -53,6 +53,7 @@ public class FirebaseChatAdapter implements ChatAdapter {
 
         chat.add(newMessage).addOnSuccessListener(result -> {
             text.setText("");
+            Log.d(TAG, "Message successfully sent");
         }).addOnFailureListener(error -> {
             Log.e(TAG, error.getLocalizedMessage());
         });
