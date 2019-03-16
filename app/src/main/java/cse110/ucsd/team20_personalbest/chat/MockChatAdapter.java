@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.Map;
+
 import cse110.ucsd.team20_personalbest.activities.ChatActivity;
 
 public class MockChatAdapter implements ChatAdapter {
@@ -43,5 +45,15 @@ public class MockChatAdapter implements ChatAdapter {
     @Override
     public void subscribeToNotificationsTopic(ChatActivity activity) {
         Log.d(TAG, "----------------Subscribed to "+DOCUMENT_KEY+"------------------");
+    }
+
+    @Override
+    public void mockInstantiate(CollectionReference chat) {
+        // for chatMessageTest
+    }
+
+    @Override
+    public void mockSendMessage(Map<String, String> message, EditText text) {
+        // for chatMessageTest
     }
 }

@@ -5,8 +5,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,6 +47,16 @@ public class FirebaseChatAdapter implements ChatAdapter {
                 .collection(MESSAGES_KEY);
     }
 
+    @Override
+    public void mockInstantiate(CollectionReference chat) {
+        this.chat = chat;
+    }
+
+    @Override
+    public void mockSendMessage(Map<String, String> message, EditText text) {
+        chat.add(message);
+    }
+
     public void sendMessage(String message, EditText text) {
 
         Map<String, String> newMessage = new HashMap<>();
@@ -56,6 +68,10 @@ public class FirebaseChatAdapter implements ChatAdapter {
         }).addOnFailureListener(error -> {
             Log.e(TAG, error.getLocalizedMessage());
         });
+    }
+
+    public CollectionReference getChat() {
+        return chat;
     }
 
     public void subscribeToNotificationsTopic(ChatActivity activity) {
