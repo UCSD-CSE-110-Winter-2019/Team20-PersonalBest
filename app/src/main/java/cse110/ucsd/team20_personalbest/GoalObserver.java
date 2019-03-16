@@ -2,6 +2,7 @@ package cse110.ucsd.team20_personalbest;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+
+import static cse110.ucsd.team20_personalbest.MainActivity.builder;
+import static cse110.ucsd.team20_personalbest.MainActivity.notificationManager;
+import static cse110.ucsd.team20_personalbest.MainActivity.ntfc;
 
 public class GoalObserver implements Observer {
 
@@ -27,6 +32,9 @@ public class GoalObserver implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+        notificationManager.notify(6789, builder.build());
+
+
         int currentsteps = (int) o;
 
         Log.d("Goal Observer", "Popup checks\n\tWill display a popup when on dashboard: " + (goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && !goal.getIgnored())
