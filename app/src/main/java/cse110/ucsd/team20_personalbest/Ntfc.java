@@ -32,8 +32,6 @@ public class Ntfc{
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher);
 
-
-
         createNotificationChannel();
     }
 
