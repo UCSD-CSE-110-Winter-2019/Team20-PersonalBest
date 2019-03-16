@@ -28,13 +28,12 @@
             android:label="Profile" />
 
         <activity
-            android:name=".InitialActivity"
-            android:label="Profile">
-        </activity>
-
-        <activity
             android:name=".ChatActivity"
             android:label="Chat">
+            <intent-filter>
+                <action android:name=".ChatActivity" />
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
 
         <service android:name="MyFirebaseMessagingService">
