@@ -2,6 +2,7 @@
 package cse110.ucsd.team20_personalbest;
 
 import android.annotation.TargetApi;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-     ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
+        ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
 
 
         super.onCreate(savedInstanceState);
@@ -426,9 +427,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 134);
 
-
-
-
     } // end onCreate
 
     public void setButton(Button btn, boolean onWalk) {
@@ -525,7 +523,10 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     Map<String, String> newUser = new HashMap<>();
                     CollectionReference user = FirebaseFirestore.getInstance()
                             .collection("users");
-                    new HistoryUploader(this);
+                    String testkey = getIntent().getStringExtra("service_key");
+                    if(testkey != null)
+                        new HistoryUploader(this);
+                    getSystemService(NotificationManager.class);
                 }
             }
         }
@@ -574,7 +575,6 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
             while (updateSteps) {
                 try {
                     Thread.sleep(1000);
-
                     fitnessService.updateStepCount();
                     publishProgress();
                 } catch (Exception e) {

@@ -33,6 +33,7 @@ public class PopupFriendRequest extends AppCompatActivity {
             public void onClick(View v) {
                 if(friendEmail.getText().toString() != "")
                     fbcc.addFriend(friendEmail.getText().toString());
+                Log.d("PopUpFriendRequest","Friend request sent");
             }
         });
 

@@ -18,31 +18,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-//        need to implement this if you want to do something when you receive a notification while app is in the foreground.
-//        RemoteMessage.Notification notification = remoteMessage.getNotification();
-//        Map<String, String> data = remoteMessage.getData();
-//
-//        sendNotification(notification, data);
+
+        Map<String, String> data = remoteMessage.getData();
+
+        sendNotification(data);
     }
 
-//    /**
-//     * Create and show a custom notification containing the received FCM message.
-//     *
-//     * @param notification FCM notification payload received.
-//     * @param data FCM data payload received.
-//     */
-//    private void sendNotification(RemoteMessage.Notification notification, Map<String, String> data) {
-//
-//        String email = notification.getTitle();
-//        email = email.substring(0,email.indexOf(' '));
-//        System.out.println("*******************************"+email);
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        intent.putExtra("friend", email);
-//        intent.putExtra("UserName", userName);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-//
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        Ntfc n = new Ntfc(this,notification.getTitle(), notification.getBody(), "msg", notificationManager,pendingIntent);
-//        n.push();
-//    }
+    /**
+     * Create and show a custom notification containing the received FCM message.
+     *
+     * @param data FCM data payload received.
+     */
+    private void sendNotification(Map<String, String> data) {
+
+        String email = data.get("title");
+        email = email.substring(0,email.indexOf(' '));
+        email = email + "@";
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("friend", email);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Ntfc n = new Ntfc(this,data.get("title"), data.get("body"), "msg", notificationManager,pendingIntent);
+        n.push();
+    }
 }
