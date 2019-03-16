@@ -18,7 +18,6 @@ public class Ntfc{
     public Context context;
 
 
-
     public Ntfc (Context context, String textTitle, String textContent, String id, NotificationManager nm, PendingIntent pendingIntent) {
         CHANNEL_ID = id;
         this.nm = nm;
