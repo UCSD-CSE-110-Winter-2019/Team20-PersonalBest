@@ -511,7 +511,9 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
                     Map<String, String> newUser = new HashMap<>();
                     CollectionReference user = FirebaseFirestore.getInstance()
                             .collection("users");
-                    new HistoryUploader(this);
+                    if(!getIntent().getStringExtra("service_key").equals("MOCK_FIT"))
+                        new HistoryUploader(this);
+                    getSystemService(NotificationManager.class);
                 }
             }
         }
