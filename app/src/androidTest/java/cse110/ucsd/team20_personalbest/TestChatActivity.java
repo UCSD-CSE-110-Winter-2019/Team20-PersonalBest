@@ -12,6 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import cse110.ucsd.team20_personalbest.activities.ChatActivity;
+
 import static org.junit.Assert.assertEquals;
 
 /**

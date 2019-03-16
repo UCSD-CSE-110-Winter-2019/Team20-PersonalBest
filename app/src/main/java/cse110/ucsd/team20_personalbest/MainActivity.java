@@ -75,7 +75,27 @@ import cse110.ucsd.team20_personalbest.fitness.FitnessService;
 import cse110.ucsd.team20_personalbest.fitness.FitnessServiceFactory;
 import cse110.ucsd.team20_personalbest.fitness.GoogleFitAdapter;
 import cse110.ucsd.team20_personalbest.fitness.MockFitness;
-import cse110.ucsd.team20_personalbest.friends.FriendsContent;
+import cse110.ucsd.team20_personalbest.fragments.FriendFragment;
+import cse110.ucsd.team20_personalbest.fragments.GraphPg;
+import cse110.ucsd.team20_personalbest.activities.InitialActivity;
+import cse110.ucsd.team20_personalbest.fragments.ProfilePg;
+import cse110.ucsd.team20_personalbest.fragments.WalkPg;
+import cse110.ucsd.team20_personalbest.fragments.dashboard;
+import cse110.ucsd.team20_personalbest.friends.FBCommandCenter;
+import cse110.ucsd.team20_personalbest.activities.PopupFriendRequest;
+import cse110.ucsd.team20_personalbest.friends.FirebaseCommandCenterInterface;
+import cse110.ucsd.team20_personalbest.goal.Goal;
+import cse110.ucsd.team20_personalbest.goal.GoalObserver;
+import cse110.ucsd.team20_personalbest.history.DailyStepCountHistory;
+import cse110.ucsd.team20_personalbest.history.HistoryUploader;
+import cse110.ucsd.team20_personalbest.walk.SessionDataRequestManager;
+import cse110.ucsd.team20_personalbest.util.Ntfc;
+import cse110.ucsd.team20_personalbest.util.OurCal;
+import cse110.ucsd.team20_personalbest.walk.IntendedSession;
+import cse110.ucsd.team20_personalbest.walk.RTWalk;
+import cse110.ucsd.team20_personalbest.walk.StepContainer;
+import cse110.ucsd.team20_personalbest.walk.Walk;
+import cse110.ucsd.team20_personalbest.walk.StepContainer;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 
@@ -93,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
     private MainActivity mainActivity;
     public String fitnessServiceKey;
     private long timeDiff;
-    public static FBCommandCenter fbcc;
+    public static FirebaseCommandCenterInterface fbcc;
     private SharedPreferences sharedPreferences;
     static public Ntfc ntfc;
 

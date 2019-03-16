@@ -69,7 +69,7 @@
     <RadioGroup
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".InitialActivity"
+        tools:context=".activities.InitialActivity"
         android:id="@+id/button_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

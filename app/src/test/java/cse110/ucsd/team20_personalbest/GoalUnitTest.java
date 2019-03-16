@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.Calendar;
 
+import cse110.ucsd.team20_personalbest.goal.Goal;
+
 import static org.junit.Assert.*;
 
 public class GoalUnitTest {
