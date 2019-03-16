@@ -1,5 +1,6 @@
 package cse110.ucsd.team20_personalbest.friends;
 
+import android.util.Log;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class FriendsContent {
                 return;
         }
         FRIENDS.add(item);
+        Log.d("FriendsContent","Friend added");
     }
 
     public static class Friend {
