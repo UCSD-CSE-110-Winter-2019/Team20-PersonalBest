@@ -62,6 +62,7 @@ public class GoalObserver implements Observer {
         // can display goal multiple times if the getMeetOnce is on
         else if(goal.attemptCompleteGoal(currentsteps) && (!goal.metToday() || !goal.getMeetOnce()) && mainActivity.isDashboardVisible() && !goal.getIgnored()){
             ntfc.push();
+            Log.d("LOGTEST", "IT NOTIFIED");
             mainActivity.sendToast("Congratulations! You met your goal of " + goal.getGoal() + " steps!");
 
             // set displayed popup and met goal to true if the popup was for today's goal

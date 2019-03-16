@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements WalkPg.OnWalkPgLi
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-    Ntfc ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
+     ntfc = new Ntfc(this, "Personal Best", "You've completed your goal","GoalComplete", getSystemService(NotificationManager.class), pendingIntent);
 
 
         super.onCreate(savedInstanceState);

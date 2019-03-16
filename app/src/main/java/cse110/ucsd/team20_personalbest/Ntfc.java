@@ -16,6 +16,7 @@ public class Ntfc{
     public NotificationCompat.Builder builder;
     public NotificationManager nm;
     public Context context;
+    boolean didNotifiy = false;
 
 
 
@@ -49,5 +50,6 @@ public class Ntfc{
     public void push () {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(0, builder.build());
+        didNotifiy = true;
     }
 }

@@ -68,6 +68,7 @@ dependencies {
     //custom items and drawables
     implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
     implementation 'com.google.code.gson:gson:2.8.5'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
     //
 }
 
