@@ -39,7 +39,7 @@ public class HistoryToArrayConverter extends Observable implements Observer {
         dailyStepCountHistory.requestHistory(Calendar.getInstance().getTimeInMillis(), numDays);
         sessionDataRequestManager.requestSessions(Calendar.getInstance().getTimeInMillis(), numDays);
 
-        data = new long[2 * numDays + 1 /*For timestamp*/ + 1 /*For goal*/];
+        data = new long[2 */*types of steps*/ numDays + 1 /*For timestamp*/ + 1 /*For goal*/];
     }
 
     public void requestHistory(){
